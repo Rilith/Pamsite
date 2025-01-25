@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pamsite - Guestbook</title>
+  <link rel="stylesheet" href="./styles/style.css">
+  <script>
+    window.onload = function() {
+      alert("Sign my Guestbook!");
+    };
+  </script>
+</head>
+<body>
+
+  <marquee class="marquee" scrollamount="5" scrolldelay="90">
+    Sign my Guestbook and say Hello!
+  </marquee>
+
+  <h1>Pamsite Guestbook</h1>
+
+  <nav>
+    <table class="nav-table">
+      <tr>
+        <td><a href="./index.html">Home</a></td>
+        <td><a href="./about.html">About Me</a></td>
+        <td><a href="./links.html">Links</a></td>
+        <td><a href="./guestbook.html">Guestbook</a></td>
+      </tr>
+    </table>
+  </nav>
+
+  <main>
+    <section class="retro-section">
+      <h2>Sign the Guestbook</h2>
+      <!-- Guestbook form (no real backend, just for show). If you want 
+           to store messages, you'll need server-side code or a third-party service. -->
+      <form>
+        <p>
+          <label for="gb-name">Name:</label><br>
+          <input type="text" id="gb-name" name="gb-name" required>
+        </p>
+        <p>
+          <label for="gb-message">Message:</label><br>
+          <textarea id="gb-message" name="gb-message" rows="5" cols="40" required></textarea>
+        </p>
+        <p>
+          <input type="submit" value="Sign Guestbook">
+        </p>
+      </form>
+    </section>
+
+  </main>
+
+  <div class="construction-badge">
+    <img 
+      src="https://upload.wikimedia.org/wikipedia/commons/1/19/Under_construction_graphic.gif" 
+      alt="Under Construction" 
+      width="180"
+    />
+  </div>
+
+</body>
+</html>

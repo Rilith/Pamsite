@@ -1,0 +1,134 @@
+/* 
+  style.css 
+  Add all your retro design styles here 
+*/
+
+
+/* Tiled background + neon green text on black for that authentic 90s look */
+body {
+  background-color: #000000;
+  background-image: url("https://i.gifer.com/76YS.gif"); 
+  background-repeat: repeat;
+  color: #00ff00;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  
+}
+
+.cursor {
+  cursor: url("images/Switch2.cur"), auto;
+}
+
+/* Marquee styling: bright background, clashing color text */
+.marquee {
+  font-size: 1.2em;
+  color: #ff00ff;
+  background-color: #00ffff;
+  width: 60%;
+  margin: 20px auto;
+  display: block;
+  padding: 5px;
+  border: 2px dashed #ff00ff;
+}
+
+/* Retro neon heading with a glow animation */
+@keyframes glow {
+  0%   { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; }
+  50%  { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+  100% { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; }
+}
+
+h1 {
+  font-size: 3em;
+  margin-top: 20px;
+  animation: glow 2s infinite;
+}
+
+/* Table-based navigation styling */
+.nav-table {
+  margin: 0 auto;
+  border: 2px dotted #ff00ff;
+  background-color: #333333;
+  width: 50%;
+  border-collapse: collapse;
+}
+
+.nav-table td {
+  padding: 5px 15px;
+  text-align: center;
+}
+
+/* Retro link colors */
+a {
+  color: #00ff00; /* bright green link */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Outline/border for retro sections */
+.retro-section {
+  border: 3px solid #ff00ff;
+  margin: 20px auto;
+  width: 60%;
+  background-color: #111111;
+  padding: 10px;
+}
+
+/* Simulate <blink> in CSS */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+.blink {
+  animation: blink 1s infinite;
+  font-weight: bold;
+  color: #ff0000;
+}
+
+/* "Under Construction" badge in corner */
+.construction-badge {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
+.visit-counter {
+  margin: 30px 0;
+  color: #00ff00;
+}
+.visit-counter p {
+  font-weight: bold;
+}
+
+/* Rainbow blinking text (for extra 90s flair) */
+@keyframes rainbowBlink {
+  0%   { color: red; }
+  14%  { color: orange; }
+  28%  { color: yellow; }
+  42%  { color: green; }
+  56%  { color: blue; }
+  70%  { color: indigo; }
+  84%  { color: violet; }
+  100% { color: red; }
+}
+
+.rainbow-blink {
+  animation: rainbowBlink 2s infinite, blink 1s infinite;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.sparkle-effect {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: url('https://i.gifer.com/origin/4a/4a0225d3bbd093b282a33c369a368730_w200.gif');
+  background-size: cover;
+  pointer-events: none;
+  z-index: 9999;
+}
