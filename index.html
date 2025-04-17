@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Pamsite! ✨</title>
     <link rel="stylesheet" href="styles/style.css"> </head>
+    <script src="script.js" ></script>
 <body>
     <div id="sparkle" style="position: absolute; display: none; width: 10px; height: 10px; background-color: #ff00ff; border-radius: 50%; pointer-events: none; z-index: 1000;"></div>
 
@@ -424,26 +425,27 @@
             <section id="guestbook-page" class="page" style="display: none;">
                 <div class="guestbook">
                     <div class="guestbook-title">Firma il mio Guestbook!</div>
-
+            
+                    <div id="guestbook-message" style="display: none; padding: 10px; margin-bottom: 15px; text-align: center; font-weight: bold;">
+                        <!-- Qui verranno mostrati messaggi di conferma o errore -->
+                    </div>
+            
                     <form class="guestbook-form" id="guestbook-form">
                         <input type="text" placeholder="Il tuo nome" required name="guestName">
                         <input type="email" placeholder="La tua email" required name="guestEmail">
                         <textarea rows="4" placeholder="Lascia un messaggio!" required name="guestMessage"></textarea>
-                        <button type="submit">Firma il Guestbook!</button>
+                        <button type="submit" id="guestbook-submit">Firma il Guestbook!</button>
+                        <div id="submit-loading" style="display: none; text-align: center; margin-top: 10px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif" alt="Loading..." style="width: 20px; height: 20px;">
+                            <span style="color: #00ffff; margin-left: 5px;">Invio in corso...</span>
+                        </div>
                     </form>
-
+            
                     <div id="guestbook-entries" style="margin-top: 20px; color: #ffffff;">
-                        <div style="border-bottom: 1px dashed #00ffff; padding-bottom: 10px; margin-bottom: 10px;">
-                            <div style="color: #00ffff;">AnimeFan2000 - 14/04/2025</div>
-                            <div>Grande sito! Adoro la tua collezione di GIF! Continua così!</div>
-                        </div>
-                        <div style="border-bottom: 1px dashed #00ffff; padding-bottom: 10px; margin-bottom: 10px;">
-                            <div style="color: #00ffff;">OtakuMaster - 10/04/2025</div>
-                            <div>Finalmente un sito che celebra la cultura degli anime come si deve! Ricorda i bei tempi!</div>
-                        </div>
-                        <div style="border-bottom: 1px dashed #00ffff; padding-bottom: 10px; margin-bottom: 10px;">
-                            <div style="color: #00ffff;">MangaLover - 05/04/2025</div>
-                            <div>Ho trovato il tuo sito per caso e mi piace molto il design retrò! Mi ricorda i vecchi tempi di Geocities!</div>
+                        <!-- Gli elementi verranno caricati dinamicamente dal backend -->
+                        <div id="guestbook-loading" style="text-align: center; padding: 20px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif" alt="Loading..." style="width: 32px; height: 32px;">
+                            <div style="color: #00ffff; margin-top: 10px;">Caricamento firme in corso...</div>
                         </div>
                     </div>
                 </div>
@@ -498,224 +500,6 @@
             <button data-audio-action="next">⏭️</button>
         </div>
     </div>
-
-    <script defer>
-        document.addEventListener('DOMContentLoaded', () => {
-            const pages = document.querySelectorAll(".page");
-            const navLinks = document.querySelectorAll(".navbar a[data-page-target], #error404-page a[data-page-target]");
-            const modal = document.getElementById("gif-modal");
-            const modalImg = document.getElementById("modal-image");
-            const modalTitle = document.getElementById("modal-title");
-            const closeModalButton = document.getElementById("close-modal-button");
-            const sparkle = document.getElementById("sparkle");
-            const guestbookForm = document.getElementById('guestbook-form');
-            const guestbookEntries = document.getElementById('guestbook-entries');
-            const audioPlayer = document.getElementById('audio-player');
-            const content = document.getElementById('content'); // Container for delegated events
-
-            // --- Page Navigation ---
-            function showPage(pageId) {
-                if (!pageId) return; // Do nothing if pageId is null/undefined
-                let pageFound = false;
-                pages.forEach(page => {
-                    if (page.id === pageId) {
-                        page.style.display = "block";
-                        pageFound = true;
-                    } else {
-                        page.style.display = "none";
-                    }
-                });
-                 // Fallback to 404 if pageId is invalid
-                 if (!pageFound && pageId !== 'error404-page') {
-                    showPage('error404-page');
-                 }
-            }
-
-            // Initial page display
-            showPage('home-page');
-
-            // Navigation link clicks (using event delegation on common ancestors if possible,
-            // but here targeting specific links is simpler)
-            navLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const pageId = link.dataset.pageTarget;
-                    showPage(pageId);
-                });
-            });
-
-            // --- GIF Modal ---
-            function openModal(imgSrc, title) {
-                if (!modal || !modalImg || !modalTitle) return; // Safety check
-                modalImg.src = imgSrc;
-                modalImg.alt = title; // Set alt text too
-                modalTitle.textContent = title;
-                modal.style.display = "flex";
-            }
-
-            function closeModal() {
-                if (!modal) return;
-                modal.style.display = "none";
-                modalImg.src = ""; // Clear src
-                modalImg.alt = "";
-                modalTitle.textContent = "";
-            }
-
-            // Event delegation for GIF items
-            content.addEventListener('click', (event) => {
-                const gifItem = event.target.closest('.gif-item');
-                if (gifItem) {
-                    const imgSrc = gifItem.dataset.gifSrc;
-                    const title = gifItem.dataset.gifTitle;
-                    if (imgSrc && title) {
-                        openModal(imgSrc, title);
-                    }
-                }
-
-                 // Event delegation for Download buttons
-                 const downloadButton = event.target.closest('.download-button');
-                 if(downloadButton) {
-                     event.preventDefault();
-                     const itemName = downloadButton.dataset.downloadItem || 'File';
-                     simulateDownload(itemName);
-                 }
-            });
-
-
-            closeModalButton?.addEventListener('click', closeModal);
-
-            // Close modal if clicking outside the content
-            modal?.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // --- Simulate Download ---
-            function simulateDownload(filename) {
-                alert(`Inizio download simulato di: ${filename}\n(Ovviamente non scarica nulla, è solo una demo!)`);
-                // Potresti aggiungere una finta barra di progresso qui se volessi
-            }
-
-
-            // --- Guestbook Simulation ---
-            guestbookForm?.addEventListener('submit', (event) => {
-                 event.preventDefault(); // Prevent actual form submission
-                 const name = event.target.elements.guestName.value.trim();
-                 const message = event.target.elements.guestMessage.value.trim();
-
-                 if (name && message && guestbookEntries) {
-                     const date = new Date();
-                     const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-
-                     const newEntry = document.createElement('article');
-                     newEntry.style.borderBottom = '1px dashed #00ffff';
-                     newEntry.style.paddingBottom = '10px';
-                     newEntry.style.marginBottom = '10px';
-
-                     const header = document.createElement('header');
-                     header.style.color = '#00ffff';
-                     // Basic sanitization: replace HTML tags
-                     header.textContent = `${name.replace(/</g, "&lt;").replace(/>/g, "&gt;")} - ${formattedDate}`;
-
-                     const paragraph = document.createElement('p');
-                      // Basic sanitization
-                     paragraph.textContent = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-                     newEntry.appendChild(header);
-                     newEntry.appendChild(paragraph);
-
-                     guestbookEntries.insertBefore(newEntry, guestbookEntries.firstChild); // Add to top
-
-                     // Clear form
-                     event.target.reset();
-
-                     alert('Grazie per aver firmato il guestbook!');
-                 } else {
-                     alert('Per favore, inserisci nome e messaggio.');
-                 }
-            });
-
-            // --- Sparkle Effect ---
-            function getRandomColor() {
-                const colors = ["#ff00ff", "#00ffff", "#ffff00", "#00ff00", "#ff0000", "#0000ff"];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-
-            document.addEventListener("mousemove", function(e) {
-                if (!sparkle) return;
-                // Follow cursor (using the existing sparkle div)
-                sparkle.style.display = "block";
-                sparkle.style.left = (e.pageX + 5) + "px"; // Adjusted offset slightly
-                sparkle.style.top = (e.pageY + 5) + "px";
-                sparkle.style.backgroundColor = getRandomColor(); // Change color dynamically
-
-                // Create temporary sparkles
-                const tempSparkle = document.createElement("div");
-                tempSparkle.style.position = "absolute";
-                tempSparkle.style.left = (e.pageX + Math.random() * 20 - 10) + "px";
-                tempSparkle.style.top = (e.pageY + Math.random() * 20 - 10) + "px";
-                tempSparkle.style.width = "8px"; // Slightly smaller
-                tempSparkle.style.height = "8px";
-                tempSparkle.style.backgroundColor = getRandomColor();
-                tempSparkle.style.borderRadius = "50%";
-                tempSparkle.style.pointerEvents = "none";
-                tempSparkle.style.transition = "all 0.5s ease-out"; // Use ease-out
-                tempSparkle.style.opacity = "1";
-                tempSparkle.style.zIndex = "999";
-                tempSparkle.style.transform = "scale(1)";
-
-                document.body.appendChild(tempSparkle);
-
-                // Animate out and remove
-                setTimeout(() => {
-                    tempSparkle.style.opacity = "0";
-                    tempSparkle.style.transform = "scale(0)";
-                    setTimeout(() => {
-                        if (tempSparkle.parentNode) {
-                             document.body.removeChild(tempSparkle);
-                        }
-                    }, 500); // Remove after transition ends
-                }, 100); // Start fading after a short delay
-            });
-
-            // Hide main sparkle if mouse leaves window
-            document.addEventListener('mouseleave', () => {
-                 if (sparkle) sparkle.style.display = 'none';
-            });
-             document.addEventListener('mouseenter', () => {
-                 if (sparkle) sparkle.style.display = 'block';
-            });
-
-
-            // --- Simulated Audio Player Controls ---
-            audioPlayer?.addEventListener('click', (event) => {
-                const button = event.target.closest('button[data-audio-action]');
-                if (button) {
-                    const action = button.dataset.audioAction;
-                    alert(`Azione audio simulata: ${action}`);
-                }
-            });
-
-            // --- Blinking Title ---
-            let titleUsesSparkle = true;
-            setInterval(() => {
-                document.title = titleUsesSparkle ? "★★★ Pamsite ★★★" : "✨ Pamsite ✨";
-                titleUsesSparkle = !titleUsesSparkle;
-            }, 1000);
-
-            // --- Simulated 404 links (optional, original logic was random) ---
-            // This could be added back if desired, attaching to specific links
-            // or using a more robust method than Math.random() on all '#'.
-            // Example:
-            // const brokenLink = document.querySelector('a[href="#some-broken-link"]');
-            // brokenLink?.addEventListener('click', (e) => {
-            //     e.preventDefault();
-            //     showPage('error404-page');
-            // });
-
-        }); // End DOMContentLoaded
-    </script>
 
 </body>
 </html>

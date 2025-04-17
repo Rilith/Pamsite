@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "id": 5,
+      "name": "Ciao!",
+      "email": "rilithgag@gmaio.com",
+      "message": "fdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawdfdwdfawd",
+      "date": "17/04/2025"
+    },
+    {
+      "id": 4,
+      "name": "awd",
+      "email": "awd@gmail.com",
+      "message": "awdaw",
+      "date": "17/04/2025"
+    },
+    {
+      "id": 1,
+      "name": "AnimeFan2000",
+      "email": "animefan2000@example.com",
+      "message": "Grande sito! Adoro la tua collezione di GIF! Continua così!",
+      "date": "14/04/2025"
+    },
+    {
+      "id": 2,
+      "name": "OtakuMaster",
+      "email": "otakumaster@example.com",
+      "message": "Finalmente un sito che celebra la cultura degli anime come si deve! Ricorda i bei tempi!",
+      "date": "10/04/2025"
+    },
+    {
+      "id": 3,
+      "name": "MangaLover",
+      "email": "mangalover@example.com",
+      "message": "Ho trovato il tuo sito per caso e mi piace molto il design retrò! Mi ricorda i vecchi tempi di Geocities!",
+      "date": "05/04/2025"
+    }
+  ]
+}
