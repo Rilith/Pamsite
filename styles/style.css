@@ -1,134 +1,359 @@
-/* 
-  style.css 
-  Add all your retro design styles here 
-*/
-
-
-/* Tiled background + neon green text on black for that authentic 90s look */
 body {
-  background-color: #000000;
-  background-image: url("https://i.gifer.com/76YS.gif"); 
-  background-repeat: repeat;
-  color: #00ff00;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  
+    background-image: url('https://i.gifer.com/76YS.gif');
+    background-size: repeat; /* o cover */
+    background-attachment: fixed;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: #ff00ff;
+    text-align: center;
+    cursor: url('https://cur.cursors-4u.net/toons/too-10/too1031.cur'), auto;
+    margin: 0;
+    padding: 0;
 }
 
-.cursor {
-  cursor: url("images/Switch2.cur"), auto;
+#container {
+    width: 800px;
+    margin: 0 auto;
+    background-color: #000080;
+    border: 5px solid #ff00ff;
+    box-shadow: 0 0 20px #00ffff;
+    padding: 10px;
+    position: relative;
 }
 
-/* Marquee styling: bright background, clashing color text */
-.marquee {
-  font-size: 1.2em;
-  color: #ff00ff;
-  background-color: #00ffff;
-  width: 60%;
-  margin: 20px auto;
-  display: block;
-  padding: 5px;
-  border: 2px dashed #ff00ff;
-}
-
-/* Retro neon heading with a glow animation */
-@keyframes glow {
-  0%   { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; }
-  50%  { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
-  100% { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; }
+#header {
+    background-color: #000000;
+    padding: 20px;
+    border: 3px solid #00ff00;
+    margin-bottom: 20px;
 }
 
 h1 {
-  font-size: 3em;
-  margin-top: 20px;
-  animation: glow 2s infinite;
+    font-size: 36px;
+    text-shadow: 3px 3px 5px #00ffff;
+    margin: 0;
+    animation: rainbow 5s infinite;
 }
 
-/* Table-based navigation styling */
-.nav-table {
-  margin: 0 auto;
-  border: 2px dotted #ff00ff;
-  background-color: #333333;
-  width: 50%;
-  border-collapse: collapse;
+@keyframes rainbow {
+    0% {color: red;}
+    14% {color: orange;}
+    28% {color: yellow;}
+    42% {color: green;}
+    56% {color: blue;}
+    70% {color: indigo;}
+    84% {color: violet;}
+    100% {color: red;}
 }
 
-.nav-table td {
-  padding: 5px 15px;
-  text-align: center;
+.navbar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-/* Retro link colors */
-a {
-  color: #00ff00; /* bright green link */
-  text-decoration: none;
+.navbar a {
+    background-color: #ff00ff;
+    color: white;
+    margin: 0 10px;
+    padding: 5px 15px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #00ffff;
+    transition: all 0.3s;
 }
 
-a:hover {
-  text-decoration: underline;
+.navbar a:hover {
+    background-color: #00ffff;
+    color: #ff00ff;
+    transform: scale(1.1);
 }
 
-/* Outline/border for retro sections */
-.retro-section {
-  border: 3px solid #ff00ff;
-  margin: 20px auto;
-  width: 60%;
-  background-color: #111111;
-  padding: 10px;
+#content {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border: 3px dashed #00ffff;
 }
 
-/* Simulate <blink> in CSS */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0; }
-}
-.blink {
-  animation: blink 1s infinite;
-  font-weight: bold;
-  color: #ff0000;
+.welcome {
+    font-size: 24px;
+    color: #ffff00;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* "Under Construction" badge in corner */
+#visitor-counter {
+    text-align: center;
+    font-size: 18px;
+    color: #00ff00;
+    margin-bottom: 20px;
+}
 .construction-badge {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
+    position: fixed;
+    bottom: 70px;
+    right: 10px;
 }
 
-.visit-counter {
-  margin: 30px 0;
-  color: #00ff00;
-}
-.visit-counter p {
-  font-weight: bold;
+.construction {
+    text-align: center;
+    margin: 20px 0;
 }
 
-/* Rainbow blinking text (for extra 90s flair) */
-@keyframes rainbowBlink {
-  0%   { color: red; }
-  14%  { color: orange; }
-  28%  { color: yellow; }
-  42%  { color: green; }
-  56%  { color: blue; }
-  70%  { color: indigo; }
-  84%  { color: violet; }
-  100% { color: red; }
+.construction img {
+    width: 200px;
 }
 
-.rainbow-blink {
-  animation: rainbowBlink 2s infinite, blink 1s infinite;
-  font-weight: bold;
-  font-size: 1.5em;
+#footer {
+    background-color: #000000;
+    padding: 10px;
+    text-align: center;
+    border-top: 3px solid #00ff00;
+    font-size: 12px;
+    color: #00ffff;
 }
 
-.sparkle-effect {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background: url('https://i.gifer.com/origin/4a/4a0225d3bbd093b282a33c369a368730_w200.gif');
-  background-size: cover;
-  pointer-events: none;
-  z-index: 9999;
+/* Nuova sezione per più GIF per anime */
+.gif-section {
+    margin: 20px 0;
+    padding: 15px;
+    border: 2px solid #ff00ff;
+    background-color: rgba(0, 0, 128, 0.7);
+}
+
+.gif-header {
+    color: #00ffff;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: -8px;
+    text-shadow: 2px 2px 4px #ff00ff;
+}
+
+.gif-gifs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.gif-item {
+    border: 2px solid #ff00ff;
+    padding: 5px;
+    background-color: #000080;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.gif-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ffff;
+}
+
+.gif-title {
+    color: #00ffff;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.about-me {
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+.guestbook {
+    background-color: #000060;
+    padding: 15px;
+    border: 2px solid #ffff00;
+}
+
+.guestbook-title {
+    color: #ffff00;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.guestbook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.guestbook-form input, .guestbook-form textarea {
+    background-color: #000040;
+    border: 1px solid #00ffff;
+    color: #ffffff;
+    padding: 8px;
+}
+
+.guestbook-form button {
+    background-color: #ff00ff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.guestbook-form button:hover {
+    background-color: #00ffff;
+    color: #ff00ff;
+}
+
+#sparkle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    width: 20px;
+    height: 20px;
+    display: none;
+}
+
+.page {
+    display: none;
+}
+
+#home-page {
+    display: block;
+}
+
+.blink {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Stile per il modal delle GIF */
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.modal-content {
+    background-color: #000080;
+    border: 3px solid #ff00ff;
+    padding: 20px;
+    max-width: 80%;
+    text-align: center;
+}
+
+.modal-title {
+    color: #00ffff;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.modal-image {
+    max-width: 90%;
+    max-height: 70vh;
+    border: 2px solid #00ffff;
+}
+
+.close-button {
+    background-color: #ff00ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: #00ffff;
+    color: #ff00ff;
+}
+
+/* Stili per la sezione download */
+.download-section {
+    margin-bottom: 25px;
+    border: 2px solid #00ffff;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+}
+
+.download-header {
+    background-color: #000080;
+    color: #ffff00;
+    text-align: center;
+    padding: 5px;
+    font-size: 20px;
+    margin-bottom: 10px;
+    margin-top: -2px;
+    border: 1px solid #ff00ff;
+}
+
+.download-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.download-item {
+    width: 150px;
+    background-color: #000040;
+    border: 2px solid #ff00ff;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.download-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.download-title {
+    color: #00ffff;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.download-info {
+    color: #ffffff;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.download-button {
+    display: block;
+    background-color: #ff00ff;
+    color: white;
+    text-decoration: none;
+    padding: 3px 8px;
+    border: 1px solid #00ffff;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.download-button:hover {
+    background-color: #00ffff;
+    color: #ff00ff;
+}
+
+/* Stili per la sezione setup */
+.software-item {
+    width: 80px;
+    background-color: #000040;
+    border: 1px solid #00ffff;
+    padding: 5px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 12px;
 }
