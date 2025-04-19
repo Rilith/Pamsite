@@ -1,6 +1,9 @@
+/*=============================================
+=            GLOBAL / BASE STYLES             =
+=============================================*/
 body {
     background-image: url('https://i.gifer.com/76YS.gif');
-    background-size: repeat; /* o cover */
+    background-size: repeat;           /* or cover */
     background-attachment: fixed;
     font-family: "Comic Sans MS", cursive, sans-serif;
     color: #ff00ff;
@@ -10,6 +13,49 @@ body {
     padding: 0;
 }
 
+/* Main headings */
+h1 {
+    font-size: 36px;
+    text-shadow: 3px 3px 5px #00ffff;
+    margin: 0;
+    animation: rainbow 5s infinite;
+}
+
+/*=============================================
+=            ANIMATIONS (@keyframes)          =
+=============================================*/
+@keyframes rainbow {
+    0%   { color: red;    }
+    14%  { color: orange; }
+    28%  { color: yellow; }
+    42%  { color: green;  }
+    56%  { color: blue;   }
+    70%  { color: indigo; }
+    84%  { color: violet; }
+    100% { color: red;    }
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 15px #00ffff, inset 0 0 20px rgba(255, 0, 255, 0.5); }
+    to   { box-shadow: 0 0 25px #00ffff, inset 0 0 30px rgba(255, 0, 255, 0.7); }
+}
+
+@keyframes pulse           { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+@keyframes pulse-opacity    { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+@keyframes pulse-border     { 0% { box-shadow: 0 0 15px #00ffff; } 50% { box-shadow: 0 0 25px #00ffff; } 100% { box-shadow: 0 0 15px #00ffff; } }
+
+@keyframes shine {
+    0%  { left: -100%; }
+    20% { left: 100%;  }
+    100%{ left: 100%;  }
+}
+
+@keyframes spin     { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes blinker  { 50% { opacity: 0; } }
+
+/*=============================================
+=            GENERAL LAYOUT                   =
+=============================================*/
 #container {
     width: 800px;
     margin: 0 auto;
@@ -27,24 +73,33 @@ body {
     margin-bottom: 20px;
 }
 
-h1 {
-    font-size: 36px;
-    text-shadow: 3px 3px 5px #00ffff;
-    margin: 0;
-    animation: rainbow 5s infinite;
+#content {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    margin: 10px 0 20px;
+    border: 3px dashed #00ffff;
 }
 
-@keyframes rainbow {
-    0% {color: red;}
-    14% {color: orange;}
-    28% {color: yellow;}
-    42% {color: green;}
-    56% {color: blue;}
-    70% {color: indigo;}
-    84% {color: violet;}
-    100% {color: red;}
+#footer {
+    background-color: #000000;
+    padding: 10px;
+    text-align: center;
+    border-top: 3px solid #00ff00;
+    font-size: 12px;
+    color: #00ffff;
 }
 
+/* Welcome text and visitor counter */
+.welcome {
+    font-size: 24px;
+    color: #ffff00;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/*=============================================
+=            MAIN NAVBAR                      =
+=============================================*/
 .navbar {
     display: flex;
     justify-content: center;
@@ -53,7 +108,7 @@ h1 {
 
 .navbar a {
     background-color: #ff00ff;
-    color: white;
+    color: #ffffff;
     margin: 0 10px;
     padding: 5px 15px;
     text-decoration: none;
@@ -68,27 +123,10 @@ h1 {
     transform: scale(1.1);
 }
 
-#content {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    border: 3px dashed #00ffff;
-}
-
-.welcome {
-    font-size: 24px;
-    color: #ffff00;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#visitor-counter {
-    text-align: center;
-    font-size: 18px;
-    color: #00ff00;
-    margin-bottom: 20px;
-}
+/*=============================================
+=            DECORATIVE ELEMENTS              =
+=============================================*/
+/* “Site under construction” badge */
 .construction-badge {
     position: fixed;
     bottom: 70px;
@@ -104,16 +142,19 @@ h1 {
     width: 200px;
 }
 
-#footer {
-    background-color: #000000;
-    padding: 10px;
-    text-align: center;
-    border-top: 3px solid #00ff00;
-    font-size: 12px;
-    color: #00ffff;
+/* Sparkle/follow‑cursor */
+#sparkle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    width: 20px;
+    height: 20px;
+    display: none;
 }
 
-/* Nuova sezione per più GIF per anime */
+/*=============================================
+=            GIF SECTION                      =
+=============================================*/
 .gif-section {
     margin: 20px 0;
     padding: 15px;
@@ -125,8 +166,7 @@ h1 {
     color: #00ffff;
     font-size: 24px;
     text-align: center;
-    margin-bottom: 10px;
-    margin-top: -8px;
+    margin: -8px 0 10px;
     text-shadow: 2px 2px 4px #ff00ff;
 }
 
@@ -144,7 +184,6 @@ h1 {
     text-align: center;
     transition: all 0.3s;
 }
-
 .gif-item:hover {
     transform: scale(1.05);
     box-shadow: 0 0 15px #00ffff;
@@ -156,94 +195,579 @@ h1 {
     margin-top: 5px;
 }
 
+/* "About me" section */
 .about-me {
     color: #ffffff;
     line-height: 1.6;
 }
 
+/*=============================================
+=            GUESTBOOK                        =
+=============================================*/
+/* Main container */
 .guestbook {
     background-color: #000060;
-    padding: 15px;
-    border: 2px solid #ffff00;
+    background-image: url('https://i.gifer.com/3IsS.gif');
+    background-repeat: repeat;
+    padding: 20px;
+    border: 8px ridge #ffff00;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00ffff, inset 0 0 20px rgba(255, 0, 255, 0.5);
+    animation: glow 2s infinite alternate;
 }
 
+/* Section title */
 .guestbook-title {
     color: #ffff00;
     text-align: center;
+    font-size: 26px;
+    margin: 0 auto 20px;
+    text-shadow: 2px 2px 4px #ff00ff, -2px -2px 4px #00ffff;
+    font-weight: bold;
+    letter-spacing: 3px;
+    background-color: rgba(0, 0, 120, 0.7);
+    padding: 15px;
+    border: 3px dashed #00ffff;
+    border-radius: 20px;
+    position: relative;
+    max-width: 80%;
+}
+.guestbook-title:before,
+.guestbook-title:after {
+    content: "★";
+    color: #ff00ff;
     font-size: 24px;
-    margin-bottom: 15px;
+    vertical-align: middle;
+    margin: 0 10px;
+    text-shadow: 0 0 5px #00ffff;
 }
 
+/* Guestbook inner sections */
+.guestbook-section {
+    margin-bottom: 25px;
+    border: 4px groove #ff00ff;
+    background-color: rgba(0, 0, 40, 0.8);
+    padding: 15px;
+    border-radius: 12px;
+    position: relative;
+}
+.guestbook-section:before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 10px;
+    background: repeating-linear-gradient(45deg, #ff00ff, #ff00ff 10px, transparent 10px, transparent 20px);
+    border-radius: 5px;
+    opacity: 0.5;
+}
+
+/* Statistics & search */
+#guestbook-stats {
+    color: #00ffff;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 60, 0.7);
+    border: 2px solid #ff00ff;
+    border-radius: 8px;
+}
+
+#guestbook-search {
+    margin-bottom: 20px;
+}
+#guestbook-search input {
+    width: 70%;
+    background-color: #000040;
+    border: 2px solid #00ffff;
+    color: #ffffff;
+    padding: 8px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+#guestbook-search button {
+    background-color: #ff00ff;
+    color: #ffffff;
+    border: 2px solid #00ffff;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#guestbook-search button:hover {
+    background-color: #d400d4;
+    transform: scale(1.05);
+}
+
+/* Signature submission form */
 .guestbook-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    background: linear-gradient(135deg, rgba(0, 0, 80, 0.6), rgba(0, 0, 120, 0.6));
+    padding: 20px;
+    border: 5px ridge #00ffff;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+}
+.guestbook-form:after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://i.gifer.com/74H6.gif') center/300px;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 0;
+}
+.guestbook-form > * {
+    position: relative;
+    z-index: 1;
 }
 
-.guestbook-form input, .guestbook-form textarea {
+.guestbook-form input,
+.guestbook-form textarea {
     background-color: #000040;
-    border: 1px solid #00ffff;
+    border: 3px ridge #00ffff;
     color: #ffffff;
-    padding: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    transition: all 0.3s;
+    box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.3);
+}
+.guestbook-form input:focus,
+.guestbook-form textarea:focus {
+    border-color: #ff00ff;
+    box-shadow: 0 0 12px #ff00ff, inset 0 0 10px rgba(255, 0, 255, 0.3);
+    outline: none;
+    transform: scale(1.02);
 }
 
-.guestbook-form button {
-    background-color: #ff00ff;
-    color: white;
-    border: none;
+/* Submit button */
+.guestbook-form button[type="submit"] {
+    background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+    color: #ffffff;
+    border: 3px outset #00ffff;
+    padding: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+    transition: all 0.3s;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+.guestbook-form button[type="submit"]:hover {
+    background: linear-gradient(to bottom, #ff33ff, #dd00dd);
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 1);
+}
+.guestbook-form button:hover {
+    background-color: #d400d4;
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+.guestbook-form button[type="submit"]:after {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 70%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-20deg);
+    animation: shine 3s infinite;
+}
+
+/* Avatar selector */
+.avatar-selector-title {
+    color: #00ffff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 20px;
+    text-shadow: 2px 2px 3px #ff00ff;
+    letter-spacing: 1px;
+}
+
+.avatar-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 60, 0.6);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px dashed #ff00ff;
+}
+
+.avatar-option {
+    border: 4px ridge #ff00ff;
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.4s;
+    border-radius: 8px;
+    background-color: #000080;
+    position: relative;
+}
+.avatar-option:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 0 15px #00ffff;
+    z-index: 10;
+}
+.avatar-option.selected {
+    animation: pulse-border 1.5s infinite;
+    transform: scale(1.15);
+    border: 4px ridge #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+    z-index: 5;
+}
+
+/* Feedback / messages */
+#guestbook-message {
+    padding: 12px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px;
+    animation: pulse-opacity 2s infinite;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+.message-success {
+    background-color: rgba(0, 128, 0, 0.4);
+    border: 3px ridge #00ff00;
+    color: #00ff00;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+.message-error {
+    background-color: rgba(128, 0, 0, 0.4);
+    border: 3px ridge #ff0000;
+    color: #ff0000;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+/* Guestbook entries */
+#guestbook-entries { margin-top: 25px; }
+
+.guestbook-entry {
+    background: linear-gradient(to bottom, rgba(0, 0, 80, 0.7), rgba(0, 0, 60, 0.7));
+    border: 4px ridge #ff00ff;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    transition: all 0.4s;
+    position: relative;
+}
+.guestbook-entry:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+.guestbook-entry:before {
+    content: "";
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 1px dashed rgba(0, 255, 255, 0.3);
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+/* Entry header */
+.entry-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px groove #00ffff;
+    padding-bottom: 10px;
+}
+.entry-avatar {
+    width: 60px;
+    height: 60px;
+    border: 3px ridge #00ffff;
+    margin-right: 15px;
+    border-radius: a8px;
+    transition: all 0.3s;
+}
+.guestbook-entry:hover .entry-avatar {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 10px #ff00ff;
+}
+.entry-info { flex-grow: 1; }
+.entry-name {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 1px 1px 2px #ff00ff;
+}
+.entry-date {
+    color: #aaaaaa;
+    font-size: 12px;
+    font-style: italic;
+}
+.entry-message {
+    color: #ffffff;
+    line-height: 1.6;
+    padding: 8px;
+    background-color: rgba(0, 0, 60, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+/* Pagination */
+#guestbook-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 25px;
+    padding: 10px;
+    background: rgba(0, 0, 60, 0.5);
+    border-radius: 20px;
+    border: 2px dashed #ff00ff;
+}
+.page-button {
+    background: linear-gradient(to bottom, #000080, #000060);
+    color: #ffffff;
+    border: 2px outset #ff00ff;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+.page-button:hover {
+    background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+    transform: scale(1.1);
+    color: #ffffff;
+    border-color: #00ffff;
+}
+.page-button.active {
+    background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+    border-color: #00ffff;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5), 0 0 8px #00ffff;
+}
+
+/* Loading spinner */
+#guestbook-loading,
+#submit-loading {
+    text-align: center;
+    padding: 25px;
+}
+#guestbook-loading img,
+#submit-loading img {
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    filter: hue-rotate(90deg) brightness(1.2);
+}
+
+/*=============================================
+=            PAGES AND blink/twink            =
+=============================================*/
+.page { display: none; }
+#home-page { display: block; }
+.blink { animation: blinker 1s linear infinite; }
+
+/*=============================================
+=            EMOTES & TOOLBAR                 =
+=============================================*/
+/* Picker wrapper */
+#emote-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+}
+.emote-in-msg { vertical-align: text-bottom; }
+
+
+/* Individual buttons */
+.toolbar-btn {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #999;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    user-select: none;
+    transition: 0.2s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.toolbar-btn[data-tag="b"] { font-weight: bold; }
+.toolbar-btn[data-tag="i"] { font-style: italic; }
+.toolbar-btn[data-tag="quote"] { font-weight: normal; }
+.toolbar-btn:hover { background-color: #f0f0f0; border-color: #666; }
+.toolbar-btn:active { background-color: #e0e0e0; border-style: inset; }
+
+.toolbar-group { display: flex; gap: 5px; flex-wrap: wrap; padding: 5px; }
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: space-between;
+}
+.preview-btn {
+    background: linear-gradient(to bottom, #000080, #000060);
+    color: #ffffff;
+    border: 3px outset #00ffff;
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s;
+    flex: 1;
+}
+.preview-btn:hover {
+    background: linear-gradient(to bottom, #0000a0, #000080);
+    transform: scale(1.05);
 }
 
-.guestbook-form button:hover {
-    background-color: #00ffff;
-    color: #ff00ff;
+/* Scrollable emote wrapper */
+#emote-picker-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: 250px;
+    border: 1px solid #666;
+    background-color: rgba(0, 0, 0, 0.3);
+    margin-top: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+#emote-picker-wrapper .format-group {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid #666;
+    padding: 8px;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 100%;
+}
+.format-buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+#emote-picker-wrapper::-webkit-scrollbar { width: 10px; }
+#emote-picker-wrapper::-webkit-scrollbar-track {
+    background: #000040;
+    border-radius: 5px;
+}
+#emote-picker-wrapper::-webkit-scrollbar-thumb {
+    background: #ff00ff;
+    border-radius: 5px;
+    border: 2px solid #000040;
 }
 
-#sparkle {
+/* Emote tabs */
+.emote-tabs {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid #666;
+    overflow-x: auto;
+    flex-shrink: 0;
+    width: 100%;
+}
+.emote-tab-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    transition: all 0.2s;
+}
+.emote-tab-btn:hover { color: #ffffff; background-color: rgba(255,255,255,0.1); }
+.emote-tab-btn.active { color: #00ffff; font-weight: bold; }
+.emote-tab-btn.active::after {
+    content: '';
     position: absolute;
-    pointer-events: none;
-    z-index: 1000;
-    width: 20px;
-    height: 20px;
-    display: none;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px; background-color: #00ffff;
 }
 
-.page {
-    display: none;
+/* Emote tab content */
+.emote-content { flex-grow: 1; overflow-y: auto; padding: 8px; width: 100%; }
+.emote-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+}
+.emote-btn {
+    cursor: pointer;
+    width: 24px; height: 24px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 2px;
+    object-fit: contain;
+    max-width: 100%; max-height: 100%;
+}
+.emote-btn img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.emote-btn:hover { border-color: #00ffff; background-color: rgba(0,255,255,0.1); }
+.emote-empty { color: #aaa; font-style: italic; padding: 10px; text-align: center; }
+
+/* Message preview */
+#gb-preview {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0,0,80,.5);
+    border: 3px dashed #00ffff;
+    color: #ffffff;
+    border-radius: 10px;
+    position: relative;
+}
+#gb-preview:before {
+    content: "✨ Preview ✨";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000080;
+    padding: 2px 10px;
+    color: #00ffff;
+    font-size: 14px;
+    border: 1px solid #ff00ff;
+    border-radius: 10px;
+}
+#gb-preview blockquote {
+    border-left:4px solid #ff00ff;
+    margin:6px 0;
+    padding:6px 8px;
+    background:rgba(255,0,255,.1);
 }
 
-#home-page {
-    display: block;
-}
-
-.blink {
-    animation: blinker 1s linear infinite;
-}
-
-@keyframes blinker {
-    50% {
-        opacity: 0;
-    }
-}
-
-/* Stile per il modal delle GIF */
-/* Modal Styles */
+/*=============================================
+=            GIF MODAL                        =
+=============================================*/
 .modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 2000;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
-
 .modal-content {
     background-color: #000080;
     border: 3px solid #ff00ff;
@@ -251,60 +775,54 @@ h1 {
     max-width: 80%;
     text-align: center;
 }
-
 .modal-title {
     color: #00ffff;
     font-size: 24px;
     margin-bottom: 10px;
 }
-
 .modal-image {
     max-width: 90%;
     max-height: 70vh;
     border: 2px solid #00ffff;
 }
-
 .close-button {
     background-color: #ff00ff;
-    color: white;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     margin-top: 15px;
     font-weight: bold;
     cursor: pointer;
 }
-
 .close-button:hover {
     background-color: #00ffff;
     color: #ff00ff;
 }
 
-/* Stili per la sezione download */
+/*=============================================
+=            DOWNLOAD SECTION                 =
+=============================================*/
 .download-section {
     margin-bottom: 25px;
     border: 2px solid #00ffff;
     background-color: rgba(0, 0, 0, 0.6);
     padding: 10px;
 }
-
 .download-header {
     background-color: #000080;
     color: #ffff00;
     text-align: center;
     padding: 5px;
     font-size: 20px;
-    margin-bottom: 10px;
-    margin-top: -2px;
+    margin: -2px 0 10px;
     border: 1px solid #ff00ff;
 }
-
 .download-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     justify-content: center;
 }
-
 .download-item {
     width: 150px;
     background-color: #000040;
@@ -313,41 +831,30 @@ h1 {
     text-align: center;
     transition: transform 0.3s;
 }
-
 .download-item:hover {
     transform: scale(1.05);
     box-shadow: 0 0 10px #00ffff;
 }
-
-.download-title {
-    color: #00ffff;
-    margin: 5px 0;
-    font-weight: bold;
-}
-
-.download-info {
-    color: #ffffff;
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
+.download-title { color: #00ffff; margin: 5px 0; font-weight: bold; }
+.download-info  { color: #ffffff; font-size: 12px; margin-bottom: 5px; }
 .download-button {
     display: block;
     background-color: #ff00ff;
-    color: white;
+    color: #ffffff;
     text-decoration: none;
     padding: 3px 8px;
     border: 1px solid #00ffff;
     margin-top: 5px;
     font-weight: bold;
 }
-
 .download-button:hover {
     background-color: #00ffff;
     color: #ff00ff;
 }
 
-/* Stili per la sezione setup */
+/*=============================================
+=            SETUP / SOFTWARE SECTION         =
+=============================================*/
 .software-item {
     width: 80px;
     background-color: #000040;
