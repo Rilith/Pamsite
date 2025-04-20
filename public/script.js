@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Popola la lista tracce
       tracks.forEach((track, index) => {
         const li = document.createElement('li');
-        li.textContent = `${track.title}`;
+        li.textContent = track.title;
         li.dataset.index = index;
         li.addEventListener('click', () => {
           widget.skip(index);
