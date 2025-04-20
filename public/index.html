@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Pamsite! ✨</title>
     <link rel="stylesheet" href="styles/style.css">
+    <script src="https://w.soundcloud.com/player/api.js"></script>
 </head>
 <script src="script.js"></script>
 <script src="guestbook.js"></script>
@@ -650,15 +651,53 @@
         </footer>
     </div>
 
-    <div id="audio-player"
-        style="position: fixed; bottom: 10px; right: 10px; background-color: #000080; border: 2px solid #00ffff; padding: 5px; color: white; z-index: 1000;">
-        <div style="font-size: 12px; margin-bottom: 5px;">♫ Now Playing: Anime Mix ♫</div>
-        <div style="display: flex; gap: 5px;">
-            <button data-audio-action="pause">⏸️</button>
-            <button data-audio-action="stop">⏹️</button>
-            <button data-audio-action="next">⏭️</button>
-        </div>
+<!-- container fisso in basso a destra -------------------->
+<!-- container fisso in basso a destra -------------------->
+<div id="audio-player" class="expanded">
+    <div class="player-header">
+      <span>🎵 Pamsite Music Player🎵 </span>
+      <button id="toggle-player-size" title="Espandi/Riduci">_</button>
     </div>
+   
+    <div id="now-playing-container">
+      <div id="now-playing">:: Loading... 🎵</div>
+      <div id="progress-container">
+        <div id="progress-bar"><div id="progress-current"></div></div>
+        <div id="time-display">00:00 / 00:00</div>
+      </div>
+    </div>
+ 
+    <!-- comandi -->
+    <div class="controls">
+      <button data-audio-action="toggle" title="Play/Pause" class="control-btn">►</button>
+      <button data-audio-action="stop" title="Stop" class="control-btn">■</button>
+      <button data-audio-action="prev" title="Previous" class="control-btn">◄◄</button>
+      <button data-audio-action="next" title="Next" class="control-btn">►►</button>
+     
+      <!-- slider volume -->
+      <div class="vol-control">
+        <span>(((•)))</span>
+        <input id="vol" type="range" min="0" max="100" value="80">
+      </div>
+    </div>
+   
+    <!-- Playlist -->
+    <div id="playlist-container">
+      <div class="playlist-header">== My Playlist ==</div>
+      <ul id="track-list" class="track-list">
+        <!-- Verranno popolati via JavaScript -->
+      </ul>
+    </div>
+ 
+    <!-- SoundCloud widget (nascosto, usato solo per API) -->
+    <iframe
+      id="sc-player"
+      width="1" height="1" scrolling="no" frameborder="no"
+      allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/riccardo-pambianco-985702545/sets/pamsite&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false">
+    </iframe>
+</div>
+
 
 </body>
 

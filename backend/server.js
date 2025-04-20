@@ -27,36 +27,17 @@ if (!fs.existsSync(GUESTBOOK_FILE)) {
         entries: [
             {
                 id: 1,
-                name: "AnimeFan2000",
+                name: "Pam",
                 email: "animefan2000@example.com",
-                message: "Grande sito! Adoro la tua collezione di GIF! Continua così!",
-                avatar: "05MISAT.JPG",
+                message: "Funziona!",
+                avatar: "misato.gif",
                 date: "14/04/2025",
                 time: "15:23",
                 approved: true
             },
-            {
-                id: 2,
-                name: "OtakuMaster",
-                email: "otakumaster@example.com",
-                message: "Finalmente un sito che celebra la cultura degli anime come si deve! Ricorda i bei tempi!",
-                avatar: "avatar.gif",
-                date: "10/04/2025",
-                time: "09:45",
-                approved: true
-            },
-            {
-                id: 3,
-                name: "MangaLover",
-                email: "mangalover@example.com",
-                message: "Ho trovato il tuo sito per caso e mi piace molto il design retrò! Mi ricorda i vecchi tempi di Geocities!",
-                avatar: "anime3",
-                date: "05/04/2025",
-                time: "20:12",
-                approved: true
-            }
+            
         ],
-        totalEntries: 3
+        totalEntries: 1
     };
     fs.writeFileSync(GUESTBOOK_FILE, JSON.stringify(initialData, null, 2));
 }

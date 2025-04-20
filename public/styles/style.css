@@ -864,3 +864,420 @@ h1 {
     color: #ffffff;
     font-size: 12px;
 }
+
+/*=============================================
+=                  Audioplayer                =
+=============================================*/
+
+/* Audio Player Styles */
+#audio-player {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 300px;
+    background: linear-gradient(to bottom, #000080, #000040);
+    border: 3px solid #ff00ff;
+    border-radius: 10px;
+    padding: 10px;
+    color: #00ffff;
+    z-index: 1000;
+    box-shadow: 0 0 15px #00ffff;
+    animation: pulse-border 3s infinite;
+    transition: all 0.5s ease-in-out;
+    max-height: 400px;
+    overflow: hidden;
+}
+  
+#audio-player.minimized #playlist-container {
+    display: none;
+  }
+
+  /* Hide track count in minimized version */
+#audio-player.minimized .track-count {
+    display: none;
+  }
+
+  #audio-player.minimized .controls {
+    justify-content: center;
+    gap: 8px; /* Add consistent spacing between buttons */
+  }
+  
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #ffff00;
+    text-shadow: 1px 1px 2px #ff00ff;
+}
+
+/* Fix the [ ] brackets display */
+#toggle-player-size.expand-icon {
+    font-size: 12px;
+  }
+  
+/* Toggle player size button */
+#toggle-player-size {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+#toggle-player-size:hover {
+    transform: scale(1.2);
+    color: #ffffff;
+}
+
+#toggle-player-size:active {
+    border-style: inset;
+}
+
+/* Player header */
+.player-header span {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    letter-spacing: 1px;
+}
+
+#now-playing-container {
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden; /* Ensure text doesn't overflow container */
+}
+
+#now-playing {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border: 1px solid #ff00ff;
+    color: transparent; /* Hide the original text */
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    height: 28px; /* Set a fixed height to match the text */
+}
+
+/* Scrolling text for long titles */
+@keyframes scrollText {
+    0% { transform: translateX(0); }
+    5% { transform: translateX(0); } /* Pause at beginning */
+    85% { transform: translateX(calc(-100% - 10px)); } /* Scroll to end with some padding */
+    100% { transform: translateX(0); } /* Return to beginning */
+}
+
+@keyframes resetText {
+    0%, 99% { transform: translateX(0); } /* No effect until 100% */
+    100% { transform: translateX(0); } /* Force jump back to 0 instantly */
+}
+
+#now-playing::before {
+    content: attr(data-text);
+    position: absolute;
+    white-space: nowrap;
+    left: 5px; /* Match the padding */
+    top: 5px; /* Match the padding */
+    width: max-content; /* Allow text to be its natural width */
+    color: #ffffff; /* Make this text visible */
+}
+
+#now-playing:hover::before {
+    animation: scrollText 8s infinite linear;
+}
+
+#progress-container {
+    margin-top: 5px;
+}
+  
+#progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    position: relative;
+    margin-bottom: 3px;
+    cursor: pointer; /* Indicate it's clickable */
+    border-radius: 4px;
+    overflow: hidden; /* For the glow effect */
+}
+
+#progress-bar:hover {
+    box-shadow: 0 0 5px #00ffff;
+}
+  
+#progress-current {
+    height: 100%;
+    background: linear-gradient(to right, #ff00ff, #00ffff);
+    width: 0%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 3px;
+    position: relative;
+}
+
+#progress-current::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 3s infinite;
+}
+  
+#time-display {
+    font-size: 10px;
+    text-align: right;
+    color: #ffffff;
+}
+  
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border-radius: 5px;
+    flex-wrap: wrap;
+}
+
+/* New improved controls */
+.control-btn {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(to bottom, #8080ff, #000080);
+    color: #00ffff;
+    border: 2px outset #00ffff;
+    border-radius: 5px;
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    text-align: center;
+}
+
+.control-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 0, 255, 0.7) 0%, rgba(0, 0, 0, 0) 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+}
+
+.control-btn:hover {
+    color: #ffffff;
+}
+
+.control-btn:hover::before {
+    opacity: 0;
+}
+
+.control-btn:active {
+    border-style: inset;
+    background: linear-gradient(to bottom, #000080, #000060);
+}
+
+
+#audio-player.minimized .control-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+}
+
+  
+.vol-control {
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+}
+  
+.vol-control span {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    color: #00ffff;
+    font-size: 14px;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+.vol-control span:hover {
+    color: #ffff00;
+}
+  
+#vol {
+    height: 5px;
+    width: 60px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #00ffff, #ffffff);
+    border-radius: 5px;
+    outline: none;
+}
+  
+#vol::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff00ff;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+#vol::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff00ff;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+#vol:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+}
+
+#vol:hover::-moz-range-thumb {
+    transform: scale(1.2);
+}
+  
+#playlist-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff00ff rgba(0, 0, 0, 0.5);
+}
+  
+.playlist-header {
+    background: linear-gradient(to right, #ff00ff, #cc00cc);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 5px 5px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+  
+.track-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    max-height: 165px; /* Allow for scrolling with many tracks */
+    overflow-y: auto;
+}
+  
+.track-list li {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(255, 0, 255, 0.5);
+    cursor: pointer;
+    font-size: 12px;
+    color: white;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-list li:last-child {
+    border-bottom: none;
+}
+  
+.track-list li:hover {
+    background-color: rgba(255, 0, 255, 0.3);
+    padding-left: 15px;
+}
+
+.track-list li::before {
+    content: '♪';
+    margin-right: 5px;
+    opacity: 0.7;
+}
+  
+.track-list li.active {
+    background-color: rgba(0, 255, 255, 0.2);
+    color: #ffff00;
+    font-weight: bold;
+    box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.track-list li.active::before {
+    content: '▶';
+    color: #00ffff;
+    opacity: 1;
+}
+
+/* For long tracklists - better scrolling */
+.track-list::-webkit-scrollbar {
+    width: 6px;
+}
+  
+.track-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+  
+.track-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+    border-radius: 3px;
+}
+
+.track-list::-webkit-scrollbar-thumb:hover {
+    background: #00ffff;
+}
+  
+/* Scrollbar personalizzata per la playlist */
+#playlist-container::-webkit-scrollbar {
+    width: 8px;
+}
+  
+#playlist-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+  
+#playlist-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+    border-radius: 4px;
+}
+
+#playlist-container::-webkit-scrollbar-thumb:hover {
+    background: #00ffff;
+}
+  
+#sc-player {
+    display: none; /* Widget nascosto, usato solo per API */
+}
+
+/* Track count for long playlists */
+.track-count {
+    position: absolute;
+    right: 15px;
+    bottom: 1px;
+    font-size: 10px;
+    color: #00ffff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 5px;
+    border-radius: 10px;
+    opacity: 0.8;
+}

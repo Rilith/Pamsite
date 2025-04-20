@@ -1,145 +1,15 @@
 {
   "entries": [
     {
-      "id": 14,
-      "name": "Bola",
-      "email": "palle@palla.it",
-      "message": "ciao! bel sito! :compass_icon32::compass_icon32::mario::mario::nono2::nono::fingers::blonde::dance:",
-      "avatar": "misato.gif",
-      "date": "18/04/2025",
-      "time": "15:09",
-      "approved": true
-    },
-    {
-      "id": 13,
-      "name": "Giovanni",
-      "email": "dawdwa@palle.it",
-      "message": "finally il potere è nelle mie mani",
-      "avatar": "05REI8.JPG",
-      "date": "18/04/2025",
-      "time": "11:53",
-      "approved": true
-    },
-    {
-      "id": 12,
-      "name": "rilith",
-      "email": "dawdw@gmail.com",
-      "message": "ciao [b]viva il bold[/b] ciao cia:cry:",
-      "avatar": "08SINJI2.JPG",
-      "date": "18/04/2025",
-      "time": "11:41",
-      "approved": true
-    },
-    {
-      "id": 11,
-      "name": "wadaw",
-      "email": "aw@gmaiawd.com",
-      "message": ":cry:wd awd:huh::huh::huh::huh::huh::huh::huh:[b]funziona il bold?[/b]",
-      "avatar": "08SINJI2.JPG",
-      "date": "18/04/2025",
-      "time": "01:24",
-      "approved": true
-    },
-    {
-      "id": 10,
-      "name": "Mario",
-      "email": "mario@awdawd.it",
-      "message": "Ciao! Sono un testo! :buenpost::angel::mario::mario::mario::mario::mario:",
-      "avatar": "misato.gif",
-      "date": "17/04/2025",
-      "time": "22:45",
-      "approved": true
-    },
-    {
-      "id": 9,
-      "name": "Pam",
-      "email": "riltigadawd@gmail.com",
-      "message": "Ciao! :buenpost::cry::huh::pacman:",
-      "avatar": "misato.gif",
-      "date": "17/04/2025",
-      "time": "22:43",
-      "approved": true
-    },
-    {
-      "id": 8,
-      "name": "rilith",
-      "email": "awdawdaw@gmsmAWIDW.COM",
-      "message": ":cheesy::cool::cry::embarrassed: fef sefse",
-      "avatar": "09ASUKAA.JPG",
-      "date": "17/04/2025",
-      "time": "22:41",
-      "approved": true
-    },
-    {
-      "id": 7,
-      "name": "Pam",
-      "email": "rilithgames@gmail.com",
-      "message": ":angry: ma il bold va? [b]awdawdaw[/b]",
-      "avatar": "05REI8.JPG",
-      "date": "17/04/2025",
-      "time": "22:39",
-      "approved": true
-    },
-    {
-      "id": 6,
-      "name": "Rilith",
-      "email": "awdaw@gmail.com",
-      "message": ":buenpost::buenpost::buenpost::cry::cry::grin::lipssealed:",
-      "avatar": "05REI8.JPG",
-      "date": "17/04/2025",
-      "time": "22:31",
-      "approved": true
-    },
-    {
-      "id": 5,
-      "name": "Pam",
-      "email": "rilithgames@gmail.com",
-      "message": "maremma ma vanno ste emoji? :mario:",
-      "avatar": "misato.gif",
-      "date": "17/04/2025",
-      "time": "22:22",
-      "approved": true
-    },
-    {
-      "id": 4,
-      "name": "Pam",
-      "email": "rilithgames@gmail.com",
-      "message": "Maremma cinghiala la cinghiala!",
-      "avatar": "misato.gif",
-      "date": "17/04/2025",
-      "time": "22:06",
-      "approved": true
-    },
-    {
       "id": 1,
-      "name": "AnimeFan2000",
+      "name": "Pam",
       "email": "animefan2000@example.com",
-      "message": "Grande sito! Adoro la tua collezione di GIF! Continua così!",
-      "avatar": "05MISAT.JPG",
+      "message": "Funziona!",
+      "avatar": "misato.gif",
       "date": "14/04/2025",
       "time": "15:23",
       "approved": true
-    },
-    {
-      "id": 2,
-      "name": "OtakuMaster",
-      "email": "otakumaster@example.com",
-      "message": "Finalmente un sito che celebra la cultura degli anime come si deve! Ricorda i bei tempi!",
-      "avatar": "05REI8.JPG",
-      "date": "10/04/2025",
-      "time": "09:45",
-      "approved": true
-    },
-    {
-      "id": 3,
-      "name": "MangaLover",
-      "email": "mangalover@example.com",
-      "message": "Ho trovato il tuo sito per caso e mi piace molto il design retrò! Mi ricorda i vecchi tempi di Geocities!",
-      "avatar": "09ASUKAA.JPG",
-      "date": "05/04/2025",
-      "time": "20:12",
-      "approved": true
     }
   ],
-  "totalEntries": 14
+  "totalEntries": 1
 }

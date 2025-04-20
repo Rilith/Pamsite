@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ------------------------------------------------------------------
      * ELEMENT REFERENCES
      * ----------------------------------------------------------------*/
-    const API_BASE        = 'http://localhost:3000/api';
-    const AVATAR_PATH     = 'http://localhost:3000/images/avatars/';
-    const EMOTE_PATH      = 'http://localhost:3000/images/emotes/';
+    const API_BASE        = '/api';
+    const AVATAR_PATH     = '/images/avatars/';
+    const EMOTE_PATH      = '/images/emotes/';
   
     const guestbookForm   = document.getElementById('guestbook-form');
     const guestbookEntries= document.getElementById('guestbook-entries');
