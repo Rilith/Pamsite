@@ -855,15 +855,52 @@ h1 {
 /*=============================================
 =            SETUP / SOFTWARE SECTION         =
 =============================================*/
-.software-item {
+.software-container {
+    background-color: rgba(0,0,0,0.7);
+    padding: 15px;
+    border: 2px dashed #00ffff;
+    margin-bottom: 20px;
+    text-align: center; /* Center all content in container */
+  }
+  .software-title {
+    color: #ffff00;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .software-list {
+    /* Remove justify-content to prevent spreading items */
+    display: inline-block; /* Changed to inline-block instead of flex */
+    text-align: center;
+    margin: 0 auto;
+  }
+ 
+  .software-item {
+    display: inline-flex; /* Changed to inline-flex */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 80px;
     background-color: #000040;
     border: 1px solid #00ffff;
-    padding: 5px;
-    text-align: center;
-    color: #ffffff;
+    padding: 8px;
+    box-sizing: border-box;
+    margin: 2px; /* Small margin instead of gap */
+    vertical-align: top; /* Align tops of items */
+  }
+  .software-item img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 6px;
+  }
+  .software-item figcaption {
+    margin: 0;
     font-size: 12px;
-}
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.2;
+  }
 
 /*=============================================
 =                  Audioplayer                =
