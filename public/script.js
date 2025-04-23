@@ -17,6 +17,30 @@ document.addEventListener('DOMContentLoaded', () => {
   let progressInterval;
   let isDraggingProgress = false;
 
+  /* ===--- title-refresh helper (retry up to 5×) ---=== */
+  const UNTITLED = '(untitled)';
+  function refreshTitles(attempt = 1){
+    widget.getSounds(list => {
+      let missing = 0;
+
+      list.forEach((trk, idx) => {
+        if (!trk.title){ missing++; return; }
+
+        const span = document.querySelector(
+          `#track-list li[data-index="${idx}"] .track-title`
+        );
+        if (span && span.textContent === UNTITLED){
+          span.textContent = trk.title;
+        }
+      });
+
+      if (missing && attempt < 5){
+        setTimeout(() => refreshTitles(attempt + 1), 1500 * attempt);
+      }
+    });
+  }
+
+
   // Espandi/riduci il player
   toggleSizeBtn.addEventListener('click', () => {
     playerBox.classList.toggle('minimized');
@@ -36,48 +60,81 @@ document.addEventListener('DOMContentLoaded', () => {
       tracks = soundsData;
       
       // Aggiungere il contatore delle tracce se ce ne sono tante
+      // ⬇ after tracks.forEach(...)
       if (tracks.length > 5) {
         const trackCount = document.createElement('span');
         trackCount.className = 'track-count';
         trackCount.textContent = `${tracks.length} tracks`;
-        playlistContainer.appendChild(trackCount);
+        document.querySelector('.playlist-header').appendChild(trackCount);   // was playlistContainer
       }
+
       
       // Popola la lista tracce
       tracks.forEach((track, index) => {
-        const li = document.createElement('li');
-        li.textContent = track.title;
+        const li  = document.createElement('li');
         li.dataset.index = index;
+      
+        const titleSpan = document.createElement('span');   // <<< NEW
+        titleSpan.className = 'track-title';
+        titleSpan.textContent = track.title || '(untitled)';
+        li.appendChild(titleSpan);
+      
         li.addEventListener('click', () => {
           widget.skip(index);
           updateActiveTrack(index);
         });
+      
         trackList.appendChild(li);
       });
       
+      
       tryAutoplay();
+      setTimeout(() => refreshTitles(), 200);   // first retry after 0.2 s
+
     });
   });
 
   // Aggiorna info brano attualmente in riproduzione
   widget.bind(SC.Widget.Events.PLAY, () => {
     isPlaying = true;
+  
     widget.getCurrentSound(snd => {
-        currentTrackIndex = tracks.findIndex(track => track.id === snd.id);
-        updateActiveTrack(currentTrackIndex);
-        
-        // Update this line
-        const nowPlayingText = `♫ ${snd.user.username} – ${snd.title} ♫`;
-        nowPlayingEl.textContent = nowPlayingText;
-        nowPlayingEl.setAttribute('data-text', nowPlayingText);
-        
-        // Rest of your code...
-        const toggleBtn = document.querySelector('[data-audio-action="toggle"]');
-        toggleBtn.innerHTML = '||';
-        
-        startProgressTracking();
+      currentTrackIndex = tracks.findIndex(t => t.id === snd.id);
+      updateActiveTrack(currentTrackIndex);
+  
+      const titleText = `♫ ${snd.user.username} – ${snd.title} ♫`;
+      nowPlayingEl.innerHTML = `<span>${titleText}</span>`;
+      
+      /* NEW → if the list row still says “(untitled)” replace it now */
+      const rowTitle = document.querySelector(`#track-list li[data-index="${currentTrackIndex}"] .track-title`);
+      if (rowTitle && rowTitle.textContent === '(untitled)') rowTitle.textContent = snd.title;
+      
+      /* scroll logic */
+      requestAnimationFrame(() => {
+        const span = nowPlayingEl.firstElementChild;
+      
+        if (span.scrollWidth > nowPlayingEl.clientWidth) {
+          const txtW  = span.scrollWidth;          // larghezza titolo
+          const boxW  = nowPlayingEl.clientWidth;  // larghezza contenitore
+          const speed = 60;                        // px al secondo
+      
+          const duration = (txtW + boxW) / speed;  // strada totale / velocità
+          const offset   = boxW / speed;           // taglia la pausa iniziale
+      
+          span.style.animation = `scrollText ${duration}s linear infinite`;
+          span.style.animationDelay = `-${offset}s`;   // parte già “a filo”
+          nowPlayingEl.classList.add('scroll');
+        } else {
+          nowPlayingEl.classList.remove('scroll');
+        }
+      });
+      
+  
+      document.querySelector('[data-audio-action="toggle"]').innerHTML = '||';
+      startProgressTracking();
     });
-});
+  });
+  
 
   // Gestione pausa
   widget.bind(SC.Widget.Events.PAUSE, () => {

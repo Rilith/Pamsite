@@ -35,6 +35,16 @@ if (!fs.existsSync(GUESTBOOK_FILE)) {
                 time: "15:23",
                 approved: true
             },
+            {
+                id: 2,
+                name: "Five",
+                email: "five@example.com",
+                message: "Con grande onore, lascierò la prima firma non bottata di questo forum :cheesy::bang::windows:",
+                avatar: "misato.gif",
+                date: "20/04/2025",
+                time: "10:05",
+                approved: true
+            },
             
         ],
         totalEntries: 1
