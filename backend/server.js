@@ -40,7 +40,7 @@ if (!fs.existsSync(GUESTBOOK_FILE)) {
                 name: "Five",
                 email: "five@example.com",
                 message: "Con grande onore, lascierò la prima firma non bottata di questo forum :cheesy::bang::windows:",
-                avatar: "misato.gif",
+                avatar: "05MISAT.JPG",
                 date: "20/04/2025",
                 time: "10:05",
                 approved: true

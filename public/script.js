@@ -397,17 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = '';
     }
 
-    content.addEventListener('click', event => {
-        const gifItem = event.target.closest('.gif-item');
-        if (gifItem) {
-            openModal(gifItem.dataset.gifSrc, gifItem.dataset.gifTitle);
-        }
-        const dl = event.target.closest('.download-button');
-        if (dl) {
-            event.preventDefault();
-            alert(`Inizio download simulato di: ${dl.dataset.downloadItem}`);
-        }
-    });
+
+        content.addEventListener('click', async e => {
+          const dl = e.target.closest('.download-button');
+          if (!dl) return;
+        
+          // OPTIONAL analytics: await fetch('/api/logDownload', { … });
+        
+          // let the browser navigate normally
+        });
 
     document.getElementById('close-modal-button').addEventListener('click', closeModal);
     modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
