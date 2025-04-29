@@ -129,7 +129,7 @@ h1 {
 /* “Site under construction” badge */
 .construction-badge {
     position: fixed;
-    bottom: 70px;
+    top: 0px;
     right: 10px;
 }
 
@@ -319,7 +319,7 @@ h1 {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: url('https://i.gifer.com/74H6.gif') center/300px;
+    background: url('images/isospiridelmiocuore.gif') center/300px;
     opacity: 0.1;
     pointer-events: none;
     z-index: 0;

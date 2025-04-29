@@ -11,6 +11,47 @@
 <script src="script.js"></script>
 <script src="guestbook.js"></script>
 
+<script type="module">
+    async function renderSection(cat) {
+      const section = document.querySelector(`[data-download-cat="${cat}"]`);
+      if (!section) return;
+  
+      const items = await fetch(`/api/downloads/${cat}`).then(r => r.json());
+  
+      const grid = document.createElement('div');
+      grid.className = 'download-grid';
+  
+      items.forEach(it => {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="download-item">
+            <div class="download-thumb">
+              <img src="${it.thumb}" alt="${it.name} thumbnail">
+            </div>
+  
+            <div class="download-caption">
+              <div class="download-title">${it.name}</div>
+              <div class="download-info">${it.info}</div>
+  
+              <a href="/downloads/${cat}/${it.file}"
+                 class="download-button"
+                 data-file="${cat}/${it.file}"
+                 download>DOWNLOAD</a>
+            </div>
+          </div>`);
+      });
+  
+      section.appendChild(grid);
+    }
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSection('wallpapers');
+      renderSection('midi');
+      renderSection('cursors');
+    });
+  </script>
+  
+    
+
 <body>
     <div id="sparkle"
         style="position: absolute; display: none; width: 10px; height: 10px; background-color: #ff00ff; border-radius: 50%; pointer-events: none; z-index: 1000;">
@@ -89,12 +130,14 @@
                         <div>Attack on Titan</div>
                         <div>Qualsiasi Film di Miyazaki</div>
                     </div>
-                    <p>Quando non sto guardando anime o leggendo manwa, manga gioco ai videogiochi e esco con gli
-                        amici!. Spero che ti piaccia il mio sito e che tornerai presto a visitarmi!</p>
+                    <p>La cosa che preferisco fare è: IMPARARE! Ecco anche perchè ho voluto iniziare questo progetto!</p>
+                    <p>Spero che ti piaccia il mio sito e che tornerai presto a visitarmi!</p>
+
+                    <p>Se vuoi firma il mio guestbook!</p>
                 </div>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <img src="/api/placeholder/200/200" alt="My Photo (placeholder)">
+                    <img src="/images/me.jpg" alt="My Photo">
                 </div>
             </section>
 
@@ -106,134 +149,19 @@
                     <div class="blink" style="color: #ffff00;">TUTTO GRATUITO!!!</div>
                 </div>
 
-                <section class="download-section">
+                <section class="download-section" data-download-cat="wallpapers">
                     <h3 class="download-header">Sfondi Desktop</h3>
-                    <div class="download-grid">
-                        <div class="download-item">
-                            <div class="download-thumb">
-                            <img src="/downloads/wallpapers/01ANGEL0.JPG" alt="Evangelion Wallpaper Thumbnail">
-                        </div>
-                            <figcaption>
-                                <div class="download-title">Evangelion HD</div>
-                                <div class="download-info">1024x768 - 264KB</div>
-                                <a  href="/downloads/wallpapers/01ANGEL0.JPG"
-                                    class="download-button"
-                                    data-file="wallpapers/01ANGEL0.JPG"
-                                    download>
-                                    DOWNLOAD
-                                </a>
-                            
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <div class="download-thumb">
-                            <img src="/downloads/wallpapers/nausicaa001.jpg" alt="Nausicaa Wallpaper Thumbnail">
-                        </div>
-                            <figcaption>
-                                <div class="download-title">Nausicaa</div>
-                                <div class="download-info">1920x1308 - 224KB</div>
-                                <a  href="/downloads/wallpapers/nausicaa001.jpg"
-                                    class="download-button"
-                                    data-file="/downloads/wallpapers/nausicaa001.jpg"
-                                    download>
-                                    DOWNLOAD
-                                </a>
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <div class="download-thumb">
-                            <img src="https://www.ghibli.jp/gallery/porco001.jpg" alt="Porco rosso Wallpaper Thumbnail">
-                        </div>
-                            <figcaption>
-                                <div class="download-title">Porco Rosso</div>
-                                <div class="download-info">1920x1308 - 263KB</div>
-                                <a  href="/downloads/wallpapers/porco001.jpg"
-                                    class="download-button"
-                                    data-file="/downloads/wallpapers/porco001.jpg"
-                                    download>
-                                    DOWNLOAD
-                                </a>
-                            </figcaption>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="download-section">
+                    <!-- grid gets injected here -->
+                  </section>
+                  
+                  <section class="download-section" data-download-cat="midi">
                     <h3 class="download-header">Suonerie MIDI</h3>
-                    <div class="download-grid">
-                        <div class="download-item">
-                            <div class="download-thumb">
-                                <img src="/api/placeholder/120/90" alt="Misato Theme - bitmidi">
-                            </div>
-                            <figcaption>
-                                <div class="download-title">Misato Theme - bitmidi</div>
-                                <div class="download-info">8KB - 01:24</div>
-                                <a  href="/downloads/midi/Evangelion - Misato.mid"
-                                    class="download-button"
-                                    data-file="/downloads/midi/Evangelion - Misato.mid"
-                                    download>
-                                    DOWNLOAD
-                                </a>
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <div class="download-thumb">
-                                <img src="/api/placeholder/120/90" alt="Ena - Night Hill- waffles">
-                            </div>
-                            <figcaption>
-                                <div class="download-title">Ena - Night Hill- waffles</div>
-                                <div class="download-info">8KB - 01:24</div>
-                                <a  href="/downloads/midi/ENA Dream BBQ - Night Hill _ Coast.mid"
-                                    class="download-button"
-                                    data-file="/downloads/midi/ENA Dream BBQ - Night Hill _ Coast.mid"
-                                    download>
-                                    DOWNLOAD
-                                </a>
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <img src="/api/placeholder/120/90" alt="Naruto Opening MIDI Thumbnail">
-                            <figcaption>
-                                <div class="download-title">Naruto Opening</div>
-                                <div class="download-info">15KB - 01:45</div>
-                                <a href="#" class="download-button"
-                                    data-download-item="Naruto Opening MIDI">DOWNLOAD</a>
-                            </figcaption>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="download-section">
+                  </section>
+                  
+                  <section class="download-section" data-download-cat="cursors">
                     <h3 class="download-header">Cursori personalizzati</h3>
-                    <div class="download-grid">
-                        <div class="download-item">
-                            <img src="/api/placeholder/120/90" alt="Evangelion Cursor Pack Thumbnail">
-                            <figcaption>
-                                <div class="download-title">Eva Cursor Pack</div>
-                                <div class="download-info">5 cursori - 78KB</div>
-                                <a href="#" class="download-button"
-                                    data-download-item="Evangelion Cursor Pack">DOWNLOAD</a>
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <img src="/api/placeholder/120/90" alt="Ghibli Cursor Pack Thumbnail">
-                            <figcaption>
-                                <div class="download-title">Ghibli Spirits</div>
-                                <div class="download-info">8 cursori - 112KB</div>
-                                <a href="#" class="download-button" data-download-item="Ghibli Cursor Pack">DOWNLOAD</a>
-                            </figcaption>
-                        </div>
-                        <div class="download-item">
-                            <img src="/api/placeholder/120/90" alt="Pokémon Cursor Pack Thumbnail">
-                            <figcaption>
-                                <div class="download-title">Poké Cursors</div>
-                                <div class="download-info">10 cursori - 145KB</div>
-                                <a href="#" class="download-button"
-                                    data-download-item="Pokémon Cursor Pack">DOWNLOAD</a>
-                            </figcaption>
-                        </div>
-                    </div>
-                </section>
+                  </section>
+                  
 
                 <div
                     style="text-align: center; margin-top: 20px; padding: 10px; border: 2px dashed #ff00ff; background-color: rgba(0, 0, 0, 0.5);">
@@ -605,7 +533,6 @@
                         <div style="color: #ffff00; margin-bottom: 10px;">Contatori Ospiti</div>
                         <div style="display: flex; justify-content: center; gap: 20px;">
                             <img src="https://www.counter12.com/img-dW09ywcw2acb4w2Z-14.gif" alt="counter">
-                            <img src="/api/placeholder/88/31" alt="Geocities Counter">
                         </div>
                     </div>
                 </div>
@@ -647,10 +574,7 @@
         <footer id="footer">
             &copy; 2025 Il Mio Spazio | Fatto con ♥ da Pam!<br>
             Questo sito funziona meglio con Internet Explorer 6.0 o Netscape Navigator
-            <div style="margin-top: 10px;">
-                <img src="/api/placeholder/88/31" alt="Valid HTML">
-                <img src="/api/placeholder/88/31" alt="Best viewed with Netscape">
-            </div>
+            
             <!--*https://cyber.dabamos.de/88x31-->
             <div style="margin-top: 10px;">
                 <a href="//yoursmiles.org/"><img src="https://yoursmiles.org/img/sbutton.gif"

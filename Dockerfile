@@ -1,38 +1,35 @@
 ############################
-#  Stage 1 – build full    #
+#  Stage 1 – build full    #
 ############################
-FROM node:20-alpine AS build
+FROM node:23-alpine AS build
+
 WORKDIR /app
 
-# Copio TUTTO il sorgente backend (incluso server.js)
+# -- install prod dependencies first so Docker layer-cache works
+COPY backend/package*.json ./backend/
+RUN npm ci --prefix backend --omit=dev      # installs `timidity` too
+
+# -- then copy the rest of your source
 COPY backend ./backend
 
-# Installo dipendenze
-RUN npm install --prefix backend --production
 
 ############################
-#  Stage 2 – final image   #
+#  Stage 2 – final image   #
 ############################
-FROM node:20-alpine
+FROM node:23-alpine
+
 ENV PORT=3000
 EXPOSE 3000
-
-# Python + deps Alpine
-RUN apk add --no-cache \
-      python3 \
-      py3-pip \
-      py3-requests \
-      py3-beautifulsoup4 \
-      py3-lxml
-
 WORKDIR /app
 
-# Copio l’intero build-stage, che ora contiene anche server.js
+# pull built code from stage 1
 COPY --from=build /app/backend ./backend
-
-# File statici & script
+# static files & helper scripts
 COPY public   ./backend/public
 COPY scripts  ./scripts
+
+# (optional) convenience: where the WASM + FreePats live
+ENV TIMIDITY_ASSETS_DIR=/app/backend/node_modules/timidity
 
 WORKDIR /app/backend
 CMD ["node", "server.js"]

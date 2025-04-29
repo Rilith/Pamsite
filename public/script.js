@@ -1,3 +1,5 @@
+// import Timidity from '/timidity/index.js';   // ← top of the file
+
 // ──── Player bootstrap avanzato ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const widget = SC.Widget(document.getElementById('sc-player'));
@@ -109,14 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const rowTitle = document.querySelector(`#track-list li[data-index="${currentTrackIndex}"] .track-title`);
       if (rowTitle && rowTitle.textContent === '(untitled)') rowTitle.textContent = snd.title;
       
-      /* scroll logic */
+      /* scroll logic … (unchanged) */
       requestAnimationFrame(() => {
         const span = nowPlayingEl.firstElementChild;
       
         if (span.scrollWidth > nowPlayingEl.clientWidth) {
           const txtW  = span.scrollWidth;          // larghezza titolo
           const boxW  = nowPlayingEl.clientWidth;  // larghezza contenitore
-          const speed = 60;                        // px al secondo
+          const speed = 90;                        // px al secondo
       
           const duration = (txtW + boxW) / speed;  // strada totale / velocità
           const offset   = boxW / speed;           // taglia la pausa iniziale
@@ -397,15 +399,28 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = '';
     }
 
-
-        content.addEventListener('click', async e => {
-          const dl = e.target.closest('.download-button');
-          if (!dl) return;
-        
-          // OPTIONAL analytics: await fetch('/api/logDownload', { … });
-        
-          // let the browser navigate normally
-        });
+    content.addEventListener('click', event => {
+        const gifItem = event.target.closest('.gif-item');
+        if (gifItem) {
+            openModal(gifItem.dataset.gifSrc, gifItem.dataset.gifTitle);
+        }
+        const dl = event.target.closest('.download-button');
+        if (dl) {
+          // OPTIONAL – quick toast
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.textContent = `Download di “${dl.dataset.file}” avviato…`;
+          Object.assign(toast.style, {
+            position: 'fixed', bottom: '20px', left: '50%',
+            transform: 'translateX(-50%)', padding: '6px 12px',
+            background: '#000', color: '#0ff', border: '1px solid #f0f',
+            zIndex: 9999, fontSize: '12px', borderRadius: '4px'
+          });
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2500);
+          // NO preventDefault → browser proceeds to download
+        }
+    });
 
     document.getElementById('close-modal-button').addEventListener('click', closeModal);
     modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
@@ -455,3 +470,59 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// document.addEventListener('DOMContentLoaded', () => {
+//   /* …your existing code… */
+
+//   /* ───────────────────────────────────────────────
+//      TIMIDITY PLAYER for the download grid
+//   ─────────────────────────────────────────────── */
+//   const timidity = new Timidity('/timidity/');
+
+//   let activeBtn = null;          // keeps track of the currently-playing button
+
+//   document.querySelectorAll('.download-thumb').forEach(thumb => {
+//     const btn   = thumb.querySelector('.play-btn');
+//     const midi  = thumb.dataset.midi;
+
+//     btn.addEventListener('click', async e => {
+//       e.stopPropagation();
+
+//       // Pause if the same button is pressed again
+//       if (btn === activeBtn){
+//         timidity.stop();
+//         btn.classList.remove('playing');
+//         btn.textContent = '▶️';
+//         activeBtn = null;
+//         return;
+//       }
+
+//       // Otherwise stop any current track, then play the new one
+//       if (activeBtn){
+//         activeBtn.classList.remove('playing');
+//         activeBtn.textContent = '▶️';
+//       }
+
+//       activeBtn = btn;
+//       btn.textContent = '⏸️';
+//       btn.classList.add('playing');
+
+//       try{
+//         await timidity.load(midi);
+//         timidity.play();
+//       }catch(err){
+//         console.error('MIDI load/play failed:', err);
+//         btn.classList.remove('playing');
+//         btn.textContent = '⚠️';
+//       }
+//     });
+//   });
+
+//   // When the track ends, reset the button UI
+//   timidity.on('ended', () => {
+//     if (activeBtn){
+//       activeBtn.classList.remove('playing');
+//       activeBtn.textContent = '▶️';
+//       activeBtn = null;
+//     }
+//   });
+// });
