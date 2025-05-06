@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── CACHE ROOT ELEMENTS ─────────────────────────────────
   const content      = document.getElementById('content');
   const navbarLinks  = () => document.querySelectorAll('.navbar a');
-  const modal        = document.getElementById('modal');
-  const modalImg     = document.getElementById('modal-img');
+  const modal        = document.getElementById('gif-modal');
+  const modalImg     = document.getElementById('modal-image');
   const modalTitle   = document.getElementById('modal-title');
   const toastRoot    = document.body;
   const sparkle      = document.createElement('div');
@@ -36,17 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => t.remove(), 2500);
   };
 
-  const openModal = (src, title) => {
-    modalImg.src = src;
+  function openModal(imgSrc, title) {
+    modalImg.src = imgSrc;
     modalImg.alt = title;
     modalTitle.textContent = title;
     modal.style.display = 'flex';
-  };
-  const closeModal = () => {
+}
+
+function closeModal() {
     modal.style.display = 'none';
     modalImg.src = '';
+    modalImg.alt = '';
     modalTitle.textContent = '';
-  };
+}
 
   const getRandomColor = () => {
     const cols = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
