@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Pamsite! ✨</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<script src="script.js"></script>
+<script src="guestbook.js"></script>
+
+<script type="module">
+    async function renderSection(cat) {
+      const section = document.querySelector(`[data-download-cat="${cat}"]`);
+      if (!section) return;
+  
+      const items = await fetch(`/api/downloads/${cat}`).then(r => r.json());
+  
+      const grid = document.createElement('div');
+      grid.className = 'download-grid';
+  
+      items.forEach(it => {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="download-item">
+            <div class="download-thumb">
+              <img src="${it.thumb}" alt="${it.name} thumbnail">
+            </div>
+  
+            <div class="download-caption">
+              <div class="download-title">${it.name}</div>
+              <div class="download-info">${it.info}</div>
+  
+              <a href="/downloads/${cat}/${it.file}"
+                 class="download-button"
+                 data-file="${cat}/${it.file}"
+                 download>DOWNLOAD</a>
+            </div>
+          </div>`);
+      });
+  
+      section.appendChild(grid);
+    }
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSection('wallpapers');
+      renderSection('midi');
+      renderSection('cursors');
+    });
+  </script>
+  
+    
+
+<body>
+    <div id="sparkle"
+        style="position: absolute; display: none; width: 10px; height: 10px; background-color: #ff00ff; border-radius: 50%; pointer-events: none; z-index: 1000;">
+    </div>
+
+    <div id="gif-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">Titolo GIF</div>
+            <img id="modal-image" class="modal-image" src="" alt="GIF a schermo intero">
+            <button class="close-button" id="close-modal-button">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="container">
+        <header id="header">
+            <h1>~*~ Pamsite! ~*~</h1>
+            <div class="blink" style="color: #00ff00; margin-top: 10px;">Benvenuto nel mio mondo!</div>
+        </header>
+
+        <nav class="navbar">
+            <a href="#" data-page-target="home-page">Home</a>
+            <a href="#" data-page-target="about-page">Chi Sono</a>
+            <a href="#" data-page-target="anime-page">Anime GIF</a>
+            <a href="#" data-page-target="videogame-page">Videogames GIF</a>
+            <a href="#" data-page-target="guestbook-page">Guestbook</a>
+        </nav>
+
+        <nav class="navbar">
+            <a href="#" data-page-target="download-page">Downloads</a>
+            <a href="#" data-page-target="setup-page">My Setup</a>
+        </nav>
+
+        <aside class="visitor-counter">
+            <!-- <p>Sei il visitatore numero:</p>
+            <a href='https://www.counter12.com'><img src='https://www.counter12.com/img-dW09ywcw2acb4w2Z-14.gif'
+                    alt='counter'></a>
+            <script type='text/javascript' src='https://www.counter12.com/ad.js?id=dW09ywcw2acb4w2Z'></script> -->
+        </aside> 
+
+        <main id="content">
+            <section id="home-page" class="page">
+                <div class="welcome">
+                    <marquee scrollamount="3" direction="left">★彡 Benvenuto nel mio sito personale! 彡★</marquee>
+                </div>
+
+                <p style="color: #ffffff; text-align: center;">
+                    Ciao a tutti! Finalmente mi sono deciso a finire il mio sito in stile anni 2000!
+                    <br><br>
+                    Vorrei usare questo spazio per condividere le mie passioni a modo mio!
+                    <br><br>
+                    Unisciti al mio viaggio attraverso il mondo dell'animazione giapponese e videgiochi e molto altro!
+                </p>
+
+                <figure class="construction" style="text-align: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Under_construction_graphic.gif"
+                        alt="Under Construction">
+                    <figcaption style="color: #ffff00">Alcune sezioni sono ancora in costruzione!</figcaption>
+                </figure>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="images/gifs/Smileonthebeach.gif" alt="Welcome GIF">
+                </div>
+            </section>
+
+            <section id="about-page" class="page" style="display: none;">
+                <h2 style="color: #00ffff; text-align: center;">Chi Sono</h2>
+
+                <div class="about-me">
+                    <p>Ciao a tutti! Sono Pam!</p>
+                    <p>O almeno è così che molte persone preferiscono chiamarmi!</p>
+                    <p>I miei anime preferiti:</p>
+                    <div style="color: #00ffff;">
+                        <div>Neon Genesis Evangelion</div>
+                        <div>Hajime no Ippo</div>
+                        <div>Fullmetal Alchemist</div>
+                        <div>Attack on Titan</div>
+                        <div>Qualsiasi Film di Miyazaki</div>
+                    </div>
+                    <p>La cosa che preferisco fare è: IMPARARE! Ecco anche perchè ho voluto iniziare questo progetto!</p>
+                    <p>Spero che ti piaccia il mio sito e che tornerai presto a visitarmi!</p>
+
+                    <p>Se vuoi firma il mio guestbook!</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="/images/me.jpg" alt="My Photo">
+                </div>
+            </section>
+
+            <section id="download-page" class="page" style="display: none;">
+                <h2 style="color: #00ffff; text-align: center;">Area Download</h2>
+
+                <div style="color: #ffffff; text-align: center; margin-bottom: 20px;">
+                    <p>Scarica gratuitamente sfondi, suonerie, cursori e altro materiale degli anime!</p>
+                    <div class="blink" style="color: #ffff00;">TUTTO GRATUITO!!!</div>
+                </div>
+
+                <section class="download-section" data-download-cat="wallpapers">
+                    <h3 class="download-header">Sfondi Desktop</h3>
+                    <!-- grid gets injected here -->
+                  </section>
+                  
+                  <section class="download-section" data-download-cat="midi">
+                    <h3 class="download-header">Suonerie MIDI</h3>
+                  </section>
+                  
+                  <section class="download-section" data-download-cat="cursors">
+                    <h3 class="download-header">Cursori personalizzati</h3>
+                  </section>
+                  
+
+                <div
+                    style="text-align: center; margin-top: 20px; padding: 10px; border: 2px dashed #ff00ff; background-color: rgba(0, 0, 0, 0.5);">
+                    <div style="color: #ffff00; font-size: 18px; margin-bottom: 10px;">⚠️ IMPORTANTE! ⚠️</div>
+                    <div style="color: #ffffff;">
+                        Tutti i file sono stati testati con <span style="color: #00ffff;">Norton Antivirus
+                            2003</span><br>
+                        Per un download più veloce usare <span style="color: #00ffff;">Download Accelerator
+                            Plus</span>!<br>
+                        In caso di problemi scrivimi su <span style="color: #00ffff;">ICQ: 12345678</span> o <span
+                            style="color: #00ffff;">MSN: otaku123@hotmail.com</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="setup-page" class="page" style="display: none;">
+                <h2 style="color: #00ffff; text-align: center;">Il Mio Setup</h2>
+
+                <div style="color: #ffffff; text-align: center; margin-bottom: 20px;">
+                    <p>Ecco la mia postazione gaming/anime da dove gestisco questo sito!</p>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <img src="images/computer.jpg" alt="My Computer Setup"
+                            style="border: 3px solid #00ffff; width: 100%;">
+                    </div>
+                    <div style="flex: 1; min-width: 300px; color: #ffffff;">
+                        <div style="background-color: rgba(0, 0, 128, 0.7); padding: 15px; border: 2px solid #ff00ff;">
+                            <div style="color: #ffff00; font-size: 20px; text-align: center; margin-bottom: 10px;">⭐ LE
+                                MIE SPECIFICHE ⭐</div>
+                            <ul style="color: #00ffff; list-style-type: '🖥️ ';">
+                                <li><span style="color: #ff00ff;">CPU:</span> <span style="color: #ffffff;">Intel I9 14900k</span></li>
+                                <li><span style="color: #ff00ff;">RAM:</span> <span style="color: #ffffff;">32GB DDR5
+                                        SDRAM (2x16Gb)</span></li>
+                                <li><span style="color: #ff00ff;">HDD:</span> <span style="color: #ffffff;">Samsung NVME 1024GB
+                                        + HDD 1024GB</span></li>
+                                <li><span style="color: #ff00ff;">GPU:</span> <span style="color: #ffffff;">NVIDIA
+                                        GeForce 3090</span></li>
+                                <li><span style="color: #ff00ff;">Monitor:</span> <span style="color: #ffffff;">ASUS VG32V</span></li>
+                                <li><span style="color: #ff00ff;">OS:</span> <span style="color: #ffffff;">Windows 11</span></li>
+                                <li><span style="color: #ff00ff;">Internet:</span> <span style="color: #ffffff;">Fibra 1
+                                        Giga (WOW!!!)</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="software-container">
+                    <div class="software-title">Software che uso:</div>
+                    <div class="software-list">
+                      <figure class="software-item">
+                        <img src="images/SteamOldIcon.webp" alt="Steam Logo">
+                        <figcaption>Steam</figcaption>
+                      </figure>
+                      <figure class="software-item">
+                        <img src="images/TeamSpeak_2001_.png" alt="TS3 Logo">
+                        <figcaption>TS3</figcaption>
+                      </figure>
+                      <figure class="software-item">
+                        <img src="images/explorer.webp" alt="Internet Explorer Logo">
+                        <figcaption>IE 6.0</figcaption>
+                      </figure>
+                      <figure class="software-item">
+                        <img src="images/emule.png" alt="Emule Logo">
+                        <figcaption>Emule</figcaption>
+                      </figure>
+                      <figure class="software-item">
+                        <img src="images/firefox.png" alt="Firefox Logo">
+                        <figcaption>Firefox</figcaption>
+                      </figure>
+                    </div>
+                </div>
+
+                <!-- <div
+                    style="background-color: rgba(0, 0, 128, 0.7); padding: 15px; border: 2px solid #ff00ff; margin-bottom: 20px;">
+                    <figcaption style="color: #ffff00; font-size: 20px; text-align: center; margin-bottom: 10px;">La mia
+                        collezione di anime:</figcaption>
+                    <img src="/api/placeholder/500/200" alt="Anime DVD Collection (placeholder)"
+                        style="width: 100%; border: 2px solid #00ffff;">
+                    <figcaption style="color: #ffffff; text-align: center; margin-top: 10px;">
+                        La mia collezione di 47 DVD originali e 156 VHS registrate da MTV Anime Night!
+                    </figcaption>
+                </div> -->
+            </section>
+
+            <section id="anime-page" class="page" style="display: none;">
+                <h2 style="color: #00ffff; text-align: center;">La Mia Collezione di GIF Anime</h2>
+
+                <p style="color: #ffffff; text-align: center;">
+                    Ecco alcune delle mie GIF anime preferite, organizzate per serie! Clicca su di esse per vederle a
+                    schermo intero.
+                </p>
+
+                <section class="gif-section">
+                    <h3 class="gif-header">Neon Genesis Evangelion</h3>
+                    <div class="gif-gifs">
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion1.gif"
+                            data-gif-title="Rei">
+                            <img src="images/gifs/neongenesisevangelion1.gif" alt="Rei" height="180">
+                            <figcaption class="gif-title">Rei</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion2.gif"
+                            data-gif-title="Asuka">
+                            <img src="images/gifs/neongenesisevangelion2.gif" alt="Asuka" height="180">
+                            <figcaption class="gif-title">Asuka</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion3.gif"
+                            data-gif-title="Misato birra">
+                            <img src="images/gifs/neongenesisevangelion3.gif" alt="Misato birra" height="180">
+                            <figcaption class="gif-title">Misato Birra</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion4.gif"
+                            data-gif-title="Misato">
+                            <img src="images/gifs/neongenesisevangelion4.gif" alt="Misato" height="180">
+                            <figcaption class="gif-title">Misato</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion5.gif"
+                            data-gif-title="Rei">
+                            <img src="images/gifs/neongenesisevangelion5.gif" alt="Rei" height="180">
+                            <figcaption class="gif-title">Rei</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion6.gif"
+                            data-gif-title="Asuka e Penpen">
+                            <img src="images/gifs/neongenesisevangelion6.gif" alt="Asuka e Penpen" height="180">
+                            <figcaption class="gif-title">Asuka e Penpen</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion7.gif"
+                            data-gif-title="Gendo">
+                            <img src="images/gifs/neongenesisevangelion7.gif" alt="Gendo" height="180">
+                            <figcaption class="gif-title">Gendo</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion8.gif"
+                            data-gif-title="Evangelion 01">
+                            <img src="images/gifs/neongenesisevangelion8.gif" alt="Evangelion 01" height="180">
+                            <figcaption class="gif-title">Evangelion 01</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion9.gif"
+                            data-gif-title="Asuka, Shinji e Penpen">
+                            <img src="images/gifs/neongenesisevangelion9.gif" alt="Asuka, Shinji e Penpen" height="180">
+                            <figcaption class="gif-title">Asuka, Shinji e Penpen</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/neongenesisevangelion10.gif"
+                            data-gif-title="Asuka">
+                            <img src="images/gifs/neongenesisevangelion10.gif" alt="Asuka" height="180">
+                            <figcaption class="gif-title">Asuka</figcaption>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="gif-section">
+                    <h3 class="gif-header">Studio Ghibli</h3>
+                    <div class="gif-gifs">
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli1.gif" data-gif-title="Nausicaa">
+                            <img src="images/gifs/studioghibli1.gif" alt="Nausicaa GIF 1" height="180">
+                            <figcaption class="gif-title">Nausicaa</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli2.gif"
+                            data-gif-title="La città incantata - Haku">
+                            <img src="images/gifs/studioghibli2.gif" alt="Haku GIF" height="180">
+                            <figcaption class="gif-title">La Città Incantata</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli3.gif"
+                            data-gif-title="Il castello errante di Howl - Calcifer">
+                            <img src="images/gifs/studioghibli3.gif" alt="Calcifer GIF 3" height="180">
+                            <figcaption class="gif-title">Il castello errante di Howl</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli4.gif" data-gif-title="Ponyo">
+                            <img src="images/gifs/studioghibli4.gif" alt="Ponyo GIF" height="180">
+                            <figcaption class="gif-title">Ponyo</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli5.webp"
+                            data-gif-title="Kiki consegne a domicilio - Kiki">
+                            <img src="images/gifs/studioghibli5.webp" alt="Kiki GIF" height="180">
+                            <figcaption class="gif-title">Kiki consegne a domicilio</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli6.gif"
+                            data-gif-title="La Città Incantata - Nerini">
+                            <img src="images/gifs/studioghibli6.gif" alt="Nerini GIF" height="180">
+                            <figcaption class="gif-title">Nerini</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli7.gif"
+                            data-gif-title="Porco rosso - Marco">
+                            <img src="images/gifs/studioghibli7.gif" alt="Marco GIF" height="180">
+                            <figcaption class="gif-title">Porco Rosso</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/studioghibli8.gif"
+                            data-gif-title="La principessa splendente">
+                            <img src="images/gifs/studioghibli8.gif" alt="La primcipessa splendente GIF" height="180">
+                            <figcaption class="gif-title">La principessa splendente</figcaption>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section id="videogame-page" class="page" style="display: none;">
+                <h2 style="color: #00ffff; text-align: center;">La Mia Collezione di GIF Videogames</h2>
+
+                <p style="color: #ffffff; text-align: center;">
+                    Ecco alcune delle mie GIF Videogames preferite, organizzate per serie! Clicca su di esse per vederle
+                    a schermo intero.
+                </p>
+
+                <section class="gif-section">
+                    <h3 class="gif-header">Metal Gear</h3>
+                    <div class="gif-gifs">
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear1.gif"
+                            data-gif-title="Metal Gear Solid Ground Zero - Big boss">
+                            <img src="images/gifs/metalgear1.gif" alt="Big boss" height="180">
+                            <figcaption class="gif-title">Big boss</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear2.gif"
+                            data-gif-title="Metal Gear Solid 3 - Big boss">
+                            <img src="images/gifs/metalgear2.gif" alt="Big boss" height="180">
+                            <figcaption class="gif-title">Big boss</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear3.gif"
+                            data-gif-title="Metal Gear SOlid Delta - Eva">
+                            <img src="images/gifs/metalgear3.gif" alt="Eva" height="180">
+                            <figcaption class="gif-title">Eva</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear4.gif"
+                            data-gif-title="Metal Gear Solid 3 - Ocelot">
+                            <img src="images/gifs/metalgear4.gif" alt="Ocelot" height="180">
+                            <figcaption class="gif-title">Ocelot</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear5.gif"
+                            data-gif-title="Metal Gear Solid 4 - Solid Snake">
+                            <img src="images/gifs/metalgear5.gif" alt="Solid Snake" height="180">
+                            <figcaption class="gif-title">Solid Snake</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear6.gif"
+                            data-gif-title="Metal Gear solid 3 - Para-medic">
+                            <img src="images/gifs/metalgear6.gif" alt="Para-medic" height="180">
+                            <figcaption class="gif-title">Para-medic</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/metalgear7.gif"
+                            data-gif-title="Fortnite - Raiden">
+                            <img src="images/gifs/metalgear7.gif" alt="Riden" height="180">
+                            <figcaption class="gif-title">Riden</figcaption>
+                        </div>
+                </section>
+
+                <section class="gif-section">
+                    <h3 class="gif-header">Omori</h3>
+                    <div class="gif-gifs">
+                        <div class="gif-item" data-gif-src="images/gifs/omori1.gif"
+                            data-gif-title="Omori - Omori, Aubrey, Kel e Hero">
+                            <img src="images/gifs/omori1.gif" alt="Omori GIF 1" height="180">
+                            <figcaption class="gif-title">Omori, Aubrey, Kel e Hero</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/omori2.gif"
+                            data-gif-title="Omori - Omori, Aubrey, Kel, Mari, Hero e Basil">
+                            <img src="images/gifs/omori2.gif" alt="Omori GIF" height="180">
+                            <figcaption class="gif-title">Omori, Aubrey, Kel, Mari, Hero e Basil</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/omori3.gif" data-gif-title="Omori- Mari e Hero">
+                            <img src="images/gifs/omori3.gif" alt="Omori GIF 3" height="180">
+                            <figcaption class="gif-title">Mari e Hero</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/omori4.gif" data-gif-title="Omori - Hector">
+                            <img src="images/gifs/omori4.gif" alt="HECTOR GIF" height="180">
+                            <figcaption class="gif-title">Hector</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/omori5.gif" data-gif-title="Omori - Sunny">
+                            <img src="images/gifs/omori5.gif" alt="Sunny GIF" height="180">
+                            <figcaption class="gif-title">Sunny</figcaption>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="gif-section">
+                    <h3 class="gif-header">Persona 5</h3>
+                    <div class="gif-gifs">
+                        <div class="gif-item" data-gif-src="images/gifs/persona51.gif"
+                            data-gif-title="Persona 5 - Joker">
+                            <img src="images/gifs/persona51.gif" alt="Joker GIF 1" height="180">
+                            <figcaption class="gif-title">Joker</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/persona52.gif"
+                            data-gif-title="Persona 5 - Futaba">
+                            <img src="images/gifs/persona52.gif" alt="Persona 5 GIF" height="180">
+                            <figcaption class="gif-title">Futaba</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/persona53.gif"
+                            data-gif-title="Persona 5 - Sojiro">
+                            <img src="images/gifs/persona53.gif" alt="Sojiro GIF 3" height="180">
+                            <figcaption class="gif-title">Sojiro</figcaption>
+                        </div>
+                        <div class="gif-item" data-gif-src="images/gifs/persona54.gif"
+                            data-gif-title="Persona 5 - Joker loading">
+                            <img src="images/gifs/persona54.gif" alt="Joker loading 5 GIF" height="180">
+                            <figcaption class="gif-title">Joker Loading</figcaption>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section id="guestbook-page" class="page" style="display: none;">
+                <div class="guestbook">
+                    <div class="guestbook-title">❤️ Firma il mio Guestbook! ❤️</div>
+
+                    <!-- STATISTICHE -->
+                    <div id="guestbook-stats" class="guestbook-section"></div>
+
+                    <!-- BARRA DI RICERCA -->
+                    <div id="guestbook-search" class="guestbook-section"></div>
+
+
+
+
+
+                    <!-- MESSAGGI DI FEEDBACK -->
+                    <div id="guestbook-message" style="display: none;"></div>
+
+                    <!-- FORM DI FIRMA -->
+                    <div class="guestbook-section">
+                        <!-- SELETTORE AVATAR -->
+                        <div id="avatar-selector"></div>
+
+                        <!-- FORM -->
+                        <form class="guestbook-form" id="guestbook-form">
+
+                            <input type="text" placeholder="Il tuo nome" required name="name">
+                            <input type="email" placeholder="La tua email" required name="email">
+
+
+                            <!-- TOOLBAR MIGLIORATA -->
+
+
+                            <!-- ToolBar-->
+                            <!-- ToolBar-->
+                            <div id="emote-picker-wrapper">
+                                <!-- I pulsanti di formattazione verranno inseriti qui dal JavaScript -->
+                                <!-- Il contenuto degli emoticon verrà inserito qui dal JavaScript -->
+                            </div>
+
+                            <textarea name="message" id="message" rows="4" placeholder="Lascia un messaggio!"
+                                required></textarea>
+                            <!-- PREVIEW PANE (nascosto di default) -->
+                            <div id="gb-preview" style="display:none;"></div>
+                            <input type="hidden" name="avatarId" id="selected-avatar">
+                            <div class="action-buttons">
+                                <button type="button" id="preview-toggle" class="preview-btn">👁️ Anteprima</button>
+                                <button type="submit" id="guestbook-submit">✨ Firma il Guestbook! ✨</button>
+                            </div>
+                            <div id="submit-loading" style="display: none;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif"
+                                    alt="Loading...">
+                                <span>Invio in corso...</span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- FIRME + PAGINAZIONE -->
+                    <div class="guestbook-section">
+                        <div id="guestbook-entries">
+                            <div id="guestbook-loading" style="text-align: center; padding: 20px;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif"
+                                    alt="Loading...">
+                                <div style="color: #00ffff; margin-top: 10px;">Caricamento firme in corso...</div>
+                            </div>
+                        </div>
+                        <div id="guestbook-pagination"></div>
+                    </div>
+
+                    <!-- CONTATORI -->
+                    <div style="text-align: center; margin-top: 20px;">
+                        <div style="color: #ffff00; margin-bottom: 10px;">Contatori Ospiti</div>
+                        <div style="display: flex; justify-content: center; gap: 20px;">
+                            <img src="https://www.counter12.com/img-dW09ywcw2acb4w2Z-14.gif" alt="counter">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="error404-page" class="page" style="display: none; text-align: center;">
+                <h2>ERROR 404 - PAGINA NON TROVATA!</h2>
+
+                <div style="color: #ffffff; margin-bottom: 20px;">
+                    <p>Oops! La pagina che stai cercando potrebbe essere stata spostata o eliminata.</p>
+                    <p>Forse un Angelo di Evangelion l'ha distrutta!</p>
+                </div>
+
+                <img src="/api/placeholder/300/200" alt="Sad Anime Character (placeholder)"
+                    style="border: 3px solid #ff00ff; margin-bottom: 20px;">
+
+                <div style="color: #00ffff; margin-bottom: 20px;">
+                    <p>Torna alla <a href="#" data-page-target="home-page" style="color: #ffff00;">Home Page</a> o prova
+                        uno dei link qui sotto:</p>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <a href="#" data-page-target="anime-page"
+                        style="background-color: #ff00ff; color: white; padding: 5px 15px; text-decoration: none; border: 2px solid #00ffff;">Anime
+                        GIF</a>
+                    <a href="#" data-page-target="download-page"
+                        style="background-color: #ff00ff; color: white; padding: 5px 15px; text-decoration: none; border: 2px solid #00ffff;">Download</a>
+                    <a href="#" data-page-target="error404-page"
+                        style="background-color: #ff00ff; color: white; padding: 5px 15px; text-decoration: none; border: 2px solid #00ffff;">Giochi</a>
+                </div>
+            </section>
+
+        </main>
+
+        <div class="construction-badge" style="text-align: center; margin-top: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Under_construction_graphic.gif"
+                alt="Under Construction" width="170" />
+        </div>
+
+        <footer id="footer">
+            &copy; 2025 Il Mio Spazio | Fatto con ♥ da Pam!<br>
+            Questo sito funziona meglio con Internet Explorer 6.0 o Netscape Navigator
+            
+            <!--*https://cyber.dabamos.de/88x31-->
+            <div style="margin-top: 10px;">
+                <a href="//yoursmiles.org/"><img src="https://yoursmiles.org/img/sbutton.gif"
+                        alt="Yout personal smileys" width="88" height="31"></a>
+                <a href="https://cyber.dabamos.de/88x31/4x3_fade.gif"><img
+                        src="https://cyber.dabamos.de/88x31/4x3_fade.gif" alt="Best viewed in 4:3" width="88"
+                        height="31"></a>
+                <a href="https://cyber.dabamos.de/88x31/e-scp.gif"><img src="https://cyber.dabamos.de/88x31/e-scp.gif"
+                        alt="SCP" width="88" height="31"></a>
+                <a href="https://cyber.dabamos.de/88x31/evangelion.gif"><img
+                        src="https://cyber.dabamos.de/88x31/evangelion.gif" alt="Evangelion" width="88" height="31"></a>
+                <a href="https://cyber.dabamos.de/88x31/julesneohome.gif"><img
+                        src="https://cyber.dabamos.de/88x31/julesneohome.gif" alt="Froge" width="88" height="31"></a>
+                <a href="https://open.spotify.com/user/31hzfkjufrn7xeret5ort3rxzzla?si=419cb317874043c4"><img
+                        src="https://cyber.dabamos.de/88x31/spotify.gif" alt="Spotify" width="88" height="31"></a>
+                <a href="https://bitwarden.com/"><img
+                         src="https://www.88x31.nl/gifs/bitwarden.gif" alt="Bitwarden" width="88" height="31"></a>
+                <a href="https://jellyfin.org/"><img
+                        src="https://cyber.dabamos.de/88x31/jellyfin.gif" alt="Jellyfin" width="88" height="31"></a>
+                <a href="https://yesterhost.neocities.org/archive/buttons/button199.gif"><img
+                    src="https://yesterhost.neocities.org/archive/buttons/button199.gif" alt="Firefox" width="88" height="31"></a>
+                                       
+            </div>
+        </footer>
+    </div>
+
+<!-- container fisso in basso a destra -------------------->
+<div id="audio-player" class="expanded">
+    <div class="player-header">
+      <span>🎵 Pamsite Music Player🎵 </span>
+      <button id="toggle-player-size" title="Espandi/Riduci">_</button>
+    </div>
+   
+    <div id="now-playing-container">
+      <div id="now-playing">:: Loading... 🎵</div>
+      <div id="progress-container">
+        <div id="progress-bar"><div id="progress-current"></div></div>
+        <div id="time-display">00:00 / 00:00</div>
+      </div>
+    </div>
+ 
+    <!-- comandi -->
+    <div class="controls">
+      <button data-audio-action="toggle" title="Play/Pause" class="control-btn">►</button>
+      <button data-audio-action="stop" title="Stop" class="control-btn">■</button>
+      <button data-audio-action="prev" title="Previous" class="control-btn">◄◄</button>
+      <button data-audio-action="next" title="Next" class="control-btn">►►</button>
+     
+      <!-- slider volume -->
+      <div class="vol-control">
+        <span>(((•)))</span>
+        <input id="vol" type="range" min="0" max="100" value="80">
+      </div>
+    </div>
+   
+    <!-- Playlist -->
+    <div id="playlist-container">
+      <div class="playlist-header">== My Playlist ==</div>
+      <ul id="track-list" class="track-list">
+        <!-- Verranno popolati via JavaScript -->
+      </ul>
+    </div>
+ 
+    <!-- SoundCloud widget (nascosto, usato solo per API) -->
+    <iframe
+      id="sc-player"
+      width="1" height="1" scrolling="no" frameborder="no"
+      allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/riccardo-pambianco-985702545/sets/pamsite&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false">
+    </iframe>
+</div>
+
+
+</body>
+
+</html>

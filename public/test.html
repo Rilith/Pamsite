@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>SPA con URL dinamico</title>
+  <style>
+    #content { padding: 1rem; }
+    nav a { margin-right: 1rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/home-page" data-page-target="home-page">Home</a>
+    <a href="/about-page" data-page-target="about-page">About</a>
+    <a href="/anime-page" data-page-target="anime-page">Anime</a>
+  </nav>
+  <div id="content">Loading…</div>
+
+  <script>
+    const pageUrls = {
+      'home-page':      '/pages/home-page.html',
+      'about-page':     '/pages/about-page.html',
+      'anime-page':     '/pages/anime-page.html'
+    };
+
+    // Carica il frammento HTML e restituisce il <section id="…">
+    async function loadSection(id) {
+      const url = pageUrls[id] || pageUrls['home-page'];
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Fetch failed');
+      const html = await res.text();
+      const tmp  = document.createElement('div');
+      tmp.innerHTML = html;
+      return tmp.querySelector(`#${id}`);
+    }
+
+    function showPage(id, push = true) {
+      const content = document.getElementById('content');
+
+      // 1) calcola il path che vogliamo in address bar
+      const newUrl = id === 'home-page' ? '/' : `/${id}`;
+
+      // 2) se è una navigazione “utente”, injecta nel history
+      if (push) {
+        history.pushState({ page: id }, '', newUrl);
+      }
+
+      // 3) carica e mette nel DOM
+      loadSection(id)
+        .then(sec => {
+          content.innerHTML = '';
+          content.appendChild(sec);
+        })
+        .catch(err => {
+          content.innerHTML = `<p style="color:red;">Errore: ${err.message}</p>`;
+        });
+    }
+
+    // intercetta i click sui link “interni”
+    document.querySelectorAll('a[data-page-target]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        showPage(a.dataset.pageTarget, true);
+      });
+    });
+
+    // gestisce Back/Forward
+    window.addEventListener('popstate', e => {
+      const pageId = e.state?.page || 'home-page';
+      showPage(pageId, false);
+    });
+
+    // al primo load, renderizza in base al path
+    document.addEventListener('DOMContentLoaded', () => {
+      const path = location.pathname.slice(1);
+      const initial = pageUrls[path] ? path : 'home-page';
+      showPage(initial, false);
+    });
+  </script>
+</body>
+</html>

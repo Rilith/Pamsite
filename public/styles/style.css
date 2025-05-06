@@ -122,6 +122,12 @@ h1 {
     color: #ff00ff;
     transform: scale(1.1);
 }
+/* Active nav link styling */
+.navbar a.active {
+    background-color: #00ffff;
+    color: #ff00ff;
+    transform: scale(1.1);
+}
 
 /*=============================================
 =            DECORATIVE ELEMENTS              =
@@ -570,7 +576,6 @@ h1 {
 /*=============================================
 =            PAGES AND blink/twink            =
 =============================================*/
-.page { display: none; }
 #home-page { display: block; }
 .blink { animation: blinker 1s linear infinite; }
 

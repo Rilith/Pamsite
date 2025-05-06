@@ -51,3 +51,5 @@ temp/
 
 # if you use any generated docs
 # docs/
+
+.env

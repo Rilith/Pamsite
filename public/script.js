@@ -1,6 +1,217 @@
-// import Timidity from '/timidity/index.js';   // ← top of the file
+document.addEventListener('DOMContentLoaded', () => {
+  // ─── CACHE ROOT ELEMENTS ─────────────────────────────────
+  const content      = document.getElementById('content');
+  const navbarLinks  = () => document.querySelectorAll('.navbar a');
+  const modal        = document.getElementById('modal');
+  const modalImg     = document.getElementById('modal-img');
+  const modalTitle   = document.getElementById('modal-title');
+  const toastRoot    = document.body;
+  const sparkle      = document.createElement('div');
+  document.body.appendChild(sparkle);
+  sparkle.id = 'sparkle';
+  sparkle.style.position = 'absolute';
+  sparkle.style.pointerEvents = 'none';
+  sparkle.style.display = 'none';
 
-// ──── Player bootstrap avanzato ────────────────────────────────────
+  // ─── PAGE CONFIGURATION ────────────────────────────────────
+  const pageConfig = {
+    'home-page':      { file: '/pages/home-page.html',     path: '/' },
+    'about-page':     { file: '/pages/about-page.html',    path: '/about' },
+    'anime-page':     { file: '/pages/anime-page.html',    path: '/anime' },
+    'videogame-page': { file: '/pages/videogame-page.html',path: '/videogame' },
+    'guestbook-page': { file: '/pages/guestbook.html',      path: '/guestbook' },
+    'download-page':  { file: '/pages/download-page.html',  path: '/download' },
+    'setup-page':     { file: '/pages/setup-page.html',     path: '/setup' },
+    'error404-page':  { file: '/error404.html',            path: '/404' }
+  };
+
+  // ─── UTILITY FUNCTIONS ────────────────────────────────────
+  const showToast = msg => {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    Object.assign(t.style, {
+      position: 'fixed', bottom: '20px', left: '50%',
+      transform: 'translateX(-50%)', padding: '6px 12px',
+      background: '#000', color: '#0ff',
+      border: '1px solid #f0f', borderRadius: '4px',
+      zIndex: 10000, fontSize: '12px'
+    });
+    toastRoot.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  };
+
+  const openModal = (src, title) => {
+    modalImg.src = src;
+    modalImg.alt = title;
+    modalTitle.textContent = title;
+    modal.style.display = 'flex';
+  };
+  const closeModal = () => {
+    modal.style.display = 'none';
+    modalImg.src = '';
+    modalTitle.textContent = '';
+  };
+
+  const getRandomColor = () => {
+    const cols = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
+    return cols[Math.floor(Math.random() * cols.length)];
+  };
+
+  // ─── RENDER SECTION FOR DOWNLOAD PAGE ──────────────────────
+  async function renderSection(cat) {
+    const section = content.querySelector(`[data-download-cat="${cat}"]`);
+    if (!section) return;
+    const items = await fetch(`/api/downloads/${cat}`).then(r => r.json());
+    const grid  = document.createElement('div');
+    grid.className = 'download-grid';
+    items.forEach(it => {
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="download-item">
+          <div class="download-thumb">
+            <img src="${it.thumb}" alt="${it.name} thumbnail">
+          </div>
+          <div class="download-caption">
+            <div class="download-title">${it.name}</div>
+            <div class="download-info">${it.info}</div>
+            <a href="/downloads/${cat}/${it.file}"
+               class="download-button"
+               data-file="${cat}/${it.file}"
+               download>DOWNLOAD</a>
+          </div>
+        </div>`);
+    });
+    section.appendChild(grid);
+  }
+
+  async function showPage(id, push = true) {
+    /* ------------------------------------------------------------------ */
+    /* 0. Pick the config entry (or fall back to “error404-page”)          */
+    /* ------------------------------------------------------------------ */
+    const cfg = pageConfig[id];
+    const key = cfg ? id : 'error404-page';
+    const { file, path } = pageConfig[key];
+  
+    /* ------------------------------------------------------------------ */
+    /* 1. Fetch the HTML fragment                                          */
+    /* ------------------------------------------------------------------ */
+    let html;
+    try {
+      const res = await fetch(file);
+      if (!res.ok) throw new Error(res.status);
+      html = await res.text();
+    } catch (err) {
+      console.error('❌ fragment fetch failed → 404', err);
+      const r404 = await fetch(pageConfig['error404-page'].file);
+      html = await r404.text();
+      push = false;                         // don’t push /404
+    }
+  
+    content.innerHTML = html;
+  
+    /* ------------------------------------------------------------------ */
+    /* 2. Update the address bar (skip if we’re showing the 404 fragment)  */
+    /* ------------------------------------------------------------------ */
+    if (push && key !== 'error404-page') {
+      history.pushState({ page: key }, '', path);
+    }
+  
+    /* ------------------------------------------------------------------ */
+    /* 3. Run any page‑specific hooks (isolated so they can’t 404 us)      */
+    /* ------------------------------------------------------------------ */
+    try {
+      switch (key) {
+        case 'download-page':
+          await Promise.all([
+            renderSection('wallpapers'),
+            renderSection('midi'),
+            renderSection('cursors')
+          ]);
+          break;
+        case 'guestbook-page':
+          initGuestbook?.();
+          break;
+        // add more page hooks here if needed
+      }
+    } catch (hookErr) {
+      console.warn('⚠️ hook error in', key, hookErr);
+    }
+  
+    /* ------------------------------------------------------------------ */
+    /* 4. Highlight the active navbar link                                 */
+    /* ------------------------------------------------------------------ */
+    navbarLinks().forEach(a =>
+      a.classList.toggle('active', a.dataset.pageTarget === id)
+    );
+  }
+  
+  
+
+  // handle back/fwd
+  window.addEventListener('popstate', e => {
+    showPage(e.state?.page || 'home-page', false);
+  });
+
+  // ─── INITIAL ROUTE ────────────────────────────────────────
+  const start = Object.entries(pageConfig)
+    .find(([,cfg]) => cfg.path === location.pathname)?.[0]
+    || 'error404-page';
+  showPage(start, false);
+
+  // ─── GLOBAL EVENT DELEGATION ──────────────────────────────
+  document.body.addEventListener('click', e => {
+    // SPA nav
+    const nav = e.target.closest('[data-page-target]');
+    if (nav) {
+      e.preventDefault();
+      showPage(nav.dataset.pageTarget, true);
+      return;
+    }
+
+    // modal open
+    const gif = e.target.closest('.gif-item');
+    if (gif) {
+      openModal(gif.dataset.gifSrc, gif.dataset.gifTitle);
+      return;
+    }
+
+    // modal close
+    if (e.target.matches('#close-modal-button') || e.target === modal) {
+      closeModal();
+      return;
+    }
+
+    // download toast
+    const dl = e.target.closest('.download-button');
+    if (dl) {
+      showToast(`Download di “${dl.dataset.file}” avviato…`);
+      // let browser handle the actual download
+    }
+  });
+
+  // ─── SPARKLE EFFECT (throttled) ───────────────────────────
+  let sparkleTimeout = null;
+  document.addEventListener('mousemove', e => {
+    if (sparkleTimeout) clearTimeout(sparkleTimeout);
+    sparkle.style.display = 'block';
+    sparkle.style.left  = `${e.pageX+5}px`;
+    sparkle.style.top   = `${e.pageY+5}px`;
+    sparkle.style.backgroundColor = getRandomColor();
+
+    sparkleTimeout = setTimeout(() => {
+      sparkle.style.display = 'none';
+    }, 100);
+  });
+
+  // ─── OPTIONAL: PAGE‐SPECIFIC JS LOADERS ──────────────────
+  // If you need to load any third‐party widget scripts (e.g. SoundCloud),
+  // you can detect by page ID here and initialize.
+  // e.g. if (currentPage === 'setup-page') initSetupTutorial();
+
+});
+
+
+// ──── Audio player avanzato ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const widget = SC.Widget(document.getElementById('sc-player'));
   const nowPlayingEl = document.getElementById('now-playing');
@@ -351,178 +562,3 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inizializza l'icona del volume
   updateVolumeIcon(volSlider ? parseInt(volSlider.value) : 80);
 });
-
-
-// main site functionality
-
-document.addEventListener('DOMContentLoaded', () => {
-    const pages     = document.querySelectorAll('.page');
-    const navLinks  = document.querySelectorAll('.navbar a[data-page-target], #error404-page a[data-page-target]');
-    const modal     = document.getElementById('gif-modal');
-    const modalImg  = document.getElementById('modal-image');
-    const modalTitle= document.getElementById('modal-title');
-    const sparkle   = document.getElementById('sparkle');
-    const audioPlayer = document.getElementById('audio-player');
-    const content   = document.getElementById('content');
-    
-    function showPage(pageId) {
-        let pageFound = false;
-        pages.forEach(page => {
-            page.style.display = (page.id === pageId) ? 'block' : 'none';
-            if (page.id === pageId) pageFound = true;
-        });
-        if (!pageFound) {
-            document.getElementById('error404-page').style.display = 'block';
-        }
-    }
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', event => {
-            event.preventDefault();
-            showPage(link.dataset.pageTarget);
-        });
-    });
-
-    showPage('home-page');
-
-    function openModal(imgSrc, title) {
-        modalImg.src        = imgSrc;
-        modalImg.alt        = title;
-        modalTitle.textContent = title;
-        modal.style.display = 'flex';
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-        modalImg.src        = '';
-        modalImg.alt        = '';
-        modalTitle.textContent = '';
-    }
-
-    content.addEventListener('click', event => {
-        const gifItem = event.target.closest('.gif-item');
-        if (gifItem) {
-            openModal(gifItem.dataset.gifSrc, gifItem.dataset.gifTitle);
-        }
-        const dl = event.target.closest('.download-button');
-        if (dl) {
-          // OPTIONAL – quick toast
-          const toast = document.createElement('div');
-          toast.className = 'toast';
-          toast.textContent = `Download di “${dl.dataset.file}” avviato…`;
-          Object.assign(toast.style, {
-            position: 'fixed', bottom: '20px', left: '50%',
-            transform: 'translateX(-50%)', padding: '6px 12px',
-            background: '#000', color: '#0ff', border: '1px solid #f0f',
-            zIndex: 9999, fontSize: '12px', borderRadius: '4px'
-          });
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 2500);
-          // NO preventDefault → browser proceeds to download
-        }
-    });
-
-    document.getElementById('close-modal-button').addEventListener('click', closeModal);
-    modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
-
-    function getRandomColor() {
-        const colors = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
-        return colors[Math.floor(Math.random()*colors.length)];
-    }
-
-    document.addEventListener('mousemove', e => {
-        sparkle.style.display = 'block';
-        sparkle.style.left    = `${e.pageX+5}px`;
-        sparkle.style.top     = `${e.pageY+5}px`;
-        sparkle.style.backgroundColor = getRandomColor();
-        const temp = document.createElement('div');
-        temp.style.position = 'absolute';
-        temp.style.left     = `${e.pageX + Math.random()*20 - 10}px`;
-        temp.style.top      = `${e.pageY + Math.random()*20 - 10}px`;
-        temp.style.width    = '8px';
-        temp.style.height   = '8px';
-        temp.style.backgroundColor = getRandomColor();
-        temp.style.borderRadius = '50%';
-        temp.style.pointerEvents = 'none';
-        temp.style.transition = 'all 0.5s ease-out';
-        temp.style.opacity = '1';
-        temp.style.zIndex = '999';
-        temp.style.transform = 'scale(1)';
-        document.body.appendChild(temp);
-        setTimeout(() => {
-            temp.style.opacity = '0';
-            temp.style.transform = 'scale(0)';
-            setTimeout(() => document.body.removeChild(temp),500);
-        },100);
-    });
-    document.addEventListener('mouseleave', () => sparkle.style.display = 'none');
-    document.addEventListener('mouseenter', () => sparkle.style.display = 'block');
-
-    audioPlayer.addEventListener('click', event => {
-        const btn = event.target.closest('button[data-audio-action]');
-    });
-
-    let titleSparkle = true;
-    setInterval(() => {
-        document.title = titleSparkle ? '★★★ Pamsite ★★★' : '✨ Pamsite ✨';
-        titleSparkle = !titleSparkle;
-    },1000);
-});
-
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   /* …your existing code… */
-
-//   /* ───────────────────────────────────────────────
-//      TIMIDITY PLAYER for the download grid
-//   ─────────────────────────────────────────────── */
-//   const timidity = new Timidity('/timidity/');
-
-//   let activeBtn = null;          // keeps track of the currently-playing button
-
-//   document.querySelectorAll('.download-thumb').forEach(thumb => {
-//     const btn   = thumb.querySelector('.play-btn');
-//     const midi  = thumb.dataset.midi;
-
-//     btn.addEventListener('click', async e => {
-//       e.stopPropagation();
-
-//       // Pause if the same button is pressed again
-//       if (btn === activeBtn){
-//         timidity.stop();
-//         btn.classList.remove('playing');
-//         btn.textContent = '▶️';
-//         activeBtn = null;
-//         return;
-//       }
-
-//       // Otherwise stop any current track, then play the new one
-//       if (activeBtn){
-//         activeBtn.classList.remove('playing');
-//         activeBtn.textContent = '▶️';
-//       }
-
-//       activeBtn = btn;
-//       btn.textContent = '⏸️';
-//       btn.classList.add('playing');
-
-//       try{
-//         await timidity.load(midi);
-//         timidity.play();
-//       }catch(err){
-//         console.error('MIDI load/play failed:', err);
-//         btn.classList.remove('playing');
-//         btn.textContent = '⚠️';
-//       }
-//     });
-//   });
-
-//   // When the track ends, reset the button UI
-//   timidity.on('ended', () => {
-//     if (activeBtn){
-//       activeBtn.classList.remove('playing');
-//       activeBtn.textContent = '▶️';
-//       activeBtn = null;
-//     }
-//   });
-// });

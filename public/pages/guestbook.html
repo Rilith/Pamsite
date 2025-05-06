@@ -1,0 +1,68 @@
+<section id="guestbook-page" class="page">
+    <div class="guestbook">
+        <div class="guestbook-title">❤️ Firma il mio Guestbook! ❤️</div>
+
+        <!-- STATISTICHE -->
+        <div id="guestbook-stats" class="guestbook-section"></div>
+
+        <!-- BARRA DI RICERCA -->
+        <div id="guestbook-search" class="guestbook-section"></div>
+
+        <!-- MESSAGGI DI FEEDBACK -->
+        <div id="guestbook-message" style="display: none;"></div>
+
+        <!-- FORM DI FIRMA -->
+        <div class="guestbook-section">
+            <!-- SELETTORE AVATAR -->
+            <div id="avatar-selector"></div>
+
+            <!-- FORM -->
+            <form class="guestbook-form" id="guestbook-form">
+
+                <input type="text" placeholder="Il tuo nome" required name="name">
+                <input type="email" placeholder="La tua email" required name="email">
+
+                <!-- ToolBar-->
+                <div id="emote-picker-wrapper">
+                    <!-- I pulsanti di formattazione verranno inseriti qui dal JavaScript -->
+                    <!-- Il contenuto degli emoticon verrà inserito qui dal JavaScript -->
+                </div>
+
+                <textarea name="message" id="message" rows="4" placeholder="Lascia un messaggio!"
+                    required></textarea>
+                <!-- PREVIEW PANE (nascosto di default) -->
+                <div id="gb-preview" style="display:none;"></div>
+                <input type="hidden" name="avatarId" id="selected-avatar">
+                <div class="action-buttons">
+                    <button type="button" id="preview-toggle" class="preview-btn">👁️ Anteprima</button>
+                    <button type="submit" id="guestbook-submit">✨ Firma il Guestbook! ✨</button>
+                </div>
+                <div id="submit-loading" style="display: none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif"
+                        alt="Loading...">
+                    <span>Invio in corso...</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- FIRME + PAGINAZIONE -->
+        <div class="guestbook-section">
+            <div id="guestbook-entries">
+                <div id="guestbook-loading" style="text-align: center; padding: 20px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif"
+                        alt="Loading...">
+                    <div style="color: #00ffff; margin-top: 10px;">Caricamento firme in corso...</div>
+                </div>
+            </div>
+            <div id="guestbook-pagination"></div>
+        </div>
+
+        <!-- CONTATORI -->
+        <div style="text-align: center; margin-top: 20px;">
+            <div style="color: #ffff00; margin-bottom: 10px;">Contatori Ospiti</div>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <img src="https://www.counter12.com/img-dW09ywcw2acb4w2Z-14.gif" alt="counter">
+            </div>
+        </div>
+    </div>
+</section>
