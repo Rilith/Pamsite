@@ -7,11 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalTitle   = document.getElementById('modal-title');
   const toastRoot    = document.body;
   const sparkle      = document.createElement('div');
-  document.body.appendChild(sparkle);
-  sparkle.id = 'sparkle';
-  sparkle.style.position = 'absolute';
-  sparkle.style.pointerEvents = 'none';
-  sparkle.style.display = 'none';
 
   // ─── PAGE CONFIGURATION ────────────────────────────────────
   const pageConfig = {
@@ -190,17 +185,43 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─── SPARKLE EFFECT (throttled) ───────────────────────────
-  let sparkleTimeout = null;
   document.addEventListener('mousemove', e => {
-    if (sparkleTimeout) clearTimeout(sparkleTimeout);
     sparkle.style.display = 'block';
-    sparkle.style.left  = `${e.pageX+5}px`;
-    sparkle.style.top   = `${e.pageY+5}px`;
+    sparkle.style.left    = `${e.pageX+5}px`;
+    sparkle.style.top     = `${e.pageY+5}px`;
     sparkle.style.backgroundColor = getRandomColor();
+    const temp = document.createElement('div');
+    temp.style.position = 'absolute';
+    temp.style.left     = `${e.pageX + Math.random()*20 - 10}px`;
+    temp.style.top      = `${e.pageY + Math.random()*20 - 10}px`;
+    temp.style.width    = '8px';
+    temp.style.height   = '8px';
+    temp.style.backgroundColor = getRandomColor();
+    temp.style.borderRadius = '50%';
+    temp.style.pointerEvents = 'none';
+    temp.style.transition = 'all 0.5s ease-out';
+    temp.style.opacity = '1';
+    temp.style.zIndex = '999';
+    temp.style.transform = 'scale(1)';
+    document.body.appendChild(temp);
+    setTimeout(() => {
+        temp.style.opacity = '0';
+        temp.style.transform = 'scale(0)';
+        setTimeout(() => document.body.removeChild(temp),500);
+    },100);
+  });
+  document.addEventListener('mouseleave', () => sparkle.style.display = 'none');
+  document.addEventListener('mouseenter', () => sparkle.style.display = 'block');
 
-    sparkleTimeout = setTimeout(() => {
-      sparkle.style.display = 'none';
-    }, 100);
+  audioPlayer.addEventListener('click', event => {
+      const btn = event.target.closest('button[data-audio-action]');
+  });
+
+  let titleSparkle = true;
+  setInterval(() => {
+      document.title = titleSparkle ? '★★★ Pamsite ★★★' : '✨ Pamsite ✨';
+      titleSparkle = !titleSparkle;
+  },1000);
   });
 
   // ─── OPTIONAL: PAGE‐SPECIFIC JS LOADERS ──────────────────
@@ -208,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // you can detect by page ID here and initialize.
   // e.g. if (currentPage === 'setup-page') initSetupTutorial();
 
-});
 
 
 // ──── Audio player avanzato ────────────────────────────────────
