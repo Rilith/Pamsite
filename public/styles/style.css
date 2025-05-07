@@ -6,17 +6,41 @@ body {
     background-size: repeat;           /* or cover */
     background-attachment: fixed;
     font-family: "Comic Sans MS", cursive, sans-serif;
-    color: #ff00ff;
+    color: var(--pink);
     text-align: center;
     cursor: url('https://cur.cursors-4u.net/toons/too-10/too1031.cur'), auto;
     margin: 0;
     padding: 0;
 }
 
+/*=============================================
+=            CSS CUSTOM PROPERTIES            =
+=============================================*/
+/*
+  Define the colour palette only once and reuse it everywhere via
+  the CSS-variables declared below.  This massively reduces the
+  maintenance cost (e.g. performing a re-branding becomes a simple
+  variable swap) and avoids the repetition of magic hex values.
+
+  NOTE:  Only variables that are used many times across the file
+  have been introduced here.  Less common colours were intentionally
+  left hard-coded to keep the palette focused and meaningful.
+*/
+
+:root {
+    --pink:  #ff00ff;
+    --cyan:  #00ffff;
+    --deep-blue: #000080;
+    --dark-blue: #000060;
+    --yellow: #ffff00;
+    --purple: #cc00cc;
+    --black: #000000;
+}
+
 /* Main headings */
 h1 {
     font-size: 36px;
-    text-shadow: 3px 3px 5px #00ffff;
+    text-shadow: 3px 3px 5px var(--cyan);
     margin: 0;
     animation: rainbow 5s infinite;
 }
@@ -40,9 +64,24 @@ h1 {
     to   { box-shadow: 0 0 25px #00ffff, inset 0 0 30px rgba(255, 0, 255, 0.7); }
 }
 
-@keyframes pulse           { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
-@keyframes pulse-opacity    { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
-@keyframes pulse-border     { 0% { box-shadow: 0 0 15px #00ffff; } 50% { box-shadow: 0 0 25px #00ffff; } 100% { box-shadow: 0 0 15px #00ffff; } }
+/* Single pulse animation reused for both opacity-based effects */
+@keyframes pulse {
+    0%   { opacity: 0.7; }
+    50%  { opacity: 1;   }
+    100% { opacity: 0.7; }
+}
+
+/* Alias kept for backwards-compatibility. */
+@keyframes pulse-opacity {
+    0%   { opacity: 0.7; }
+    50%  { opacity: 1;   }
+    100% { opacity: 0.7; }
+}
+@keyframes pulse-border {
+    0%   { box-shadow: 0 0 15px var(--cyan); }
+    50%  { box-shadow: 0 0 25px var(--cyan); }
+    100% { box-shadow: 0 0 15px var(--cyan); }
+}
 
 @keyframes shine {
     0%  { left: -100%; }
@@ -59,9 +98,9 @@ h1 {
 #container {
     width: 800px;
     margin: 0 auto;
-    background-color: #000080;
-    border: 5px solid #ff00ff;
-    box-shadow: 0 0 20px #00ffff;
+    background-color: var(--deep-blue);
+    border: 5px solid var(--pink);
+    box-shadow: 0 0 20px var(--cyan);
     padding: 10px;
     position: relative;
 }
@@ -77,7 +116,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 20px;
     margin: 10px 0 20px;
-    border: 3px dashed #00ffff;
+    border: 3px dashed var(--cyan);
 }
 
 #footer {
@@ -119,7 +158,7 @@ h1 {
 
 .navbar a:hover {
     background-color: #00ffff;
-    color: #ff00ff;
+    color: var(--pink);
     transform: scale(1.1);
 }
 /* Active nav link styling */
@@ -137,6 +176,7 @@ h1 {
     position: fixed;
     top: 0px;
     right: 10px;
+    z-index: 9999; 
 }
 
 .construction {
@@ -444,7 +484,7 @@ h1 {
     text-align: center;
     font-weight: bold;
     border-radius: 10px;
-    animation: pulse-opacity 2s infinite;
+    animation: pulse 2s infinite;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 .message-success {
@@ -1379,15 +1419,16 @@ h1 {
  * 1. COMIC SANS MS WEBFONT    *
  *******************************/
  @font-face {
-    font-family: "Comic Sans MS Web";
-    src: url("https://cdn.jsdelivr.net/gh/fontmirror/comic-sans-ms/Comic%20Sans%20MS.woff2") format("woff2");
-    font-display: swap;
+    font-family: 'Comic Sans MS';
+    src: url('/fonts/ComicSansMS.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
   }
   
   html { box-sizing: border-box; scroll-behavior: smooth; }
   *, *:before, *:after { box-sizing: inherit; }
   body {
-    font-family: "Comic Sans MS Web", "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     line-height: 1.5;
   }
   
@@ -1437,52 +1478,6 @@ h1 {
   .avatar-option.selected img { transform: scale(1.15); }
   
   /*********************************************
-   * 7. AUDIO‑PLAYER  (DESKTOP DEFAULT)        *
-   *********************************************/
-    #audio-player {
-    max-width: 100%;
-  } 
-  
-  /*********************************************
-   * 8. BADGE “UNDER CONSTRUCTION”             *
-   *********************************************/
-  .construction-badge { z-index: 9999; }
-  
-  /*********************************************
-   * 9. GUESTBOOK BASE STYLE                   *
-   *********************************************/
-  .guestbook-section {
-    background: rgba(0,0,60,0.55);
-    border: 3px dashed #ff00ff;
-    padding: 20px 24px;
-    margin-inline: auto;
-    max-width: 780px;
-    border-radius: 14px;
-    box-shadow: 0 0 6px rgba(255,0,255,0.4);
-  }
-  
-  .guestbook-form,
-  .guestbook-entry {
-    border: 3px dashed #ff00ff;
-    padding: 18px 20px;
-    margin-block: 14px;
-    border-radius: 12px;
-    background: rgba(0,0,40,0.4);
-  }
-  
-  .guestbook-form input,
-  .guestbook-form textarea {
-    width: 100%;
-    display: block;
-    margin-block: 8px;
-    font-size: 16px;
-    padding: 6px 8px;
-    border: 2px solid #ff00ff;
-    background: rgba(255,255,255,0.9);
-    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
-  }
-  
-  /*********************************************
    * 10. MEDIA‑QUERY MOBILE ≤ 600 PX           *
    *********************************************/
   @media (max-width: 600px) {
@@ -1510,6 +1505,13 @@ h1 {
       border-radius: 0;
       z-index: 2000;
     }
+
+    #content {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 5px;
+        margin: 10px 0 20px;
+        border: 3px dashed var(--cyan);
+    }
   
     /* Nascondi badge under‑construction */
     .construction-badge { display: none; }
@@ -1518,6 +1520,18 @@ h1 {
     #setup-page img { width: 100%; }
   
     /* 📖 GUESTBOOK mobile-friendly */
+
+    .guestbook {
+        background-color: #000060;
+        background-image: url('https://i.gifer.com/3IsS.gif');
+        background-repeat: repeat;
+        padding: 10px;
+        border: 0px ridge #ffff00;
+        border-radius: 8px;
+        box-shadow: 0 0 15px #00ffff, inset 0 0 20px rgba(255, 0, 255, 0.5);
+        animation: glow 2s infinite alternate;
+    }
+
     .guestbook-section {
       margin-inline: 0;
       padding: 14px 12px;
