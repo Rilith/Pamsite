@@ -1,49 +1,81 @@
 /*=============================================
-=            GLOBAL / BASE STYLES             =
+=          CSS CUSTOM PROPERTIES              =
 =============================================*/
+:root {
+    --pink: #ff00ff;
+    --cyan: #00ffff;
+    --deep-blue: #000080;
+    --dark-blue: #000060; /* style.css specific dark blue */
+    --yellow: #ffff00;
+    --purple: #cc00cc;
+    --black: #000000;
+    --white: #ffffff;
+    --bright-green: #00ff00; /* Added for header/footer borders */
+
+    /* Added for responsive gap calculations */
+    --gif-grid-gap: 10px;
+    --download-grid-gap-default: 15px;
+    --download-grid-gap-mq: 100px;
+}
+
+/*=============================================
+=               FONT IMPORTS                  =
+=============================================*/
+@font-face {
+    font-family: 'Comic Sans MS';
+    src: url('/fonts/ComicSansMS.woff2') format('woff2'); /* Ensure this path is correct */
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*=============================================
+=           GLOBAL / BASE STYLES              =
+=============================================*/
+html {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
 body {
     background-image: url('https://i.gifer.com/76YS.gif');
-    background-size: repeat;           /* or cover */
+    background-size: repeat;
     background-attachment: fixed;
     font-family: "Comic Sans MS", cursive, sans-serif;
     color: var(--pink);
     text-align: center;
     cursor: url('https://cur.cursors-4u.net/toons/too-10/too1031.cur'), auto;
     margin: 0;
-    padding: 0;
+    padding: 0; /* Base padding-bottom will be added in MQ if needed */
+    line-height: 1.5;
+}
+
+/* Responsive base for images and embeds */
+img,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
 }
 
 /*=============================================
-=            CSS CUSTOM PROPERTIES            =
+=                TYPOGRAPHY                   =
 =============================================*/
-/*
-  Define the colour palette only once and reuse it everywhere via
-  the CSS-variables declared below.  This massively reduces the
-  maintenance cost (e.g. performing a re-branding becomes a simple
-  variable swap) and avoids the repetition of magic hex values.
-
-  NOTE:  Only variables that are used many times across the file
-  have been introduced here.  Less common colours were intentionally
-  left hard-coded to keep the palette focused and meaningful.
-*/
-
-:root {
-    --pink:  #ff00ff;
-    --cyan:  #00ffff;
-    --deep-blue: #000080;
-    --dark-blue: #000060;
-    --yellow: #ffff00;
-    --purple: #cc00cc;
-    --black: #000000;
-}
-
 /* Main headings */
 h1 {
-    font-size: 36px;
+    font-size: clamp(1.8rem, 5vw, 2.25rem); /* Scalable typography */
     text-shadow: 3px 3px 5px var(--cyan);
     margin: 0;
     animation: rainbow 5s infinite;
 }
+
+h2 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); }
+h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 
 /*=============================================
 =            ANIMATIONS (@keyframes)          =
@@ -60,23 +92,16 @@ h1 {
 }
 
 @keyframes glow {
-    from { box-shadow: 0 0 15px #00ffff, inset 0 0 20px rgba(255, 0, 255, 0.5); }
-    to   { box-shadow: 0 0 25px #00ffff, inset 0 0 30px rgba(255, 0, 255, 0.7); }
+    from { box-shadow: 0 0 15px var(--cyan), inset 0 0 20px rgba(255, 0, 255, 0.5); }
+    to   { box-shadow: 0 0 25px var(--cyan), inset 0 0 30px rgba(255, 0, 255, 0.7); }
 }
 
-/* Single pulse animation reused for both opacity-based effects */
 @keyframes pulse {
     0%   { opacity: 0.7; }
     50%  { opacity: 1;   }
     100% { opacity: 0.7; }
 }
 
-/* Alias kept for backwards-compatibility. */
-@keyframes pulse-opacity {
-    0%   { opacity: 0.7; }
-    50%  { opacity: 1;   }
-    100% { opacity: 0.7; }
-}
 @keyframes pulse-border {
     0%   { box-shadow: 0 0 15px var(--cyan); }
     50%  { box-shadow: 0 0 25px var(--cyan); }
@@ -89,206 +114,328 @@ h1 {
     100%{ left: 100%;  }
 }
 
-@keyframes spin     { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes blinker  { 50% { opacity: 0; } }
+@keyframes spin    { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes blinker { 50% { opacity: 0; } }
+
 
 /*=============================================
 =            GENERAL LAYOUT                   =
 =============================================*/
 #container {
-    width: 800px;
-    margin: 0 auto;
+    max-width: 800px; 
+    width: 90%;       
+    margin: 0 auto;   
     background-color: var(--deep-blue);
-    border: 5px solid var(--pink);
+    border: 5px solid var(--pink); /* Fixed border size iconic to Y2K */
     box-shadow: 0 0 20px var(--cyan);
-    padding: 10px;
+    padding: 0.625rem; /* 10px */
     position: relative;
 }
 
 #header {
-    background-color: #000000;
-    padding: 20px;
-    border: 3px solid #00ff00;
-    margin-bottom: 20px;
+    background-color: var(--black);
+    padding: 1.25rem; /* 20px */
+    border: 3px solid var(--bright-green);
+    margin-bottom: 1.25rem; /* 20px */
 }
 
 #content {
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    margin: 10px 0 20px;
+    padding: 1.25rem; /* 20px */
+    margin: 0.625rem 0 1.25rem; /* 10px 0 20px */
     border: 3px dashed var(--cyan);
 }
 
 #footer {
-    background-color: #000000;
-    padding: 10px;
+    background-color: var(--black);
+    padding: 0.625rem; /* 10px */
     text-align: center;
-    border-top: 3px solid #00ff00;
-    font-size: 12px;
-    color: #00ffff;
-}
-
-/* Welcome text and visitor counter */
-.welcome {
-    font-size: 24px;
-    color: #ffff00;
-    text-align: center;
-    margin-bottom: 20px;
+    border-top: 3px solid var(--bright-green);
+    font-size: 0.75rem; /* 12px */
+    color: var(--cyan);
 }
 
 /*=============================================
-=            MAIN NAVBAR                      =
+=               UI COMPONENTS                 =
 =============================================*/
+
+.welcome {
+    font-size: 1.5rem; /* 24px */
+    color: var(--yellow);
+    text-align: center;
+    margin-bottom: 1.25rem; /* 20px */
+}
+
 .navbar {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem; /* 20px */
     flex-wrap: wrap;
-    gap: .5rem; 
+    gap: 0.5rem; /* 8px */
 }
+
 .navbar a {
-    background-color: #ff00ff;
-    color: #ffffff;
-    margin: 0 10px;
-    padding: 5px 15px;
+    background-color: var(--pink);
+    color: var(--white);
+    margin: 0 0.625rem; /* 0 10px */
+    padding: 0.3125rem 0.9375rem; /* 5px 15px */
     text-decoration: none;
     font-weight: bold;
-    border: 2px solid #00ffff;
+    border: 2px solid var(--cyan);
     transition: all 0.3s;
 }
 
-.navbar a:hover {
-    background-color: #00ffff;
+.navbar a:hover,
+.navbar a.active { 
+    background-color: var(--cyan);
     color: var(--pink);
     transform: scale(1.1);
 }
-/* Active nav link styling */
-.navbar a.active {
-    background-color: #00ffff;
-    color: #ff00ff;
-    transform: scale(1.1);
-}
 
-/*=============================================
-=            DECORATIVE ELEMENTS              =
-=============================================*/
-/* “Site under construction” badge */
 .construction-badge {
     position: fixed;
-    top: 0px;
-    right: 10px;
-    z-index: 9999; 
+    top: 0; /* Fixed positioning */
+    right: 0.625rem; /* 10px */
+    z-index: 9999;
 }
 
 .construction {
     text-align: center;
-    margin: 20px 0;
+    margin: 1.25rem 0; /* 20px */
 }
 
 .construction img {
-    width: 200px;
+    width: 200px; /* Fixed, iconic size typical for Y2K */
 }
 
-/* Sparkle/follow‑cursor */
 #sparkle {
     position: absolute;
     pointer-events: none;
     z-index: 1000;
-    width: 20px;
+    width: 20px; /* Small fixed size */
     height: 20px;
-    display: none;
+    display: none; 
 }
 
-/*=============================================
-=            GIF SECTION                      =
-=============================================*/
 .gif-section {
-    margin: 20px 0;
-    padding: 15px;
-    border: 2px solid #ff00ff;
-    background-color: rgba(0, 0, 128, 0.7);
+    margin: 1.25rem 0; /* 20px */
+    padding: 0.9375rem; /* 15px */
+    border: 2px solid var(--pink);
+    background-color: rgba(0, 0, 128, 0.7); 
 }
 
 .gif-header {
-    color: #00ffff;
-    font-size: 24px;
+    color: var(--cyan);
+    font-size: 1.5rem; /* 24px, can also use clamp if more range needed */
     text-align: center;
-    margin: -8px 0 10px;
-    text-shadow: 2px 2px 4px #ff00ff;
+    margin: -0.5rem 0 0.625rem; /* -8px 0 10px */
+    text-shadow: 2px 2px 4px var(--pink);
 }
 
 .gif-gifs {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: var(--gif-grid-gap); /* 10px */
 }
 
 .gif-item {
-    border: 2px solid #ff00ff;
-    padding: 5px;
-    background-color: #000080;
+    border: 2px solid var(--pink);
+    padding: 0.3125rem; /* 5px */
+    background-color: var(--deep-blue);
     text-align: center;
     transition: all 0.3s;
+    /* width is determined by flex behavior or overridden in media query */
 }
-
 
 .gif-item:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 15px #00ffff;
+    box-shadow: 0 0 15px var(--cyan);
 }
-  
+
 .gif-item img {
-    width: 100%; /* riempie la card */
-    height: 180px;
-    object-fit: cover;  /* ritaglia se serve */
-    image-rendering: auto;
-  }
+    width: 100%;
+    height: 180px; /* Fixed height for Y2K, adjusted in MQ */
+    object-fit: cover;
+}
 
 .gif-title {
-    color: #00ffff;
-    font-size: 14px;
-    margin-top: 5px;
+    color: var(--cyan);
+    font-size: 0.875rem; /* 14px */
+    margin-top: 0.3125rem; /* 5px */
 }
 
-/* "About me" section */
 .about-me {
-    color: #ffffff;
+    color: var(--white);
     line-height: 1.6;
 }
 
-/*=============================================
-=            PAGES AND blink/twink            =
-=============================================*/
-#home-page { display: block; }
-.blink { animation: blinker 1s linear infinite; }
+.download-section {
+    margin-bottom: 1.5625rem; /* 25px */
+    border: 2px solid var(--cyan);
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.625rem; /* 10px */
+}
 
-/*=============================================
-=            EMOTES & TOOLBAR                 =
-=============================================*/
-/* Picker wrapper */
-#emote-picker {
+.download-header {
+    background-color: var(--deep-blue);
+    color: var(--yellow);
+    text-align: center;
+    padding: 0.3125rem; /* 5px */
+    font-size: 1.25rem; /* 20px */
+    margin: -0.125rem 0 0.625rem; /* -2px 0 10px, subtle overlap */
+    border: 1px solid var(--pink);
+}
+
+.download-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--download-grid-gap-default); /* 15px */
+    justify-content: center;
+}
+
+.download-item {
+    width: 150px; /* Fixed width for Y2K grid, overridden in MQ */
+    background: var(--dark-blue); 
+    border: 2px solid var(--pink);
+    padding: 0.625rem; /* 10px */
+    text-align: center;
+    transition: transform 0.3s;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 5px;
 }
-.emote-in-msg { vertical-align: text-bottom; }
 
+.download-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px var(--cyan);
+}
 
-/* Individual buttons */
+.download-thumb {
+    width: 100%;
+    height: 90px; /* Fixed height */
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.375rem; /* 6px */
+}
+
+.download-thumb img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.download-title {
+    color: var(--cyan);
+    margin: 0.3125rem 0; /* 5px */
+    font-weight: bold;
+}
+
+.download-info {
+    color: var(--white);
+    font-size: 0.75rem; /* 12px */
+    margin-bottom: 0.3125rem; /* 5px */
+}
+
+.download-button {
+    margin-top: auto; 
+    display: block;
+    background-color: var(--pink);
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.1875rem 0.5rem; /* 3px 8px */
+    border: 1px solid var(--cyan);
+    font-weight: bold;
+}
+
+.download-button:hover {
+    background-color: var(--cyan);
+    color: var(--pink);
+}
+
+.software-container {
+    background-color: rgba(0,0,0,0.7);
+    padding: 0.9375rem; /* 15px */
+    border: 2px dashed var(--cyan);
+    margin-bottom: 1.25rem; /* 20px */
+    text-align: center;
+}
+
+.software-title {
+    color: var(--yellow);
+    font-size: 1.25rem; /* 20px */
+    margin-bottom: 0.625rem; /* 10px */
+}
+
+.software-list {
+    display: inline-block; 
+    margin: 0 auto; 
+}
+
+.software-item {
+    display: inline-flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px; /* Fixed width for small iconic items */
+    background-color: var(--dark-blue); 
+    border: 1px solid var(--cyan);
+    padding: 0.5rem; /* 8px */
+    box-sizing: border-box;
+    margin: 0.125rem; /* 2px */
+    vertical-align: top; 
+}
+
+.software-item img {
+    width: 32px; /* Fixed icon size */
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 0.375rem; /* 6px */
+}
+
+.software-item figcaption {
+    margin: 0;
+    font-size: 0.75rem; /* 12px */
+    color: var(--white);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Emotes & Toolbar (from Guestbook context, kept for structural integrity) */
+#emote-picker { 
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem; /* 10px */
+    padding: 0.3125rem; /* 5px */
+}
+
+.emote-in-msg {
+    vertical-align: text-bottom;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 0.3125rem; /* 5px */
+    flex-wrap: wrap;
+    padding: 0.3125rem; /* 5px */
+}
+
 .toolbar-btn {
-    background-color: #ffffff;
-    color: #333;
+    background-color: var(--white); 
+    color: #333; 
     border: 1px solid #999;
-    padding: 8px;
+    padding: 8px; /* Fixed padding for specific button design */
     cursor: pointer;
     border-radius: 4px;
     user-select: none;
     transition: 0.2s;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    width: 26px;
+    font-family: Arial, sans-serif; /* Overrides global Comic Sans for UI */
+    font-size: 14px; /* Fixed font size for specific button design */
+    width: 26px; /* Fixed dimensions for specific button design */
     height: 26px;
     display: flex;
     justify-content: center;
@@ -298,154 +445,185 @@ h1 {
 .toolbar-btn[data-tag="b"] { font-weight: bold; }
 .toolbar-btn[data-tag="i"] { font-style: italic; }
 .toolbar-btn[data-tag="quote"] { font-weight: normal; }
+
 .toolbar-btn:hover { background-color: #f0f0f0; border-color: #666; }
 .toolbar-btn:active { background-color: #e0e0e0; border-style: inset; }
 
-.toolbar-group { display: flex; gap: 5px; flex-wrap: wrap; padding: 5px; }
-
 .action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 0.625rem; /* 10px */
+    margin-top: 0.9375rem; /* 15px */
     justify-content: space-between;
 }
+
 .preview-btn {
-    background: linear-gradient(to bottom, #000080, #000060);
-    color: #ffffff;
-    border: 3px outset #00ffff;
-    padding: 10px;
+    background: linear-gradient(to bottom, var(--deep-blue), var(--dark-blue));
+    color: var(--white);
+    border: 3px outset var(--cyan);
+    padding: 0.625rem; /* 10px */
     font-weight: bold;
     cursor: pointer;
     border-radius: 8px;
     transition: all 0.3s;
     flex: 1;
 }
+
 .preview-btn:hover {
-    background: linear-gradient(to bottom, #0000a0, #000080);
+    background: linear-gradient(to bottom, #0000a0, var(--deep-blue)); /* Slightly lighter blue */
     transform: scale(1.05);
 }
 
-/* Scrollable emote wrapper */
 #emote-picker-wrapper {
     display: flex;
     flex-direction: column;
-    max-height: 250px;
-    border: 1px solid #666;
+    max-height: 15.625rem; /* 250px */
+    border: 1px solid #666; 
     background-color: rgba(0, 0, 0, 0.3);
-    margin-top: 5px;
+    margin-top: 0.3125rem; /* 5px */
     border-radius: 5px;
-    overflow: hidden;
+    overflow: hidden; 
 }
-#emote-picker-wrapper .format-group {
+
+#emote-picker-wrapper .format-group { 
     background-color: rgba(0, 0, 0, 0.5);
     border-bottom: 1px solid #666;
-    padding: 8px;
+    padding: 0.5rem; /* 8px */
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-    gap: 5px;
-    flex-shrink: 0;
-    width: 100%;
+    gap: 0.3125rem; /* 5px */
+    flex-shrink: 0; 
+    width: 100%; 
 }
+
 .format-buttons {
     display: flex;
-    gap: 5px;
+    gap: 0.3125rem; /* 5px */
     justify-content: flex-start;
-    margin-left: 10px;
+    margin-left: 0.625rem; /* 10px, or use padding on parent */
 }
+
 #emote-picker-wrapper::-webkit-scrollbar { width: 10px; }
 #emote-picker-wrapper::-webkit-scrollbar-track {
-    background: #000040;
+    background: var(--dark-blue); 
     border-radius: 5px;
 }
 #emote-picker-wrapper::-webkit-scrollbar-thumb {
-    background: #ff00ff;
+    background: var(--pink);
     border-radius: 5px;
-    border: 2px solid #000040;
+    border: 2px solid var(--dark-blue); 
 }
 
-/* Emote tabs */
 .emote-tabs {
     display: flex;
     background-color: rgba(0, 0, 0, 0.5);
-    border-bottom: 1px solid #666;
-    overflow-x: auto;
+    border-bottom: 1px solid #666; 
+    overflow-x: auto; 
     flex-shrink: 0;
     width: 100%;
 }
+
 .emote-tab-btn {
     background: none;
     border: none;
-    color: #ccc;
-    padding: 6px 12px;
+    color: #ccc; 
+    padding: 0.375rem 0.75rem; /* 6px 12px */
     cursor: pointer;
-    font-size: 12px;
+    font-size: 0.75rem; /* 12px */
     position: relative;
     transition: all 0.2s;
+    white-space: nowrap; 
 }
-.emote-tab-btn:hover { color: #ffffff; background-color: rgba(255,255,255,0.1); }
-.emote-tab-btn.active { color: #00ffff; font-weight: bold; }
+
+.emote-tab-btn:hover { color: var(--white); background-color: rgba(255,255,255,0.1); }
+.emote-tab-btn.active { color: var(--cyan); font-weight: bold; }
 .emote-tab-btn.active::after {
     content: '';
     position: absolute;
-    bottom: -1px; left: 0; right: 0;
-    height: 2px; background-color: #00ffff;
+    bottom: -1px; 
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--cyan);
 }
 
-/* Emote tab content */
-.emote-content { flex-grow: 1; overflow-y: auto; padding: 8px; width: 100%; }
+.emote-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.5rem; /* 8px */
+    width: 100%; 
+}
+
 .emote-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 0.375rem; /* 6px */
     width: 100%;
 }
+
 .emote-btn {
     cursor: pointer;
-    width: 24px; height: 24px;
+    width: 24px; /* Fixed size for emote icons */
+    height: 24px;
     border: 1px solid transparent;
     border-radius: 3px;
-    padding: 2px;
-    object-fit: contain;
-    max-width: 100%; max-height: 100%;
+    padding: 2px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; 
 }
-.emote-btn img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.emote-btn:hover { border-color: #00ffff; background-color: rgba(0,255,255,0.1); }
-.emote-empty { color: #aaa; font-style: italic; padding: 10px; text-align: center; }
+.emote-btn img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block; 
+}
+.emote-btn:hover {
+    border-color: var(--cyan);
+    background-color: rgba(0,255,255,0.1);
+}
 
-/* Message preview */
+.emote-empty {
+    color: #aaa; 
+    font-style: italic;
+    padding: 0.625rem; /* 10px */
+    text-align: center;
+    width: 100%; 
+}
+
 #gb-preview {
-    margin-top: 15px;
-    padding: 15px;
-    background: rgba(0,0,80,.5);
-    border: 3px dashed #00ffff;
-    color: #ffffff;
+    margin-top: 0.9375rem; /* 15px */
+    padding: 0.9375rem; /* 15px */
+    background: rgba(0,0,80,.5); /* var(--deep-blue) with alpha */
+    border: 3px dashed var(--cyan);
+    color: var(--white);
     border-radius: 10px;
     position: relative;
+    text-align: left; 
 }
+
 #gb-preview:before {
     content: "✨ Preview ✨";
     position: absolute;
-    top: -10px;
+    top: -0.625rem; /* -10px, adjust for border overlap */
     left: 50%;
     transform: translateX(-50%);
-    background: #000080;
-    padding: 2px 10px;
-    color: #00ffff;
-    font-size: 14px;
-    border: 1px solid #ff00ff;
+    background: var(--deep-blue);
+    padding: 0.125rem 0.625rem; /* 2px 10px */
+    color: var(--cyan);
+    font-size: 0.875rem; /* 14px */
+    border: 1px solid var(--pink);
     border-radius: 10px;
 }
+
 #gb-preview blockquote {
-    border-left:4px solid #ff00ff;
-    margin:6px 0;
-    padding:6px 8px;
-    background:rgba(255,0,255,.1);
+    border-left: 4px solid var(--pink);
+    margin: 0.375rem 0 0.375rem 0.625rem; /* 6px 0 6px 10px */
+    padding: 0.375rem 0.5rem; /* 6px 8px */
+    background: rgba(255,0,255,.1); /* var(--pink) with alpha */
 }
 
-/*=============================================
-=            GIF MODAL                        =
-=============================================*/
 .modal {
     display: none;
     position: fixed;
@@ -457,240 +635,94 @@ h1 {
     justify-content: center;
     flex-direction: column;
 }
+
+
+
 .modal-content {
-    background-color: #000080;
-    border: 3px solid #ff00ff;
-    padding: 20px;
+    background-color: var(--deep-blue);
+    border: 3px solid var(--pink);
+    padding: 1.25rem; /* 20px */
     max-width: 80%;
+    max-height: 90vh; 
     text-align: center;
+    overflow-y: auto; 
 }
+
 .modal-title {
-    color: #00ffff;
-    font-size: 24px;
-    margin-bottom: 10px;
+    color: var(--cyan);
+    font-size: 1.5rem; /* 24px */
+    margin-bottom: 0.625rem; /* 10px */
 }
+
 .modal-image {
-    max-width: 90%;
-    max-height: 70vh;
-    border: 2px solid #00ffff;
+    max-width: 100%; 
+    max-height: 70vh; 
+    border: 2px solid var(--cyan);
+    display: block; 
+    margin: 0 auto 0.9375rem; /* 15px below image */
 }
+
 .close-button {
-    background-color: #ff00ff;
-    color: #ffffff;
+    background-color: var(--pink);
+    color: var(--white);
     border: none;
-    padding: 10px 20px;
-    margin-top: 15px;
+    padding: 0.625rem 1.25rem; /* 10px 20px */
     font-weight: bold;
     cursor: pointer;
 }
+
 .close-button:hover {
-    background-color: #00ffff;
-    color: #ff00ff;
+    background-color: var(--cyan);
+    color: var(--pink);
 }
 
 /*=============================================
-=            DOWNLOAD SECTION                 =
+=            UTILITY CLASSES                  =
 =============================================*/
-.download-section {
-    margin-bottom: 25px;
-    border: 2px solid #00ffff;
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 10px;
-}
-.download-header {
-    background-color: #000080;
-    color: #ffff00;
-    text-align: center;
-    padding: 5px;
-    font-size: 20px;
-    margin: -2px 0 10px;
-    border: 1px solid #ff00ff;
-}
-.download-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
-.download-item {
-    width: 150px;             /* stesso valore di prima */
-    background: #000040;
-    border: 2px solid #ff00ff;
-    padding: 10px;
-    text-align: center;
-    transition: transform 0.3s;
-    display: flex;            /* ↑ colonna flessibile per ancorare il pulsante in basso */
-    flex-direction: column;
-}
-.download-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #00ffff;
-}
-
-.download-item img {
-    width: 100%;        /* adatta l’immagine alla larghezza del riquadro … */
-    max-width: 100px;   /* … ma non andare oltre 100 px */
-    height: auto;       /* mantieni le proporzioni */
-    object-fit: cover;  /* riempi bene il riquadro anche se l’aspect-ratio non coincide */
-}
-
-.download-title { color: #00ffff; margin: 5px 0; font-weight: bold; }
-.download-info  { color: #ffffff; font-size: 12px; margin-bottom: 5px; }
-.download-button {
-    margin-top: auto; 
-    display: block;
-    background-color: #ff00ff;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 3px 8px;
-    border: 1px solid #00ffff;
-    margin-top: 5px;
-    font-weight: bold;
-}
-.download-button:hover {
-    background-color: #00ffff;
-    color: #ff00ff;
-}
-
-.download-thumb {
-    width: 100%;
-    height: 90px;             /* altezza fissa = riquadri identici */
-    overflow: hidden;         /* taglia l’eccesso senza deformare */
-    position: relative;
-    margin-bottom: 6px;
-}
-
-/* 📸  IMMAGINE dentro il contenitore  */
-.download-thumb img {
-    position: absolute;    /* esce dal flow normale */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* centro perfetto */
-    min-width: 100%;       /* riempi l’asse più corto …  */
-    min-height: 100%;      /* … fino a coprire tutto    */
-    object-fit: cover;     /* mantiene le proporzioni   */
-    pointer-events: none;  /* evita click sull’immagine */
-}
+#home-page { display: block; } /* Could be a class .page-visible */
+.blink { animation: blinker 1s linear infinite; }
 
 /*=============================================
-=            SETUP / SOFTWARE SECTION         =
+=               MEDIA QUERIES                 =
 =============================================*/
-.software-container {
-    background-color: rgba(0,0,0,0.7);
-    padding: 15px;
-    border: 2px dashed #00ffff;
-    margin-bottom: 20px;
-    text-align: center; /* Center all content in container */
-  }
-  .software-title {
-    color: #ffff00;
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .software-list {
-    /* Remove justify-content to prevent spreading items */
-    display: inline-block; /* Changed to inline-block instead of flex */
-    text-align: center;
-    margin: 0 auto;
-  }
- 
-  .software-item {
-    display: inline-flex; /* Changed to inline-flex */
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    background-color: #000040;
-    border: 1px solid #00ffff;
-    padding: 8px;
-    box-sizing: border-box;
-    margin: 2px; /* Small margin instead of gap */
-    vertical-align: top; /* Align tops of items */
-  }
-  .software-item img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    margin-bottom: 6px;
-  }
-  .software-item figcaption {
-    margin: 0;
-    font-size: 12px;
-    color: #ffffff;
-    text-align: center;
-    line-height: 1.2;
-  }
-
-
-
-
-/*******************************
- * 1. COMIC SANS MS WEBFONT    *
- *******************************/
- @font-face {
-    font-family: 'Comic Sans MS';
-    src: url('/fonts/ComicSansMS.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
-  html { box-sizing: border-box; scroll-behavior: smooth; }
-  *, *:before, *:after { box-sizing: inherit; }
-  body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    line-height: 1.5;
-  }
-  
-  /*********************************************
-   * 2. CONTENITORE FLUIDO & MEDIA             *
-   *********************************************/
-  #container { max-width: 800px; width: 90%; margin-inline: auto; }
-  img, video, iframe { max-width: 100%; height: auto; }
-  
-  /*********************************************
-   * 3. TIPOGRAFIA SCALABILE                   *
-   *********************************************/
-  h1 { font-size: clamp(1.8rem, 5vw, 2.25rem); }
-  h2 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); }
-  h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
-  
-  /*********************************************
-   * 4. NAVBAR & LAYOUT FLESSIBILI             *
-   *********************************************/
-
-  
-  /*********************************************
-   * 10. MEDIA‑QUERY MOBILE ≤ 600 PX           *
-   *********************************************/
-  @media (max-width: 600px) {
+@media (max-width: 1450px) {
     body {
-      font-size: 15px;
-      /* spazio per il player fisso in basso */
-      padding-bottom: 90px;
+        /* If you want to change the base font size for this breakpoint, uncomment: */
+        /* font-size: 0.9375rem; */ /* This would be 15px if root is 16px */
+        padding-bottom: 5.625rem; /* 90px: Space for audio player when it becomes static */
     }
-  
-    .navbar a { font-size: 14px; margin: 4px 6px; }
-  
-    /* GIF & download in 2 colonne */
-    .gif-item, .download-item { width: 48%; }
-    .download-grid { gap: 10px; }
-    .gif-item img { height: 140px; }
-  
-    /* Avatar più piccoli */
-    .avatar-option img { width: 60px; height: 60px; }
 
-    #content {
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 5px;
-        margin: 10px 0 20px;
-        border: 3px dashed var(--cyan);
+    /* #container {
+        border-radius: 0; Example if full-width feel is desired on smaller screens 
+    } */
+
+    #content { 
+        padding: 0.625rem; /* 10px */
     }
-  
-    /* Nascondi badge under‑construction */
-    .construction-badge { display: none; }
-  
-    /* Setup immagini full‑width */
-    #setup-page img { width: 100%; }
-  }
-  
+
+    .navbar a {
+        font-size: 0.875rem; /* 14px */
+        margin: 0.25rem 0.375rem; /* 4px 6px */
+        padding: 0.25rem 0.625rem; /* 4px 10px */
+    }
+
+    .gif-item {
+        width: calc(50% - (var(--gif-grid-gap) / 2)); 
+    }
+    
+
+    .download-item {
+        width: calc(50% - (var(--download-grid-gap-mq) / 2));
+    }
+    .download-grid {
+        gap: var(--download-grid-gap-mq); /* Use the 10px gap for this breakpoint */
+    }
+
+    .gif-item img {
+        height: 140px; /* Adjusted fixed height for smaller cards */
+    }
+
+    .construction-badge {
+        display: none; /* Hide fixed badge that might obstruct view on smaller screens */
+    }
+}
