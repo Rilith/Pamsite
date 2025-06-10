@@ -1,6 +1,7 @@
 # ✨ Pamsite! ✨
 
 Welcome to the source code repository for **Pamsite!** - a lovingly crafted personal website inspired by the golden era of the early 2000s internet (think Geocities, Angelfire, and blinking text!). This site is a nostalgic trip back in time, celebrating anime, gaming, and the unique aesthetic of personal homepages from decades past.
+The main entry point resides in `public/index.html`.
 
 ---
 
@@ -35,7 +36,7 @@ This website is built with the classics, intentionally avoiding modern framework
 
 ---
 
-3.  **Open `index.html`:** Simply open the `index.html` file in your web browser.
+3.  **Open `public/index.html`:** Simply open `public/index.html` in your web browser.
 
 ---
 
@@ -43,10 +44,10 @@ This website is built with the classics, intentionally avoiding modern framework
 
 ```
 /
-├── index.html      # Main page structure
-├── style.css       # All the styling magic!
-├── images/
-│   └── gifs/       # Animated GIFs for the gallery
+├── public/
+│   ├── index.html      # Main page structure
+│   ├── styles/         # All the styling magic!
+│   └── images/         # Animated GIFs for the gallery
 └── README.md       # This file
 ```
 
