@@ -35,6 +35,19 @@ This website is built with the classics, intentionally avoiding modern framework
 
 ---
 
+## 🏃‍♂️ Running the Local Server
+
+Some sections (guestbook, public chat and downloads) require the Node.js backend.
+
+```bash
+npm --prefix backend install
+npm --prefix backend start
+```
+
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
 3.  **Open `index.html`:** Simply open the `index.html` file in your web browser.
 
 ---

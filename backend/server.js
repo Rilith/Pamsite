@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const GUESTBOOK_FILE = path.join(DATA_DIR, 'guestbook.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
+const CHAT_FILE = path.join(DATA_DIR, 'chat.json');
 
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
 // Assicuriamoci che la directory data esista
@@ -63,6 +64,22 @@ if (!fs.existsSync(REACTIONS_FILE)) {
   fs.writeFileSync(REACTIONS_FILE, JSON.stringify(initialReactions, null, 2));
 }
 
+// Inizializza chat.json
+if (!fs.existsSync(CHAT_FILE)) {
+  const initialChat = {
+    messages: [
+      {
+        id: 1,
+        name: 'Pam',
+        message: 'Ciao a tutti! :smiley:',
+        date: '14/04/2025',
+        time: '16:00'
+      }
+    ]
+  };
+  fs.writeFileSync(CHAT_FILE, JSON.stringify(initialChat, null, 2));
+}
+
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,6 +92,10 @@ function readGuestbook() {
 
 function readReactions() {
   return JSON.parse(fs.readFileSync(REACTIONS_FILE, 'utf8'));
+}
+
+function readChat() {
+  return JSON.parse(fs.readFileSync(CHAT_FILE, 'utf8'));
 }
 
 function saveGuestbookEntry({ name, email, message, avatar }) {
@@ -121,6 +142,26 @@ function updateReaction(entryId, emoji, increment = true) {
   }
   fs.writeFileSync(REACTIONS_FILE, JSON.stringify(reactions, null, 2));
   return reactions.reactions[entryId];
+}
+
+function saveChatMessage({ name, message }) {
+  const chat = readChat();
+  const newId = chat.messages.length > 0
+    ? Math.max(...chat.messages.map(m => m.id)) + 1
+    : 1;
+
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
+  const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  const newMsg = { id: newId, name, message, date, time };
+
+  chat.messages.push(newMsg);
+  if (chat.messages.length > 50) chat.messages.shift();
+  fs.writeFileSync(CHAT_FILE, JSON.stringify(chat, null, 2));
+
+  return newMsg;
 }
 
 // ─── ROUTES: GUESTBOOK ───────────────────────────────────────────────────────
@@ -240,6 +281,31 @@ app.put('/api/admin/guestbook/:id/approve', (req, res) => {
   } catch (err) {
     console.error('Errore approvazione:', err);
     res.status(500).json({ error: 'Errore nella modifica dell\'approvazione' });
+  }
+});
+
+// ─── ROUTES: CHAT ────────────────────────────────────────────────────────────
+app.get('/api/chat', (req, res) => {
+  try {
+    const chat = readChat();
+    res.json(chat.messages);
+  } catch (err) {
+    console.error('Errore caricamento chat:', err);
+    res.status(500).json({ error: 'Errore nel caricamento della chat' });
+  }
+});
+
+app.post('/api/chat', (req, res) => {
+  try {
+    const { name, message } = req.body;
+    if (!name || !message) {
+      return res.status(400).json({ error: 'Nome e messaggio obbligatori' });
+    }
+    const msg = saveChatMessage({ name, message });
+    res.status(201).json(msg);
+  } catch (err) {
+    console.error('Errore salvataggio chat:', err);
+    res.status(500).json({ error: 'Errore nel salvare il messaggio' });
   }
 });
 

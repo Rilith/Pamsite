@@ -125,6 +125,9 @@ function closeModal() {
             renderSection('cursors')
           ]);
           break;
+        case 'home-page':
+          initChat?.();
+          break;
         case 'guestbook-page':
           initGuestbook?.();
           break;
