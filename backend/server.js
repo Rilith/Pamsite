@@ -7,9 +7,22 @@ const path = require('path');
 const cors = require('cors');
 const { fileToEntry } = require('./utils/mediaInfo');
 const crypto = require('crypto');
+const multer = require('multer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Multer setup for avatar uploads
+const avatarDir = path.join(__dirname, 'images', 'avatars');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, avatarDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = Date.now() + '_' + Math.random().toString(16).slice(2) + ext;
+    cb(null, name);
+  }
+});
+const upload = multer({ storage });
 
 // Percorsi per i file JSON
 const DATA_DIR = path.join(__dirname, 'data');
@@ -256,7 +269,7 @@ app.post('/api/register', (req, res) => {
     if (users.users.find(u => u.username === username)) {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
-    users.users.push({ username, password: hashPass(password) });
+    users.users.push({ username, password: hashPass(password), avatar: null });
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -280,6 +293,69 @@ app.post('/api/login', (req, res) => {
   } catch (err) {
     console.error('Errore login:', err);
     res.status(500).json({ error: 'Errore nel login' });
+  }
+});
+
+// ─── USER PROFILE ROUTES ───────────────────────────────────────
+app.get('/api/users/:username', (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    const gbCount = readGuestbook().entries.filter(e => e.name === username).length;
+    res.json({ username: user.username, avatar: user.avatar, guestbookEntries: gbCount });
+  } catch (err) {
+    console.error('Errore profilo:', err);
+    res.status(500).json({ error: 'Errore caricamento profilo' });
+  }
+});
+
+app.put('/api/users/:username/avatar', upload.single('avatar'), (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    if (!req.file) return res.status(400).json({ error: 'File mancante' });
+    user.avatar = req.file.filename;
+    writeUsers(users);
+    res.json({ success: true, avatar: user.avatar });
+  } catch (err) {
+    console.error('Errore upload avatar:', err);
+    res.status(500).json({ error: 'Errore upload avatar' });
+  }
+});
+
+app.put('/api/users/:username/password', (req, res) => {
+  try {
+    const { username } = req.params;
+    const { password } = req.body;
+    if (!password) return res.status(400).json({ error: 'Password mancante' });
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    user.password = hashPass(password);
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore cambio password:', err);
+    res.status(500).json({ error: 'Errore cambio password' });
+  }
+});
+
+app.delete('/api/users/:username', (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const idx = users.users.findIndex(u => u.username === username);
+    if (idx === -1) return res.status(404).json({ error: 'Utente non trovato' });
+    users.users.splice(idx, 1);
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore eliminazione account:', err);
+    res.status(500).json({ error: 'Errore eliminazione account' });
   }
 });
 
