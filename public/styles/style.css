@@ -174,6 +174,59 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 
 .profile-menu img {
     width: 24px;
+/*=============================================
+=               PROFILE PAGE                   =
+=============================================*/
+.profile-page .profile-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-page .profile-avatar {
+    width: 5rem; /* 80px */
+    height: 5rem;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+}
+
+.profile-details {
+    text-align: left;
+    color: var(--white);
+}
+
+.profile-details h3 {
+    margin: 0 0 0.25rem 0;
+    color: var(--yellow);
+}
+
+#edit-profile-btn {
+    margin-top: 0.5rem;
+}
+
+.profile-edit {
+    display: none;
+    margin-top: 1rem;
+    border-top: 2px dashed var(--cyan);
+    padding-top: 1rem;
+}
+
+.profile-edit.open {
+    display: block;
+}
+
+.profile-edit form {
+    margin-bottom: 0.75rem;
+}
+
+.danger-btn {
+    background-color: var(--purple);
+    color: var(--white);
+    border: 2px solid var(--yellow);
+}
+
     height: 24px;
     border-radius: 50%;
     vertical-align: middle;
