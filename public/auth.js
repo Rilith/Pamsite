@@ -44,7 +44,7 @@ function updateAuthUI(){
     box.innerHTML='<a href="/login" data-page-target="login-page">Login</a> <a href="/register" data-page-target="register-page">Registrati</a>';
     return;
   }
-  box.innerHTML=`<div class="profile-menu"><button id="profile-menu-btn"><img id="profile-menu-avatar" src="/images/avatars/default.png" alt="avatar"> <span id="profile-menu-name"></span> ▾</button><div class="profile-dropdown"><a href="/profile" data-page-target="profile-page">Profilo</a><a href="#" id="logout-link">Logout</a></div></div>`;
+  box.innerHTML=`<div class="profile-menu"><button id="profile-menu-btn"><img id="profile-menu-avatar" src="/images/avatars/05MISAT.JPG" alt="avatar"> <span id="profile-menu-name"></span> ▾</button><div class="profile-dropdown"><a href="/profile" data-page-target="profile-page">Profilo</a><a href="#" id="logout-link">Logout</a></div></div>`;
   document.getElementById('profile-menu-name').textContent=user;
   fetch('/api/users/'+user)
     .then(r=>r.ok?r.json():null)
@@ -69,15 +69,14 @@ function initProfile(){
   if(!user){ page.innerHTML='<p>Devi effettuare il login.</p>'; return; }
   document.getElementById('profile-username').textContent=user;
   fetch('/api/users/'+user).then(r=>r.json()).then(d=>{
-    if(d.avatar) document.getElementById('profile-avatar').src='/images/avatars/'+d.avatar;
-    else document.getElementById('profile-avatar').style.display='none';
+    const avatar = d.avatar || '05MISAT.JPG';
+    document.getElementById('profile-avatar').src='/images/avatars/'+avatar;
     document.getElementById('profile-count').textContent=d.guestbookEntries||0;
   });
   const editBtn=document.getElementById('edit-profile-btn');
   const editSec=document.getElementById('edit-profile-section');
   editBtn.addEventListener('click',()=>{
     editSec.classList.toggle('open');
-
   });
   document.getElementById('avatar-form').addEventListener('submit',async e=>{
     e.preventDefault();

@@ -110,7 +110,7 @@ function hashPass(pass) {
   return crypto.createHash('sha256').update(pass).digest('hex');
 }
 
-function saveGuestbookEntry({ name, email, message, avatar }) {
+function saveGuestbookEntry({ name, message, avatar }) {
   const guestbook = readGuestbook();
   const newId = guestbook.entries.length > 0
     ? Math.max(...guestbook.entries.map(e => e.id)) + 1
@@ -124,9 +124,8 @@ function saveGuestbookEntry({ name, email, message, avatar }) {
   const newEntry = {
     id: newId,
     name,
-    email,
     message,
-    avatar: avatar || 'default',
+    avatar: avatar || '05MISAT.JPG',
     date,
     time,
     approved: true
@@ -195,11 +194,18 @@ app.get('/api/guestbook', (req, res) => {
 // Aggiungi nuova firma
 app.post('/api/guestbook', (req, res) => {
   try {
-    const { name, email, message, avatar } = req.body;
-    if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Tutti i campi sono obbligatori' });
+    const { username, message } = req.body;
+    if (!username || !message) {
+      return res.status(400).json({ error: 'Dati mancanti' });
     }
-    const entry = saveGuestbookEntry({ name, email, message, avatar });
+    const users = readUsers();
+    const user  = users.users.find(u => u.username === username);
+    if (!user) return res.status(401).json({ error: 'Utente non valido' });
+    const entry = saveGuestbookEntry({
+      name: username,
+      message,
+      avatar: user.avatar || '05MISAT.JPG'
+    });
     res.status(201).json(entry);
   } catch (err) {
     console.error('Errore salvataggio firma:', err);
@@ -269,7 +275,7 @@ app.post('/api/register', (req, res) => {
     if (users.users.find(u => u.username === username)) {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
-    users.users.push({ username, password: hashPass(password), avatar: null });
+    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG' });
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -304,7 +310,11 @@ app.get('/api/users/:username', (req, res) => {
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(404).json({ error: 'Utente non trovato' });
     const gbCount = readGuestbook().entries.filter(e => e.name === username).length;
-    res.json({ username: user.username, avatar: user.avatar, guestbookEntries: gbCount });
+    res.json({
+      username: user.username,
+      avatar: user.avatar || '05MISAT.JPG',
+      guestbookEntries: gbCount
+    });
   } catch (err) {
     console.error('Errore profilo:', err);
     res.status(500).json({ error: 'Errore caricamento profilo' });
