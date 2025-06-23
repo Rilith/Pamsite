@@ -251,6 +251,7 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
     color: var(--white);
     border: 2px solid var(--yellow);
 }
+
 #content {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 1.25rem; /* 20px */

@@ -368,6 +368,7 @@ app.delete('/api/users/:username', (req, res) => {
     res.status(500).json({ error: 'Errore eliminazione account' });
   }
 });
+
 // Approvazione manuale (admin)
 app.put('/api/admin/guestbook/:id/approve', (req, res) => {
   try {
