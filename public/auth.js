@@ -35,7 +35,6 @@ function initRegister(){
     }else alert(data.error||'Errore registrazione');
   });
 }
-
 function updateAuthUI(){
   const box=document.getElementById('auth-container');
   if(!box) return;

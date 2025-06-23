@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'login-page':     { file: '/pages/login-page.html',     path: '/login' },
     'register-page':  { file: '/pages/register-page.html',  path: '/register' },
     'profile-page':   { file: '/pages/profile-page.html',   path: '/profile' },
+
     'error404-page':  { file: '/error404.html',            path: '/404' }
   };
 
@@ -140,6 +141,7 @@ function closeModal() {
         case 'profile-page':
           initProfile?.();
           break;
+
         // add more page hooks here if needed
       }
     } catch (hookErr) {
