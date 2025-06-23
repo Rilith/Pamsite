@@ -77,6 +77,7 @@ function initProfile(){
   const editSec=document.getElementById('edit-profile-section');
   editBtn.addEventListener('click',()=>{
     editSec.classList.toggle('open');
+
   });
   document.getElementById('avatar-form').addEventListener('submit',async e=>{
     e.preventDefault();
