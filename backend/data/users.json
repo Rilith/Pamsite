@@ -1,1 +1,9 @@
-{"users":[]}
+{
+  "users": [
+    {
+      "username": "Pam",
+      "password": "5f4d44728bc165b3b40ed52ec03f251d3bd2281a896cc793430820e4094f4e3c",
+      "avatar": "1750713525126_3e54410c154ff.png"
+    }
+  ]
+}
