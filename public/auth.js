@@ -15,6 +15,7 @@ function initLogin(){
       localStorage.setItem('username',data.username);
       updateAuthUI();
       location.href='/';
+
     }else alert(data.error||'Errore login');
   });
 }
