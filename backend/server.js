@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const { fileToEntry } = require('./utils/mediaInfo');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const GUESTBOOK_FILE = path.join(DATA_DIR, 'guestbook.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
 // Assicuriamoci che la directory data esista
@@ -63,6 +65,12 @@ if (!fs.existsSync(REACTIONS_FILE)) {
   fs.writeFileSync(REACTIONS_FILE, JSON.stringify(initialReactions, null, 2));
 }
 
+// Inizializza users.json
+if (!fs.existsSync(USERS_FILE)) {
+  const initialUsers = { users: [] };
+  fs.writeFileSync(USERS_FILE, JSON.stringify(initialUsers, null, 2));
+}
+
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,6 +83,18 @@ function readGuestbook() {
 
 function readReactions() {
   return JSON.parse(fs.readFileSync(REACTIONS_FILE, 'utf8'));
+}
+
+function readUsers() {
+  return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+}
+
+function writeUsers(data) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
+}
+
+function hashPass(pass) {
+  return crypto.createHash('sha256').update(pass).digest('hex');
 }
 
 function saveGuestbookEntry({ name, email, message, avatar }) {
@@ -222,6 +242,44 @@ app.get('/api/guestbook/search', (req, res) => {
   } catch (err) {
     console.error('Errore ricerca:', err);
     res.status(500).json({ error: 'Errore nella ricerca' });
+  }
+});
+
+// ─── ROUTES: AUTH ───────────────────────────────────────────────────────────
+app.post('/api/register', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username e password richiesti' });
+    }
+    const users = readUsers();
+    if (users.users.find(u => u.username === username)) {
+      return res.status(409).json({ error: 'Utente già esistente' });
+    }
+    users.users.push({ username, password: hashPass(password) });
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore registrazione:', err);
+    res.status(500).json({ error: 'Errore nella registrazione' });
+  }
+});
+
+app.post('/api/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Credenziali mancanti' });
+    }
+    const users = readUsers();
+    const user = users.users.find(
+      u => u.username === username && u.password === hashPass(password)
+    );
+    if (!user) return res.status(401).json({ error: 'Credenziali non valide' });
+    res.json({ success: true, username });
+  } catch (err) {
+    console.error('Errore login:', err);
+    res.status(500).json({ error: 'Errore nel login' });
   }
 });
 
