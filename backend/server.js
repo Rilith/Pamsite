@@ -7,7 +7,6 @@ const path = require('path');
 const cors = require('cors');
 const { fileToEntry } = require('./utils/mediaInfo');
 const crypto = require('crypto');
-
 const multer = require('multer');
 
 const app = express();
@@ -271,7 +270,6 @@ app.post('/api/register', (req, res) => {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
     users.users.push({ username, password: hashPass(password), avatar: null });
-
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -360,8 +358,6 @@ app.delete('/api/users/:username', (req, res) => {
     res.status(500).json({ error: 'Errore eliminazione account' });
   }
 });
-
-
 // Approvazione manuale (admin)
 app.put('/api/admin/guestbook/:id/approve', (req, res) => {
   try {
