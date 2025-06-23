@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'setup-page':     { file: '/pages/setup-page.html',     path: '/setup' },
     'login-page':     { file: '/pages/login-page.html',     path: '/login' },
     'register-page':  { file: '/pages/register-page.html',  path: '/register' },
+    'profile-page':   { file: '/pages/profile-page.html',   path: '/profile' },
+
     'error404-page':  { file: '/error404.html',            path: '/404' }
   };
 
@@ -136,6 +138,10 @@ function closeModal() {
         case 'register-page':
           initRegister?.();
           break;
+        case 'profile-page':
+          initProfile?.();
+          break;
+
         // add more page hooks here if needed
       }
     } catch (hookErr) {
