@@ -1,0 +1,25 @@
+<section id="profile-page" class="page profile-page">
+  <h2>Il tuo profilo</h2>
+  <div class="profile-info">
+    <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar">
+    <div class="profile-details">
+      <h3 id="profile-username"></h3>
+      <p>Messaggi nel guestbook: <span id="profile-count"></span></p>
+      <button id="edit-profile-btn">Modifica Profilo</button>
+    </div>
+  </div>
+  <div id="edit-profile-section" class="profile-edit">
+    <h3>Modifica profilo</h3>
+    <form id="avatar-form" class="guestbook-form">
+      <label>Nuovo avatar:
+        <input type="file" name="avatar" accept="image/*">
+      </label>
+      <button type="submit">Aggiorna Avatar</button>
+    </form>
+    <form id="password-form" class="guestbook-form">
+      <input type="password" name="password" placeholder="Nuova password" required>
+      <button type="submit">Aggiorna Password</button>
+    </form>
+    <button id="delete-account-btn" class="danger-btn">Elimina Account</button>
+  </div>
+</section>

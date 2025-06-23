@@ -6,14 +6,29 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const { fileToEntry } = require('./utils/mediaInfo');
+const crypto = require('crypto');
+const multer = require('multer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Multer setup for avatar uploads
+const avatarDir = path.join(__dirname, 'images', 'avatars');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, avatarDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = Date.now() + '_' + Math.random().toString(16).slice(2) + ext;
+    cb(null, name);
+  }
+});
+const upload = multer({ storage });
 
 // Percorsi per i file JSON
 const DATA_DIR = path.join(__dirname, 'data');
 const GUESTBOOK_FILE = path.join(DATA_DIR, 'guestbook.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
 // Assicuriamoci che la directory data esista
@@ -63,6 +78,12 @@ if (!fs.existsSync(REACTIONS_FILE)) {
   fs.writeFileSync(REACTIONS_FILE, JSON.stringify(initialReactions, null, 2));
 }
 
+// Inizializza users.json
+if (!fs.existsSync(USERS_FILE)) {
+  const initialUsers = { users: [] };
+  fs.writeFileSync(USERS_FILE, JSON.stringify(initialUsers, null, 2));
+}
+
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -77,7 +98,19 @@ function readReactions() {
   return JSON.parse(fs.readFileSync(REACTIONS_FILE, 'utf8'));
 }
 
-function saveGuestbookEntry({ name, email, message, avatar }) {
+function readUsers() {
+  return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+}
+
+function writeUsers(data) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
+}
+
+function hashPass(pass) {
+  return crypto.createHash('sha256').update(pass).digest('hex');
+}
+
+function saveGuestbookEntry({ name, message, avatar }) {
   const guestbook = readGuestbook();
   const newId = guestbook.entries.length > 0
     ? Math.max(...guestbook.entries.map(e => e.id)) + 1
@@ -91,9 +124,8 @@ function saveGuestbookEntry({ name, email, message, avatar }) {
   const newEntry = {
     id: newId,
     name,
-    email,
     message,
-    avatar: avatar || 'default',
+    avatar: avatar || '05MISAT.JPG',
     date,
     time,
     approved: true
@@ -162,11 +194,18 @@ app.get('/api/guestbook', (req, res) => {
 // Aggiungi nuova firma
 app.post('/api/guestbook', (req, res) => {
   try {
-    const { name, email, message, avatar } = req.body;
-    if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Tutti i campi sono obbligatori' });
+    const { username, message } = req.body;
+    if (!username || !message) {
+      return res.status(400).json({ error: 'Dati mancanti' });
     }
-    const entry = saveGuestbookEntry({ name, email, message, avatar });
+    const users = readUsers();
+    const user  = users.users.find(u => u.username === username);
+    if (!user) return res.status(401).json({ error: 'Utente non valido' });
+    const entry = saveGuestbookEntry({
+      name: username,
+      message,
+      avatar: user.avatar || '05MISAT.JPG'
+    });
     res.status(201).json(entry);
   } catch (err) {
     console.error('Errore salvataggio firma:', err);
@@ -222,6 +261,111 @@ app.get('/api/guestbook/search', (req, res) => {
   } catch (err) {
     console.error('Errore ricerca:', err);
     res.status(500).json({ error: 'Errore nella ricerca' });
+  }
+});
+
+// ─── ROUTES: AUTH ───────────────────────────────────────────────────────────
+app.post('/api/register', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username e password richiesti' });
+    }
+    const users = readUsers();
+    if (users.users.find(u => u.username === username)) {
+      return res.status(409).json({ error: 'Utente già esistente' });
+    }
+    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG' });
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore registrazione:', err);
+    res.status(500).json({ error: 'Errore nella registrazione' });
+  }
+});
+
+app.post('/api/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Credenziali mancanti' });
+    }
+    const users = readUsers();
+    const user = users.users.find(
+      u => u.username === username && u.password === hashPass(password)
+    );
+    if (!user) return res.status(401).json({ error: 'Credenziali non valide' });
+    res.json({ success: true, username });
+  } catch (err) {
+    console.error('Errore login:', err);
+    res.status(500).json({ error: 'Errore nel login' });
+  }
+});
+
+// ─── USER PROFILE ROUTES ───────────────────────────────────────
+app.get('/api/users/:username', (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    const gbCount = readGuestbook().entries.filter(e => e.name === username).length;
+    res.json({
+      username: user.username,
+      avatar: user.avatar || '05MISAT.JPG',
+      guestbookEntries: gbCount
+    });
+  } catch (err) {
+    console.error('Errore profilo:', err);
+    res.status(500).json({ error: 'Errore caricamento profilo' });
+  }
+});
+
+app.put('/api/users/:username/avatar', upload.single('avatar'), (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    if (!req.file) return res.status(400).json({ error: 'File mancante' });
+    user.avatar = req.file.filename;
+    writeUsers(users);
+    res.json({ success: true, avatar: user.avatar });
+  } catch (err) {
+    console.error('Errore upload avatar:', err);
+    res.status(500).json({ error: 'Errore upload avatar' });
+  }
+});
+
+app.put('/api/users/:username/password', (req, res) => {
+  try {
+    const { username } = req.params;
+    const { password } = req.body;
+    if (!password) return res.status(400).json({ error: 'Password mancante' });
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    user.password = hashPass(password);
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore cambio password:', err);
+    res.status(500).json({ error: 'Errore cambio password' });
+  }
+});
+
+app.delete('/api/users/:username', (req, res) => {
+  try {
+    const { username } = req.params;
+    const users = readUsers();
+    const idx = users.users.findIndex(u => u.username === username);
+    if (idx === -1) return res.status(404).json({ error: 'Utente non trovato' });
+    users.users.splice(idx, 1);
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore eliminazione account:', err);
+    res.status(500).json({ error: 'Errore eliminazione account' });
   }
 });
 
