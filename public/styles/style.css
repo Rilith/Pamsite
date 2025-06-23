@@ -133,10 +133,70 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 }
 
 #header {
+    position: relative;
     background-color: var(--black);
     padding: 1.25rem; /* 20px */
     border: 3px solid var(--bright-green);
     margin-bottom: 1.25rem; /* 20px */
+}
+
+.auth-links {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.auth-links a,
+.profile-menu button {
+    background-color: var(--pink);
+    color: var(--white);
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+    border: 2px solid var(--cyan);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.auth-links a:hover,
+.profile-dropdown a:hover,
+.profile-menu button:hover {
+    background-color: var(--cyan);
+    color: var(--pink);
+}
+
+.profile-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-menu img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--pink);
+    border: 2px solid var(--cyan);
+    z-index: 100;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    color: var(--white);
+    text-decoration: none;
+}
+
+.profile-menu.open .profile-dropdown {
+    display: block;
 }
 
 #content {
