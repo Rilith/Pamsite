@@ -299,7 +299,7 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 #chat-picker-wrapper {
     display: flex;
     flex-direction: column;
-    max-height: 12rem;
+    max-height: 16rem; /* allow more space when the picker is visible */
     border: 1px solid #666;
     background-color: rgba(0,0,0,0.3);
     margin-right: auto;
@@ -324,12 +324,16 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
     position: absolute;
     bottom: 100%;
     left: 0;
-    width: 200px;
+    width: 320px; /* make picker wider so more emotes fit in a row */
+    max-height: 15rem; /* show more rows before scrolling */
     margin-bottom: 0.25rem;
     z-index: 1000;
     background-color: rgba(0,0,0,0.8);
     border: 1px solid #666;
     border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .emote-category-title {
@@ -762,8 +766,8 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 
 .emote-btn {
     cursor: pointer;
-    width: 24px; /* Fixed size for emote icons */
-    height: 24px;
+    width: 32px; /* slightly larger for readability */
+    height: 32px;
     border: 1px solid transparent;
     border-radius: 3px;
     padding: 2px; 
