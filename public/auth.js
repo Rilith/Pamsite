@@ -51,6 +51,7 @@ function updateAuthUI(){
     .then(r=>r.ok?r.json():null)
     .then(d=>{ if(d && d.avatar){ document.getElementById('profile-menu-avatar').src='/images/avatars/'+d.avatar; }});
   const menu=document.querySelector('.profile-menu');
+
   const toggleBtn=document.getElementById('profile-menu-btn');
   toggleBtn.addEventListener('click',e=>{
     e.preventDefault();
@@ -60,6 +61,7 @@ function updateAuthUI(){
   logout.addEventListener('click',e=>{
     e.preventDefault();
     menu.classList.remove('open');
+
     localStorage.removeItem('username');
     updateAuthUI();
     location.href='/';
@@ -72,6 +74,7 @@ function updateAuthUI(){
       menu.classList.remove('open');
     }
   });
+
 }
 
 function initProfile(){
