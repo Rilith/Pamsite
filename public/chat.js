@@ -72,7 +72,6 @@ function initChat(){
     box.className = 'format-buttons';
     box.innerHTML = `<button type="button" class="toolbar-btn" data-tag="b">B</button>
                      <button type="button" class="toolbar-btn" data-tag="i">I</button>
-                     <button type="button" class="toolbar-btn" data-tag="quote">"</button>
                      <button type="button" class="toolbar-btn" id="chat-emoji-btn">😊</button>`;
     formatGroup.appendChild(box);
     wrapper.appendChild(formatGroup);
@@ -124,6 +123,7 @@ function initChat(){
 
     categories.forEach((cat, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'emote-tab-btn' + (idx === 0 ? ' active' : '');
       btn.dataset.category = cat;
       btn.textContent = cat === 'root' ? 'General' : cat.charAt(0).toUpperCase()+cat.slice(1);
