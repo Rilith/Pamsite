@@ -101,6 +101,7 @@ if (!fs.existsSync(CHAT_FILE)) {
   };
   fs.writeFileSync(CHAT_FILE, JSON.stringify(initialChat, null, 2));
 }
+
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
