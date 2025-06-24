@@ -1,4 +1,6 @@
 backend/data/users.json
+backend/data/chat.json
+backend/data/reactions.json
 
 # dependencies
 node_modules/
