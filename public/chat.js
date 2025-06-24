@@ -85,6 +85,7 @@ function initChat(){
     emoteSection.appendChild(picker);
     wrapper.appendChild(emoteSection);
 
+
     box.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn => {
       btn.addEventListener('click', () => wrapSelection(input, `[${btn.dataset.tag}]`, `[/${btn.dataset.tag}]`));
     });
