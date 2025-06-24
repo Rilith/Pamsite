@@ -94,8 +94,17 @@ function initChat(){
       btn.addEventListener('click', () => wrapSelection(input, `[${btn.dataset.tag}]`, `[/${btn.dataset.tag}]`));
     });
     const emojiBtn = document.getElementById('chat-emoji-btn');
-    emojiBtn.addEventListener('click', () => {
+    emojiBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       emoteSection.style.display = emoteSection.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Hide the picker when clicking outside of it
+    document.addEventListener('click', (e) => {
+      if (emoteSection.style.display === 'none') return;
+      if (!emoteSection.contains(e.target) && e.target !== emojiBtn) {
+        emoteSection.style.display = 'none';
+      }
     });
   }
 
