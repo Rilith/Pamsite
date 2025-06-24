@@ -252,6 +252,60 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
     border: 2px solid var(--yellow);
 }
 
+/*=============================================*
+*=                CHAT BOX                    =*
+*=============================================*/
+.chatbox {
+    margin-top: 1rem;
+    border: 3px ridge var(--cyan);
+    background: rgba(0,0,80,0.6);
+    padding: 0.625rem;
+}
+
+.chat-messages {
+    max-height: 15rem;
+    overflow-y: auto;
+    text-align: left;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--pink);
+    background: rgba(0,0,60,0.4);
+    color: var(--white);
+    font-size: 0.875rem;
+}
+
+.chat-message { margin-bottom: 0.25rem; }
+.chat-message .time { color: var(--yellow); margin-right: 0.5rem; }
+.chat-message .name { color: var(--cyan); font-weight: bold; margin-right: 0.25rem; }
+
+#chat-picker-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: 15.625rem;
+    border: 1px solid #666;
+    background-color: rgba(0,0,0,0.3);
+    margin-top: 0.3125rem;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#chat-picker-wrapper .format-group {
+    background-color: rgba(0,0,0,0.5);
+    border-bottom: 1px solid #666;
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3125rem;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.emote-category-title {
+    color: var(--yellow);
+    margin: 0.25rem 0;
+    font-weight: bold;
+}
+
 #content {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 1.25rem; /* 20px */

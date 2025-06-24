@@ -121,6 +121,9 @@ function closeModal() {
     /* ------------------------------------------------------------------ */
     try {
       switch (key) {
+        case 'home-page':
+          initChat?.();
+          break;
         case 'download-page':
           await Promise.all([
             renderSection('wallpapers'),
