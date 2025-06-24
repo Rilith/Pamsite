@@ -331,9 +331,15 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
     background-color: rgba(0,0,0,0.8);
     border: 1px solid #666;
     border-radius: 5px;
-    overflow: hidden;
+    overflow: hidden; /* outer wrapper clips picker but internal area will scroll */
     display: flex;
     flex-direction: column;
+}
+
+/* ensure long emoji lists are scrollable */
+#chat-emoji-picker {
+    max-height: 12rem;
+    overflow-y: auto;
 }
 
 .emote-category-title {

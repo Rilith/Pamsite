@@ -151,9 +151,9 @@ function buildToolbar() {
   
   // Genera i pulsanti
 formatBox.innerHTML = `
-<button class="toolbar-btn" data-tag="b">B</button>
-<button class="toolbar-btn" data-tag="i">I</button>
-<button class="toolbar-btn" data-tag="quote">"</button>
+<button type="button" class="toolbar-btn" data-tag="b">B</button>
+<button type="button" class="toolbar-btn" data-tag="i">I</button>
+<button type="button" class="toolbar-btn" data-tag="quote">"</button>
 `;
   
 // Add buttons to the group
