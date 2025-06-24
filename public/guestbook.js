@@ -215,6 +215,7 @@ function buildEmotePicker(emoteData) {
   // Create the tabs
   categories.forEach((category, index) => {
     const tabButton = document.createElement('button');
+    tabButton.type = 'button';
     tabButton.className = 'emote-tab-btn' + (index === 0 ? ' active' : '');
     tabButton.dataset.category = category;
     tabButton.textContent = category === 'root' ? 'General' : category.charAt(0).toUpperCase() + category.slice(1);
