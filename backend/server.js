@@ -250,6 +250,7 @@ app.post('/api/guestbook', (req, res) => {
     if (!isValidMessage(message)) {
       return res.status(400).json({ error: 'Messaggio non valido' });
     }
+
     const users = readUsers();
     const user  = users.users.find(u => u.username === username);
     if (!user) return res.status(401).json({ error: 'Utente non valido' });
