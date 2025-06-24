@@ -56,6 +56,12 @@ function initChat(){
         alert(data.error || 'Errore');
       }
     });
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
   }
 
   function buildToolbar(){
@@ -84,7 +90,6 @@ function initChat(){
     emoteSection.appendChild(tabs);
     emoteSection.appendChild(picker);
     wrapper.appendChild(emoteSection);
-
 
     box.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn => {
       btn.addEventListener('click', () => wrapSelection(input, `[${btn.dataset.tag}]`, `[/${btn.dataset.tag}]`));

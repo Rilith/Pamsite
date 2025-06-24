@@ -264,7 +264,6 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 
 .chat-messages {
     max-height: 12rem;
-
     overflow-y: auto;
     text-align: left;
     padding: 0.5rem;

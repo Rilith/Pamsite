@@ -31,7 +31,6 @@ const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const CHAT_FILE = path.join(DATA_DIR, 'chat.json');
 
-
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
 // Assicuriamoci che la directory data esista
 if (!fs.existsSync(DATA_DIR)) {
@@ -123,7 +122,6 @@ function readUsers() {
 function writeUsers(data) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
 }
-
 
 function readChat() {
   return JSON.parse(fs.readFileSync(CHAT_FILE, 'utf8'));
