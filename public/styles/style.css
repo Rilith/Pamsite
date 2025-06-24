@@ -278,6 +278,11 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 .chat-message .time { color: var(--yellow); margin-right: 0.5rem; }
 .chat-message .name { color: var(--cyan); font-weight: bold; margin-right: 0.25rem; }
 
+/* prevent resizing of the chat textarea */
+#chat-input {
+    resize: none;
+}
+
 #chat-form .action-buttons {
     margin-top: 0.5rem;
     justify-content: flex-end;
