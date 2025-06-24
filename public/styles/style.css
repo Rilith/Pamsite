@@ -256,14 +256,14 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 *=                CHAT BOX                    =*
 *=============================================*/
 .chatbox {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     border: 3px ridge var(--cyan);
     background: rgba(0,0,80,0.6);
-    padding: 0.625rem;
+    padding: 0.5rem;
 }
 
 .chat-messages {
-    max-height: 15rem;
+    max-height: 12rem;
     overflow-y: auto;
     text-align: left;
     padding: 0.5rem;
@@ -278,10 +278,20 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 .chat-message .time { color: var(--yellow); margin-right: 0.5rem; }
 .chat-message .name { color: var(--cyan); font-weight: bold; margin-right: 0.25rem; }
 
+#chat-form .action-buttons {
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+}
+
+#chat-form .action-buttons button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
 #chat-picker-wrapper {
     display: flex;
     flex-direction: column;
-    max-height: 15.625rem;
+    max-height: 12rem;
     border: 1px solid #666;
     background-color: rgba(0,0,0,0.3);
     margin-top: 0.3125rem;

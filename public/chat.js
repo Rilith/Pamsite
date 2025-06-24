@@ -64,24 +64,33 @@ function initChat(){
 
     const box = document.createElement('div');
     box.className = 'format-buttons';
-    box.innerHTML = `<button class="toolbar-btn" data-tag="b">B</button>
-                     <button class="toolbar-btn" data-tag="i">I</button>
-                     <button class="toolbar-btn" data-tag="quote">"</button>
-                     <button class="toolbar-btn" id="chat-emoji-btn">😊</button>`;
+    box.innerHTML = `<button type="button" class="toolbar-btn" data-tag="b">B</button>
+                     <button type="button" class="toolbar-btn" data-tag="i">I</button>
+                     <button type="button" class="toolbar-btn" data-tag="quote">"</button>
+                     <button type="button" class="toolbar-btn" id="chat-emoji-btn">😊</button>`;
     formatGroup.appendChild(box);
     wrapper.appendChild(formatGroup);
 
+    const emoteSection = document.createElement('div');
+    emoteSection.id = 'chat-emoji-section';
+    emoteSection.style.display = 'none';
+
+    const tabs = document.createElement('div');
+    tabs.className = 'emote-tabs';
     const picker = document.createElement('div');
     picker.id = 'chat-emoji-picker';
     picker.className = 'emote-content';
-    picker.style.display = 'none';
-    wrapper.appendChild(picker);
+
+    emoteSection.appendChild(tabs);
+    emoteSection.appendChild(picker);
+    wrapper.appendChild(emoteSection);
 
     box.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn => {
       btn.addEventListener('click', () => wrapSelection(input, `[${btn.dataset.tag}]`, `[/${btn.dataset.tag}]`));
     });
-    document.getElementById('chat-emoji-btn').addEventListener('click', () => {
-      picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+    const emojiBtn = document.getElementById('chat-emoji-btn');
+    emojiBtn.addEventListener('click', () => {
+      emoteSection.style.display = emoteSection.style.display === 'none' ? 'block' : 'none';
     });
   }
 
@@ -98,21 +107,44 @@ function initChat(){
   }
 
   function buildEmotePicker(data){
+    const section = document.getElementById('chat-emoji-section');
+    const tabs = section.querySelector('.emote-tabs');
     const picker = document.getElementById('chat-emoji-picker');
+    tabs.innerHTML = '';
     picker.innerHTML = '';
-    Object.keys(data).forEach(cat => {
-      const title = document.createElement('div');
-      title.className = 'emote-category-title';
-      title.textContent = cat === 'root' ? 'General' : cat.charAt(0).toUpperCase()+cat.slice(1);
-      picker.appendChild(title);
+
+    const categories = Object.keys(data);
+    if(!categories.length) return;
+
+    categories.forEach((cat, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'emote-tab-btn' + (idx === 0 ? ' active' : '');
+      btn.dataset.category = cat;
+      btn.textContent = cat === 'root' ? 'General' : cat.charAt(0).toUpperCase()+cat.slice(1);
+      btn.addEventListener('click', () => {
+        tabs.querySelectorAll('.emote-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        showCat(cat);
+      });
+      tabs.appendChild(btn);
+    });
+
+    function showCat(category){
+      picker.innerHTML = '';
+      if(!data[category] || !data[category].length){
+        picker.innerHTML = '<div class="emote-empty">Nessun emoticon</div>';
+        return;
+      }
       const grid = document.createElement('div');
       grid.className = 'emote-grid';
-      grid.innerHTML = data[cat].map(e => `<img src="${EMOTE_PATH}${e.file}" alt="${e.code}" class="emote-btn">`).join('');
+      grid.innerHTML = data[category].map(e => `<img src="${EMOTE_PATH}${e.file}" alt="${e.code}" class="emote-btn">`).join('');
       picker.appendChild(grid);
-    });
-    picker.querySelectorAll('.emote-btn').forEach(img => {
-      img.addEventListener('click', () => insertAtCursor(input, img.alt));
-    });
+      picker.querySelectorAll('.emote-btn').forEach(img => {
+        img.addEventListener('click', () => insertAtCursor(input, img.alt));
+      });
+    }
+
+    showCat(categories[0]);
   }
 
   function parseFormatting(str){
