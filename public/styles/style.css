@@ -133,10 +133,219 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 }
 
 #header {
+    position: relative;
     background-color: var(--black);
     padding: 1.25rem; /* 20px */
     border: 3px solid var(--bright-green);
     margin-bottom: 1.25rem; /* 20px */
+}
+
+.auth-links {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.auth-links a,
+.profile-menu button {
+    background-color: var(--pink);
+    color: var(--white);
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+    border: 2px solid var(--cyan);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.auth-links a:hover,
+.profile-dropdown a:hover,
+.profile-menu button:hover {
+    background-color: var(--cyan);
+    color: var(--pink);
+}
+
+.profile-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-menu img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--pink);
+    border: 2px solid var(--cyan);
+    z-index: 100;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    color: var(--white);
+    text-decoration: none;
+}
+
+.profile-menu.open .profile-dropdown {
+    display: block;
+}
+
+/*=============================================
+=               PROFILE PAGE                   =
+=============================================*/
+.profile-page .profile-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-page .profile-avatar {
+    width: 5rem; /* 80px */
+    height: 5rem;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+}
+
+.profile-details {
+    text-align: left;
+    color: var(--white);
+}
+
+.profile-details h3 {
+    margin: 0 0 0.25rem 0;
+    color: var(--yellow);
+}
+
+#edit-profile-btn {
+    margin-top: 0.5rem;
+}
+
+.profile-edit {
+    display: none;
+    margin-top: 1rem;
+    border-top: 2px dashed var(--cyan);
+    padding-top: 1rem;
+}
+
+.profile-edit.open {
+    display: block;
+}
+
+.profile-edit form {
+    margin-bottom: 0.75rem;
+}
+
+.danger-btn {
+    background-color: var(--purple);
+    color: var(--white);
+    border: 2px solid var(--yellow);
+}
+
+/*=============================================*
+*=                CHAT BOX                    =*
+*=============================================*/
+.chatbox {
+    margin-top: 0.5rem;
+    border: 3px ridge var(--cyan);
+    background: rgba(0,0,80,0.6);
+    padding: 0.25rem;
+}
+
+.chat-messages {
+    max-height: 12rem;
+    overflow-y: auto;
+    text-align: left;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid var(--pink);
+    background: rgba(0,0,60,0.4);
+    color: var(--white);
+    font-size: 0.875rem;
+}
+
+.chat-message { margin-bottom: 0.25rem; }
+.chat-message .time { color: var(--yellow); margin-right: 0.5rem; }
+.chat-message .name { color: var(--cyan); font-weight: bold; margin-right: 0.25rem; }
+
+/* prevent resizing of the chat textarea */
+#chat-input {
+    resize: none;
+    padding: 0.25rem;
+    font-size: 0.8125rem;
+}
+
+#chat-form .action-buttons {
+    margin-top: 0.25rem;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+#chat-form .action-buttons button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+#chat-picker-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: 16rem; /* allow more space when the picker is visible */
+    border: 1px solid #666;
+    background-color: rgba(0,0,0,0.3);
+    margin-right: auto;
+    margin-top: 0;
+    border-radius: 5px;
+    overflow: visible;
+    position: relative;
+}
+
+#chat-picker-wrapper .format-group {
+    background-color: rgba(0,0,0,0.5);
+    border-bottom: 1px solid #666;
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3125rem;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+#chat-emoji-section {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 320px; /* make picker wider so more emotes fit in a row */
+    max-height: 15rem; /* show more rows before scrolling */
+    margin-bottom: 0.25rem;
+    z-index: 1000;
+    background-color: rgba(0,0,0,0.8);
+    border: 1px solid #666;
+    border-radius: 5px;
+    overflow: hidden; /* outer wrapper clips picker but internal area will scroll */
+    display: flex;
+    flex-direction: column;
+}
+
+/* ensure long emoji lists are scrollable */
+#chat-emoji-picker {
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.emote-category-title {
+    color: var(--yellow);
+    margin: 0.25rem 0;
+    font-weight: bold;
 }
 
 #content {
@@ -500,7 +709,7 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
     display: flex;
     gap: 0.3125rem; /* 5px */
     justify-content: flex-start;
-    margin-left: 0.625rem; /* 10px, or use padding on parent */
+    margin-left: 0;
 }
 
 #emote-picker-wrapper::-webkit-scrollbar { width: 10px; }
@@ -563,8 +772,8 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 
 .emote-btn {
     cursor: pointer;
-    width: 24px; /* Fixed size for emote icons */
-    height: 24px;
+    width: 32px; /* slightly larger for readability */
+    height: 32px;
     border: 1px solid transparent;
     border-radius: 3px;
     padding: 2px; 
