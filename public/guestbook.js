@@ -17,7 +17,6 @@ const submitLoading   = document.getElementById('submit-loading');
 const guestbookStats  = document.getElementById('guestbook-stats');
 const guestbookSearch = document.getElementById('guestbook-search');
 const guestbookPagination = document.getElementById('guestbook-pagination');
-const avatarSelector  = document.getElementById('avatar-selector');
 
 const msgInput        = document.getElementById('message');       // <textarea>
 const previewPane     = document.getElementById('gb-preview');
@@ -55,7 +54,6 @@ let previewOpen = false;
  * INITIALISATION
  * ----------------------------------------------------------------*/
 buildToolbar();
-loadAvatars();
 loadEmotes().then(() => {
     loadGuestbookEntries(currentPage);
     loadStats();
@@ -333,33 +331,6 @@ function replaceEmotes(str) {
 /* ------------------------------------------------------------------
  * AVATARS
  * ----------------------------------------------------------------*/
-async function loadAvatars() {
-  try {
-    const res = await fetch(`${API_BASE}/avatars`);
-    if (!res.ok) throw new Error();
-    const avatars = await res.json();
-
-    avatarSelector.innerHTML = `
-      <div class="avatar-selector-title">Scegli il tuo avatar:</div>
-      <div class="avatar-grid">
-        ${avatars.map(a => `
-           <div class="avatar-option" data-avatar="${a.id}">
-             <img src="${AVATAR_PATH}${a.id}" height="60">
-           </div>`).join('')}
-      </div>`;
-
-    const options = document.querySelectorAll('.avatar-option');
-    options.forEach(opt => opt.addEventListener('click', function () {
-      options.forEach(o => o.classList.remove('selected'));
-      this.classList.add('selected');
-      document.getElementById('selected-avatar').value = this.dataset.avatar;
-    }));
-  } catch (err) {
-    console.error(err);
-    avatarSelector.innerHTML =
-      '<div class="error">Impossibile caricare gli avatar 🙁</div>';
-  }
-}
 
 /* ------------------------------------------------------------------
  * GUESTBOOK ENTRIES
@@ -386,9 +357,10 @@ async function loadGuestbookEntries(page = 1) {
 }
 
 function makeAvatarSrc(v = '') {
-  if (/^https?:\/\//i.test(v)) return v;
-  if (v.startsWith('/'))      return v;
-  return `${AVATAR_PATH}${encodeURIComponent(v)}`;
+  const file = v || '05MISAT.JPG';
+  if (/^https?:\/\//i.test(file)) return file;
+  if (file.startsWith('/'))      return file;
+  return `${AVATAR_PATH}${encodeURIComponent(file)}`;
 }
 
 function renderEntries(entries) {
@@ -469,20 +441,18 @@ function mountSearch() {
  * FORM SUBMISSION
  * ----------------------------------------------------------------*/
 function mountFormSubmit() {
+  const username = localStorage.getItem('username');
+  if(!username){
+    guestbookForm.innerHTML = '<p style="text-align:center;color:#ffff00">Devi effettuare il login per firmare il guestbook.</p>';
+    return;
+  }
   guestbookForm.addEventListener('submit', async e => {
     e.preventDefault();
 
-    if (!document.getElementById('selected-avatar').value) {
-      showMessage('Per favore, seleziona un avatar!', 'error');
-      return;
-    }
-
     const fd = new FormData(guestbookForm);
     const payload = {
-      name:    fd.get('name'),
-      email:   fd.get('email'),
-      message: fd.get('message'),
-      avatar:  fd.get('avatarId'),
+      username,
+      message: fd.get('message')
     };
 
     submitLoading.style.display = 'block';
@@ -497,7 +467,6 @@ function mountFormSubmit() {
 
       showMessage('Grazie per aver firmato il mio guestbook! Il tuo messaggio apparirà dopo l\'approvazione! ✨', 'success');
       guestbookForm.reset();
-      document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
       loadGuestbookEntries(1);
       if (previewOpen) togglePreview();
     } catch (err) {
