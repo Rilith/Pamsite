@@ -451,9 +451,15 @@ function mountFormSubmit() {
     e.preventDefault();
 
     const fd = new FormData(guestbookForm);
+    const text = fd.get('message') || '';
+    const stripped = text.replace(/\[\/?(?:b|i|quote)\]/gi,'').trim();
+    if(!stripped){
+      submitLoading.style.display = 'none';
+      return;
+    }
     const payload = {
       username,
-      message: fd.get('message')
+      message: text
     };
 
     submitLoading.style.display = 'block';

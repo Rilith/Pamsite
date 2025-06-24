@@ -41,8 +41,9 @@ function initChat(){
     }
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      const text = input.value.trim();
-      if(!text) return;
+      const text = input.value;
+      const stripped = text.replace(/\[\/?(?:b|i|quote)\]/gi,'').trim();
+      if(!stripped) return;
       const res = await fetch(`${API_BASE}/chat`, {
         method:'POST',
         headers:{'Content-Type':'application/json'},

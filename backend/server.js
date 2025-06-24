@@ -135,6 +135,12 @@ function hashPass(pass) {
   return crypto.createHash('sha256').update(pass).digest('hex');
 }
 
+function isValidMessage(str) {
+  if (!str) return false;
+  const cleaned = str.replace(/\[\/?(?:b|i|quote)\]/gi, '').trim();
+  return cleaned.length > 0;
+}
+
 function saveGuestbookEntry({ name, message, avatar }) {
   const guestbook = readGuestbook();
   const newId = guestbook.entries.length > 0
@@ -241,6 +247,10 @@ app.post('/api/guestbook', (req, res) => {
     if (!username || !message) {
       return res.status(400).json({ error: 'Dati mancanti' });
     }
+    if (!isValidMessage(message)) {
+      return res.status(400).json({ error: 'Messaggio non valido' });
+    }
+
     const users = readUsers();
     const user  = users.users.find(u => u.username === username);
     if (!user) return res.status(401).json({ error: 'Utente non valido' });
@@ -323,6 +333,9 @@ app.post('/api/chat', (req, res) => {
     const { username, message } = req.body;
     if (!username || !message) {
       return res.status(400).json({ error: 'Dati mancanti' });
+    }
+    if (!isValidMessage(message)) {
+      return res.status(400).json({ error: 'Messaggio non valido' });
     }
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
