@@ -210,7 +210,7 @@ textarea {
     background: linear-gradient(135deg, var(--c-bg-gradient-start), var(--c-bg-gradient-end));
     border: var(--border-thick) ridge var(--c-cyan);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .guestbook-form::after {

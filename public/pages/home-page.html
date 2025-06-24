@@ -1,5 +1,15 @@
 <!-- pages/home-page.html -->
 <section id="home-page">
+  <div class="chatbox">
+      <div id="chat-messages" class="chat-messages"></div>
+      <form id="chat-form" class="guestbook-form">
+        <textarea id="chat-input" name="message" rows="2" placeholder="Scrivi un messaggio" required></textarea>
+        <div class="action-buttons">
+          <div id="chat-picker-wrapper"></div>
+          <button type="submit">Invia</button>
+        </div>
+      </form>
+    </div>
     <div class="welcome">
       <marquee scrollamount="3">★彡 Benvenuti! 彡★</marquee>
     </div>
@@ -18,16 +28,6 @@
       <img src="images/gifs/Smileonthebeach.gif" alt="Welcome GIF">
     </div>
 
-    <div class="chatbox">
-      <h3>Chat</h3>
-      <div id="chat-messages" class="chat-messages"></div>
-      <form id="chat-form" class="guestbook-form">
-        <textarea id="chat-input" name="message" rows="2" placeholder="Scrivi un messaggio" required></textarea>
-        <div class="action-buttons">
-          <div id="chat-picker-wrapper"></div>
-          <button type="submit">Invia</button>
-        </div>
-      </form>
-    </div>
+    
   </section>
   
