@@ -51,16 +51,30 @@ function updateAuthUI(){
     .then(r=>r.ok?r.json():null)
     .then(d=>{ if(d && d.avatar){ document.getElementById('profile-menu-avatar').src='/images/avatars/'+d.avatar; }});
   const menu=document.querySelector('.profile-menu');
-  document.getElementById('profile-menu-btn').addEventListener('click',e=>{
+
+  const toggleBtn=document.getElementById('profile-menu-btn');
+  toggleBtn.addEventListener('click',e=>{
     e.preventDefault();
     menu.classList.toggle('open');
   });
-  document.getElementById('logout-link').addEventListener('click',e=>{
+  const logout=document.getElementById('logout-link');
+  logout.addEventListener('click',e=>{
     e.preventDefault();
+    menu.classList.remove('open');
+
     localStorage.removeItem('username');
     updateAuthUI();
     location.href='/';
   });
+  menu.querySelectorAll('.profile-dropdown a').forEach(a=>{
+    a.addEventListener('click',()=>menu.classList.remove('open'));
+  });
+  document.addEventListener('click',e=>{
+    if(menu.classList.contains('open') && !menu.contains(e.target)){
+      menu.classList.remove('open');
+    }
+  });
+
 }
 
 function initProfile(){
