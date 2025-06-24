@@ -283,68 +283,6 @@ textarea {
 
 
 /*-------------- Avatar Selector -------------*/
-.avatar-selector-title {
-    margin-bottom: 0.9375rem;
-    color: var(--c-cyan);
-    font-size: 1.25rem;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 0.0625rem;
-    text-shadow: 2px 2px 3px var(--c-magenta);
-}
-
-.avatar-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.9375rem;
-    margin-bottom: 1.25rem;
-    padding: 0.5375rem;
-    background-color: rgba(0, 0, 60, 0.6);
-    border-radius: var(--radius-md);
-    border: var(--border-thin) dashed var(--c-magenta);
-}
-
-.avatar-option {
-    position: relative;
-    padding: 0.1875rem;
-    background-color: #000080;
-    border: var(--border-normal) ridge var(--c-magenta);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: transform 0.4s, box-shadow 0.4s;
-}
-
-.avatar-option:hover {
-    transform: scale(1.15) rotate(5deg);
-    box-shadow: 0 0 0.9375rem var(--c-cyan);
-    z-index: 10;
-}
-
-.avatar-option.selected {
-    animation: pulse-border 1.5s infinite;
-    transform: scale(1.15);
-    border-color: var(--c-cyan);
-    box-shadow: 0 0 1.25rem var(--c-cyan);
-    z-index: 5;
-}
-
-.avatar-option img {
-    width: 6rem;
-    /* 96px */
-    height: 6rem;
-    object-fit: cover;
-    border-radius: var(--radius-sm);
-    transition: transform 0.3s;
-}
-
-.avatar-option:hover img {
-    transform: scale(1.08) rotate(4deg);
-}
-
-.avatar-option.selected img {
-    transform: scale(1.15);
-}
 
 /*-------------- Feedback Messages -----------*/
 #guestbook-message {
@@ -499,10 +437,6 @@ textarea {
         border-width: var(--border-thin);
     }
 
-    .avatar-option img {
-        width: 3.75rem;
-        height: 3.75rem;
-    }
 
 }
 
