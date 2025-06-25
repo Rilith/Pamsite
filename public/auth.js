@@ -87,6 +87,9 @@ function initProfile(){
     const avatar = d.avatar || '05MISAT.JPG';
     document.getElementById('profile-avatar').src='/images/avatars/'+avatar;
     document.getElementById('profile-count').textContent=d.guestbookEntries||0;
+    document.getElementById('profile-bio').textContent=d.bio||'';
+    document.getElementById('profile-username').style.color=d.color||'#00ffff';
+    loadUserPosts();
   });
   const editBtn=document.getElementById('edit-profile-btn');
   const editSec=document.getElementById('edit-profile-section');
@@ -114,6 +117,41 @@ function initProfile(){
     const res=await fetch('/api/users/'+user,{method:'DELETE'});
     const data=await res.json();
     if(res.ok){ alert('Account eliminato'); localStorage.removeItem('username'); updateAuthUI(); location.href='/'; }
+    else alert(data.error||'Errore');
+  });
+
+  document.getElementById('info-form').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const res=await fetch('/api/users/'+user+'/profile',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({bio:fd.get('bio'),color:fd.get('color'),blogName:fd.get('blogName')})});
+    const data=await res.json();
+    if(res.ok){ alert('Profilo aggiornato'); initProfile(); }
+    else alert(data.error||'Errore');
+  });
+
+  async function loadUserPosts(){
+    const posts=await fetch('/api/users/'+user+'/blogposts').then(r=>r.json());
+    const box=document.getElementById('user-posts');
+    box.innerHTML='';
+    posts.forEach(p=>{
+      const d=document.createElement('div');
+      d.className='blog-post';
+      const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
+      d.innerHTML=`<h4>${sanitize(p.title)}</h4>
+        <div class="blog-meta">${p.date} ${p.time}</div>
+        ${p.image?`<div class="blog-image"><img src="${sanitize(p.image)}" alt="image"></div>`:''}
+        <div class="blog-content">${body}</div>
+        <a href="/post/${p.id}" data-open-post="${p.id}">Apri</a>`;
+      box.appendChild(d);
+    });
+  }
+
+  document.getElementById('post-form').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content'),image:fd.get('image')})});
+    const data=await res.json();
+    if(res.ok){ e.target.reset(); loadUserPosts(); }
     else alert(data.error||'Errore');
   });
 }
