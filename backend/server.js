@@ -554,7 +554,8 @@ app.get('/api/posts/:id', (req, res) => {
 
 app.get('/api/posts/popular', (req, res) => {
   try {
-    const posts = readPosts().posts
+// numeric id so it doesn't clash with /popular etc
+app.get('/api/posts/:id(\d+)', (req, res) => {
       .slice()
       .sort((a,b) => (b.views||0) - (a.views||0));
     res.json(posts);
