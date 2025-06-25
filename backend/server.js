@@ -222,8 +222,8 @@ function updateReaction(entryId, emoji, increment = true) {
   return reactions.reactions[entryId];
 }
 
-function saveChatMessage({ username, message, color }) {
-  const chat = readChat();
+function saveBlogPost({ username, title, content, images = [] }) {
+    images: Array.isArray(images) ? images.filter(Boolean) : [],
   const newId = chat.messages.length
     ? Math.max(...chat.messages.map(m => m.id)) + 1
     : 1;
@@ -510,10 +510,10 @@ app.put('/api/users/:username/password', (req, res) => {
   }
 });
 
-app.delete('/api/users/:username', (req, res) => {
-  try {
-    const { username } = req.params;
-    const users = readUsers();
+    const { title, content, images } = req.body;
+    const post = saveBlogPost({ username, title, content, images });
+// keep path distinct from /popular or /chronological
+app.get('/api/posts/id/:id', (req, res) => {
     const idx = users.users.findIndex(u => u.username === username);
     if (idx === -1) return res.status(404).json({ error: 'Utente non trovato' });
     users.users.splice(idx, 1);

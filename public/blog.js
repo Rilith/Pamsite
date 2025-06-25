@@ -16,9 +16,10 @@ function initBlog(){
         const div=document.createElement('div');
         div.className='blog-post';
         const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
+        const imgs=(p.images||[]).map(i=>`<div class="blog-image"><img src="${sanitize(i)}" alt="image"></div>`).join('');
         div.innerHTML=`<h3>${sanitize(p.title)}</h3>
           <div class="blog-meta">${p.username} - ${p.date} ${p.time} - 👁️${p.views||0}</div>
-          ${p.image?`<div class="blog-image"><img src="${sanitize(p.image)}" alt="image"></div>`:''}
+          ${imgs}
           <div class="blog-content">${body}</div>
           <a href="/post/${p.id}" data-open-post="${p.id}">Leggi tutto…</a>`;
         postsBox.appendChild(div);
