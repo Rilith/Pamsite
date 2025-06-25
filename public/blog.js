@@ -18,7 +18,9 @@ function initBlog(){
         const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
         div.innerHTML=`<h3>${sanitize(p.title)}</h3>
           <div class="blog-meta">${p.username} - ${p.date} ${p.time} - 👁️${p.views||0}</div>
-          <div class="blog-content">${body}</div>`;
+          ${p.image?`<div class="blog-image"><img src="${sanitize(p.image)}" alt="image"></div>`:''}
+          <div class="blog-content">${body}</div>
+          <a href="/post/${p.id}" data-open-post="${p.id}">Leggi tutto…</a>`;
         postsBox.appendChild(div);
       });
     }catch(err){

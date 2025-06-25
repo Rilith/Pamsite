@@ -137,7 +137,11 @@ function initProfile(){
       const d=document.createElement('div');
       d.className='blog-post';
       const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
-      d.innerHTML=`<h4>${sanitize(p.title)}</h4><div class="blog-meta">${p.date} ${p.time}</div><div class="blog-content">${body}</div>`;
+      d.innerHTML=`<h4>${sanitize(p.title)}</h4>
+        <div class="blog-meta">${p.date} ${p.time}</div>
+        ${p.image?`<div class="blog-image"><img src="${sanitize(p.image)}" alt="image"></div>`:''}
+        <div class="blog-content">${body}</div>
+        <a href="/post/${p.id}" data-open-post="${p.id}">Apri</a>`;
       box.appendChild(d);
     });
   }
@@ -145,7 +149,7 @@ function initProfile(){
   document.getElementById('post-form').addEventListener('submit',async e=>{
     e.preventDefault();
     const fd=new FormData(e.target);
-    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content')})});
+    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content'),image:fd.get('image')})});
     const data=await res.json();
     if(res.ok){ e.target.reset(); loadUserPosts(); }
     else alert(data.error||'Errore');

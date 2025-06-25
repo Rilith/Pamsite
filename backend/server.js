@@ -167,12 +167,6 @@ function writePosts(data) {
   fs.writeFileSync(BLOGPOSTS_FILE, JSON.stringify(data, null, 2));
 }
 
-const COLORS = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
-function getRandomColor(){
-  return COLORS[Math.floor(Math.random()*COLORS.length)];
-}
-
-
 function hashPass(pass) {
   return crypto.createHash('sha256').update(pass).digest('hex');
 }
@@ -246,7 +240,8 @@ function saveChatMessage({ username, message, color }) {
   return msg;
 }
 
-function saveBlogPost({ username, title, content }) {
+
+function saveBlogPost({ username, title, content, image }) {
   const data = readPosts();
   const users = readUsers();
   const user = users.users.find(u => u.username === username) || {};
@@ -255,7 +250,17 @@ function saveBlogPost({ username, title, content }) {
   const pad = n => String(n).padStart(2, '0');
   const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
   const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  const post = { id: newId, username, blogName: user.blogName || '', title, content, date, time, views: 0 };
+  const post = {
+    id: newId,
+    username,
+    blogName: user.blogName || '',
+    title,
+    content,
+    image: image || '',
+    date,
+    time,
+    views: 0
+  };
   data.posts.unshift(post);
   writePosts(data);
   return post;
@@ -423,15 +428,7 @@ app.post('/api/register', (req, res) => {
     if (users.users.find(u => u.username === username)) {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
-    users.users.push({
-      username,
-      password: hashPass(password),
-      avatar: '05MISAT.JPG',
-      color: getRandomColor(),
-      bio: '',
-      blogName: ''
-    });
-
+    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG', color: '#00ffff', bio: '', blogName: '' });
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -545,12 +542,12 @@ app.get('/api/users/:username/blogposts', (req, res) => {
 app.post('/api/users/:username/blogposts', (req, res) => {
   try {
     const { username } = req.params;
-    const { title, content } = req.body;
+    const { title, content, image } = req.body;
     if (!title || !content) return res.status(400).json({ error: 'Dati mancanti' });
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(404).json({ error: 'Utente non trovato' });
-    const post = saveBlogPost({ username, title, content });
+    const post = saveBlogPost({ username, title, content, image });
     res.status(201).json(post);
   } catch (err) {
     console.error('Errore creazione post:', err);
@@ -602,7 +599,6 @@ app.get('/api/posts/search', (req, res) => {
 // Retrieve single post by id
 // numeric id so it doesn't clash with /popular etc
 app.get('/api/posts/:id(\d+)', (req, res) => {
-
   try {
     const id = parseInt(req.params.id);
     const data = readPosts();

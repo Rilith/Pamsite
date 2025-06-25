@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'register-page':  { file: '/pages/register-page.html',  path: '/register' },
     'profile-page':   { file: '/pages/profile-page.html',   path: '/profile' },
     'blog-page':      { file: '/pages/blog-page.html',      path: '/blog' },
+    'post-page':      { file: '/pages/post-page.html',      path: '/post' },
     'error404-page':  { file: '/error404.html',            path: '/404' }
   };
 
@@ -52,7 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return str
       .replace(/\[b\](.*?)\[\/b\]/gis,'<strong>$1<\/strong>')
       .replace(/\[i\](.*?)\[\/i\]/gis,'<em>$1<\/em>')
-      .replace(/\[quote\](.*?)\[\/quote\]/gis,'<blockquote>$1<\/blockquote>');
+      .replace(/\[quote\](.*?)\[\/quote\]/gis,'<blockquote>$1<\/blockquote>')
+      .replace(/\[url=(https?:\/\/[^\]]+)\](.*?)\[\/url\]/gis,'<a href="$1" target="_blank">$2<\/a>')
+      .replace(/\[img\](https?:\/\/[^\]]+)\[\/img\]/gis,'<img src="$1" class="blog-inline-img">')
+      .replace(/\[code\]([\s\S]*?)\[\/code\]/gis,'<pre><code>$1<\/code><\/pre>')
+      .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/gis,'<span style="font-size:$1px">$2<\/span>')
+      .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gis,'<span style="color:$1">$2<\/span>');
   };
 
   function openModal(imgSrc, title) {
@@ -68,6 +74,10 @@ function closeModal() {
     modalImg.alt = '';
     modalTitle.textContent = '';
 }
+
+  window.openPost = function(id){
+    showPage('post-page', true, `/post/${id}`, { id });
+  };
 
   const getRandomColor = () => {
     const cols = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
@@ -100,7 +110,7 @@ function closeModal() {
     section.appendChild(grid);
   }
 
-  async function showPage(id, push = true) {
+  async function showPage(id, push = true, customPath = null, state = {}) {
     if (window.closeGameView) {
       window.closeGameView();
       window.closeGameView = null;
@@ -133,7 +143,7 @@ function closeModal() {
     /* 2. Update the address bar (skip if we’re showing the 404 fragment)  */
     /* ------------------------------------------------------------------ */
     if (push && key !== 'error404-page') {
-      history.pushState({ page: key }, '', path);
+      history.pushState({ page: key, ...state }, '', customPath || path);
     }
   
     /* ------------------------------------------------------------------ */
@@ -169,6 +179,9 @@ function closeModal() {
         case 'blog-page':
           initBlog?.();
           break;
+        case 'post-page':
+          initPostPage?.();
+          break;
         // add more page hooks here if needed
       }
     } catch (hookErr) {
@@ -187,14 +200,19 @@ function closeModal() {
 
   // handle back/fwd
   window.addEventListener('popstate', e => {
-    showPage(e.state?.page || 'home-page', false);
+    showPage(e.state?.page || 'home-page', false, location.pathname + location.search, e.state || {});
   });
 
   // ─── INITIAL ROUTE ────────────────────────────────────────
-  const start = Object.entries(pageConfig)
-    .find(([,cfg]) => cfg.path === location.pathname)?.[0]
-    || 'error404-page';
-  showPage(start, false);
+  let start = Object.entries(pageConfig)
+    .find(([,cfg]) => cfg.path === location.pathname)?.[0];
+  const startState = {};
+  if (!start && location.pathname.startsWith('/post/')) {
+    start = 'post-page';
+    startState.id = location.pathname.split('/').pop();
+  }
+  if (!start) start = 'error404-page';
+  showPage(start, false, location.pathname + location.search, startState);
 
   // ─── GLOBAL EVENT DELEGATION ──────────────────────────────
   document.body.addEventListener('click', e => {
@@ -203,6 +221,13 @@ function closeModal() {
     if (nav) {
       e.preventDefault();
       showPage(nav.dataset.pageTarget, true);
+      return;
+    }
+
+    const postLink = e.target.closest('[data-open-post]');
+    if(postLink){
+      e.preventDefault();
+      openPost(postLink.dataset.openPost);
       return;
     }
 
