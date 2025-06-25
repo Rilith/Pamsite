@@ -85,15 +85,6 @@ function initProfile(){
   document.getElementById('profile-username').textContent=user;
   const postArea=document.querySelector('#post-form textarea[name="content"]');
   const pickerWrap=document.getElementById('post-picker-wrapper');
-  const addImgBtn=document.getElementById('add-image-btn');
-  addImgBtn.addEventListener('click',()=>{
-    const box=document.getElementById('post-image-fields');
-    const inp=document.createElement('input');
-    inp.type='text';
-    inp.name='images[]';
-    inp.placeholder='Image URL';
-    box.appendChild(inp);
-  });
   buildToolbar();
   loadEmotes();
   fetch('/api/users/'+user).then(r=>r.json()).then(d=>{
@@ -150,12 +141,13 @@ function initProfile(){
       const d=document.createElement('div');
       d.className='blog-post';
       const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
-      const imgs=(p.images||[]).map(i=>`<div class="blog-image"><img src="${sanitize(i)}" alt="image"></div>`).join('');
+      const img=p.thumb?`<div class="blog-image"><img src="${sanitize(p.thumb)}" alt="thumb"></div>`:'';
+      const path=`${sanitize(p.blogSlug||slugify(p.blogName||p.username))}/${sanitize(p.slug)}`;
       d.innerHTML=`<h4>${sanitize(p.title)}</h4>
         <div class="blog-meta">${p.date} ${p.time}</div>
-        ${imgs}
+        ${img}
         <div class="blog-content">${body}</div>
-        <a href="/post/${p.id}" data-open-post="${p.id}">Apri</a>`;
+        <a href="/${path}" data-open-post="${path}">Apri</a>`;
       box.appendChild(d);
     });
   }
@@ -163,11 +155,10 @@ function initProfile(){
   document.getElementById('post-form').addEventListener('submit',async e=>{
     e.preventDefault();
     const fd=new FormData(e.target);
-    const images=[...e.target.querySelectorAll('input[name="images[]"]')]
-      .map(inp=>inp.value.trim()).filter(Boolean);
-    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content'),images})});
+    const thumb=fd.get('thumb')||'';
+    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content'),thumb})});
     const data=await res.json();
-    if(res.ok){ e.target.reset(); document.getElementById('post-image-fields').innerHTML='<input type="text" name="images[]" placeholder="Image URL">'; loadUserPosts(); }
+    if(res.ok){ e.target.reset(); loadUserPosts(); }
     else alert(data.error||'Errore');
   });
 

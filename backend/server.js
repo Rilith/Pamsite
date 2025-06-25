@@ -222,8 +222,19 @@ function updateReaction(entryId, emoji, increment = true) {
   return reactions.reactions[entryId];
 }
 
-function saveChatMessage({ username, message, color }) {
-  const chat = readChat();
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function saveBlogPost({ username, title, content, thumb = '' }) {
+  const blogSlug = slugify(user.blogName || username);
+  let slug = slugify(title);
+  if (data.posts.some(p => (p.blogSlug||slugify(p.blogName||p.username))===blogSlug && p.slug===slug)) {
+    slug += '-' + newId;
+  }
+    blogSlug,
+    slug,
+    thumb,
   const newId = chat.messages.length
     ? Math.max(...chat.messages.map(m => m.id)) + 1
     : 1;
@@ -509,8 +520,23 @@ app.put('/api/users/:username/password', (req, res) => {
   }
 });
 
-app.delete('/api/users/:username', (req, res) => {
+    const { title, content, thumb } = req.body;
+    const post = saveBlogPost({ username, title, content, thumb });
+app.get('/api/posts/:blog/:slug', (req, res) => {
   try {
+    const { blog, slug } = req.params;
+    const data = readPosts();
+    const post = data.posts.find(p => (p.blogSlug||slugify(p.blogName||p.username)) === blog && p.slug === slug);
+    if (!post) return res.status(404).json({ error: 'Post non trovato' });
+    post.views = (post.views || 0) + 1;
+    writePosts(data);
+    res.json(post);
+  } catch (err) {
+    console.error('Errore lettura post:', err);
+    res.status(500).json({ error: 'Errore lettura post' });
+  }
+});
+
     const { username } = req.params;
     const users = readUsers();
     const idx = users.users.findIndex(u => u.username === username);
