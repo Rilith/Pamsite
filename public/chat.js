@@ -12,7 +12,9 @@ function initChat(){
   let emoteCategories = {};
 
   buildToolbar();
-  loadEmotes().then(loadMessages);
+  loadEmotes().catch(err=>{
+    console.error('emotes',err);
+  }).finally(loadMessages);
   mountForm();
 
   async function loadMessages(){
@@ -21,14 +23,18 @@ function initChat(){
       if(!res.ok) throw new Error();
       const data = await res.json();
       renderMessages(data);
-    }catch(err){ console.error('chat load', err); }
+    }catch(err){
+      console.error('chat load', err);
+      messagesEl.innerHTML='<p class="chat-error">Impossibile caricare la chat.</p>';
+    }
   }
 
   function renderMessages(list){
     messagesEl.innerHTML = list.map(m => {
       const msg = renderMessage(m.message);
       const time = `${m.date} ${m.time}`;
-      return `<div class="chat-message"><span class="time">${sanitize(time)}</span> <span class="name">${sanitize(m.username)}</span>: <span class="msg">${msg}</span></div>`;
+      const color = sanitize(m.color || '#00ffff');
+      return `<div class="chat-message"><span class="time">${sanitize(time)}</span> <span class="name" style="color:${color}">${sanitize(m.username)}</span>: <span class="msg">${msg}</span></div>`;
     }).join('');
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
