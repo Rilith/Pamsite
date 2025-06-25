@@ -83,10 +83,26 @@ function initProfile(){
   const user=localStorage.getItem('username');
   if(!user){ page.innerHTML='<p>Devi effettuare il login.</p>'; return; }
   document.getElementById('profile-username').textContent=user;
+  const postArea=document.querySelector('#post-form textarea[name="content"]');
+  const pickerWrap=document.getElementById('post-picker-wrapper');
+  const addImgBtn=document.getElementById('add-image-btn');
+  addImgBtn.addEventListener('click',()=>{
+    const box=document.getElementById('post-image-fields');
+    const inp=document.createElement('input');
+    inp.type='text';
+    inp.name='images[]';
+    inp.placeholder='Image URL';
+    box.appendChild(inp);
+  });
+  buildToolbar();
+  loadEmotes();
   fetch('/api/users/'+user).then(r=>r.json()).then(d=>{
     const avatar = d.avatar || '05MISAT.JPG';
     document.getElementById('profile-avatar').src='/images/avatars/'+avatar;
     document.getElementById('profile-count').textContent=d.guestbookEntries||0;
+    document.getElementById('profile-bio').textContent=d.bio||'';
+    document.getElementById('profile-username').style.color=d.color||'#00ffff';
+    loadUserPosts();
   });
   const editBtn=document.getElementById('edit-profile-btn');
   const editSec=document.getElementById('edit-profile-section');
@@ -116,6 +132,116 @@ function initProfile(){
     if(res.ok){ alert('Account eliminato'); localStorage.removeItem('username'); updateAuthUI(); location.href='/'; }
     else alert(data.error||'Errore');
   });
+
+  document.getElementById('info-form').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const res=await fetch('/api/users/'+user+'/profile',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({bio:fd.get('bio'),color:fd.get('color'),blogName:fd.get('blogName')})});
+    const data=await res.json();
+    if(res.ok){ alert('Profilo aggiornato'); initProfile(); }
+    else alert(data.error||'Errore');
+  });
+
+  async function loadUserPosts(){
+    const posts=await fetch('/api/users/'+user+'/blogposts').then(r=>r.json());
+    const box=document.getElementById('user-posts');
+    box.innerHTML='';
+    posts.forEach(p=>{
+      const d=document.createElement('div');
+      d.className='blog-post';
+      const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
+      const imgs=(p.images||[]).map(i=>`<div class="blog-image"><img src="${sanitize(i)}" alt="image"></div>`).join('');
+      d.innerHTML=`<h4>${sanitize(p.title)}</h4>
+        <div class="blog-meta">${p.date} ${p.time}</div>
+        ${imgs}
+        <div class="blog-content">${body}</div>
+        <a href="/post/${p.id}" data-open-post="${p.id}">Apri</a>`;
+      box.appendChild(d);
+    });
+  }
+
+  document.getElementById('post-form').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const images=[...e.target.querySelectorAll('input[name="images[]"]')]
+      .map(inp=>inp.value.trim()).filter(Boolean);
+    const res=await fetch('/api/users/'+user+'/blogposts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fd.get('title'),content:fd.get('content'),images})});
+    const data=await res.json();
+    if(res.ok){ e.target.reset(); document.getElementById('post-image-fields').innerHTML='<input type="text" name="images[]" placeholder="Image URL">'; loadUserPosts(); }
+    else alert(data.error||'Errore');
+  });
+
+  function buildToolbar(){
+    const group=document.createElement('div');
+    group.className='toolbar-group format-group';
+    const box=document.createElement('div');
+    box.className='format-buttons';
+    box.innerHTML=`<button type="button" class="toolbar-btn" data-tag="b">B</button>
+                   <button type="button" class="toolbar-btn" data-tag="i">I</button>
+                   <button type="button" class="toolbar-btn" data-tag="quote">"</button>
+                   <button type="button" class="toolbar-btn" data-tag="url">🔗</button>
+                   <button type="button" class="toolbar-btn" data-tag="img">🖼️</button>
+                   <button type="button" class="toolbar-btn" id="post-emoji-btn">😊</button>`;
+    group.appendChild(box);
+    pickerWrap.appendChild(group);
+
+    const emoteSection=document.createElement('div');
+    emoteSection.id='post-emoji-section';
+    emoteSection.style.display='none';
+    emoteSection.innerHTML='<div class="emote-tabs"></div><div id="post-emoji-picker" class="emote-content"></div>';
+    pickerWrap.appendChild(emoteSection);
+
+    box.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn=>{
+      const tag=btn.dataset.tag;
+      if(tag==='url'){
+        btn.addEventListener('click',()=>{ const u=prompt('URL?'); if(u) wrapSelection(postArea, `[url=${u}]`, '[/url]'); });
+      }else if(tag==='img'){
+        btn.addEventListener('click',()=>{ const u=prompt('Image URL?'); if(u) insertAtCursor(postArea, `[img]${u}[/img]`); });
+      }else{
+        btn.addEventListener('click',()=>wrapSelection(postArea, `[${tag}]`, `[/${tag}]`));
+      }
+    });
+    const emojiBtn=document.getElementById('post-emoji-btn');
+    emojiBtn.addEventListener('click',e=>{e.stopPropagation();emoteSection.style.display=emoteSection.style.display==='none'?'block':'none';});
+    document.addEventListener('click',e=>{if(emoteSection.style.display==='none')return;if(!emoteSection.contains(e.target)&&e.target!==emojiBtn)emoteSection.style.display='none';});
+  }
+
+  async function loadEmotes(){
+    try{
+      const res=await fetch('/api/emotes');
+      if(!res.ok) throw new Error();
+      const data=await res.json();
+      buildEmotePicker(data);
+    }catch(err){console.error('emotes',err);}
+  }
+
+  function buildEmotePicker(data){
+    const tabs=pickerWrap.querySelector('#post-emoji-section .emote-tabs');
+    const picker=pickerWrap.querySelector('#post-emoji-picker');
+    tabs.innerHTML='';
+    picker.innerHTML='';
+    const cats=Object.keys(data);
+    if(!cats.length) return;
+    cats.forEach((cat,i)=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='emote-tab-btn'+(i===0?' active':'');
+      b.dataset.cat=cat;
+      b.textContent=cat==='root'?'General':cat;
+      b.addEventListener('click',()=>{tabs.querySelectorAll('.emote-tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');show(cat);});
+      tabs.appendChild(b);
+    });
+    function show(cat){
+      picker.innerHTML='';
+      if(!data[cat]||!data[cat].length){picker.innerHTML='<div class="emote-empty">Nessun emoticon</div>';return;}
+      const grid=document.createElement('div');
+      grid.className='emote-grid';
+      grid.innerHTML=data[cat].map(e=>`<img src="/images/emotes/${e.file}" alt="${e.code}" class="emote-btn">`).join('');
+      picker.appendChild(grid);
+      grid.querySelectorAll('.emote-btn').forEach(img=>{img.addEventListener('click',()=>insertAtCursor(postArea,img.alt));});
+    }
+    show(cats[0]);
+  }
 }
 
 document.addEventListener('DOMContentLoaded',updateAuthUI);
