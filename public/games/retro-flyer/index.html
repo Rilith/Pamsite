@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Retro Flyer</title>
+  <style>
+    body{margin:0;background:black;color:#0f0;font-family:sans-serif;text-align:center;}
+    canvas{background:#111;display:block;margin:0 auto;border:2px solid #0f0;image-rendering:pixelated;}
+    #scoreBoard{margin-top:10px;}
+    #startBtn{margin-top:10px;padding:5px 10px;background:#222;color:#0f0;border:1px solid #0f0;cursor:pointer;}
+  </style>
+</head>
+<body>
+  <h3>Retro Flyer</h3>
+  <canvas id="game" width="400" height="300"></canvas>
+  <div id="scoreBoard">Score: <span id="score">0</span></div>
+  <button id="startBtn">Start</button>
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const startBtn = document.getElementById('startBtn');
+
+  let plane, obstacles, score, running, lastSpawn;
+
+  function startGame(){
+    plane = {x:50, y:canvas.height/2-5, w:20, h:10, vy:0};
+    obstacles = [];
+    score = 0;
+    running = true;
+    lastSpawn = 0;
+    scoreEl.textContent = score;
+    window.requestAnimationFrame(loop);
+  }
+
+  function spawnObstacle(){
+    const h = 20 + Math.random()*30;
+    const y = Math.random()*(canvas.height - h);
+    obstacles.push({x:canvas.width, y, w:20, h});
+  }
+
+  function update(){
+    plane.y += plane.vy;
+    if(plane.y < 0) plane.y = 0;
+    if(plane.y + plane.h > canvas.height) plane.y = canvas.height - plane.h;
+
+    obstacles.forEach(o => o.x -= 2);
+    obstacles = obstacles.filter(o => o.x + o.w > 0);
+
+    score += 1;
+    scoreEl.textContent = score;
+
+    for(const o of obstacles){
+      if(o.x < plane.x + plane.w && o.x + o.w > plane.x && o.y < plane.y + plane.h && o.y + o.h > plane.y){
+        endGame();
+        return;
+      }
+    }
+  }
+
+  function draw(){
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.fillRect(plane.x, plane.y, plane.w, plane.h);
+    ctx.fillStyle = '#f00';
+    obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+  }
+
+  function loop(timestamp){
+    if(!running) return;
+    if(timestamp - lastSpawn > 1500){
+      spawnObstacle();
+      lastSpawn = timestamp;
+    }
+    update();
+    draw();
+    window.requestAnimationFrame(loop);
+  }
+
+  function sendScore(){
+    const user = localStorage.getItem('username');
+    if(!user) return;
+    fetch('/api/games/retro-flyer/scores', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:user, score})
+    }).then(()=>{
+      if(parent.refreshScores) parent.refreshScores();
+    }).catch(()=>{});
+  }
+
+  function endGame(){
+    running = false;
+    sendScore();
+    alert('Game Over! Score: '+score);
+  }
+
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowUp') plane.vy = -3;
+    if(e.key==='ArrowDown') plane.vy = 3;
+  });
+  document.addEventListener('keyup', e => {
+    if(e.key==='ArrowUp' || e.key==='ArrowDown') plane.vy = 0;
+  });
+  startBtn.addEventListener('click', startGame);
+})();
+</script>
+</body>
+</html>
