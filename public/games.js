@@ -5,6 +5,10 @@ function initGames(){
   const titleEl = document.getElementById('game-title');
   const scoreList = document.getElementById('score-list');
   const closeBtn = document.getElementById('close-game');
+
+  let resumeMusic = false;
+
+  window.closeGameView = closeGame;
   
   loadList();
 
@@ -20,17 +24,29 @@ function initGames(){
   }
 
   async function openGame(name){
+    if(window.audioWidget){
+      window.audioWidget.isPaused(paused => {
+        resumeMusic = !paused;
+        if(resumeMusic) window.audioWidget.pause();
+      });
+    }
     titleEl.textContent = name;
     iframe.src = `/games/${name}/index.html`;
     view.style.display = 'block';
     grid.style.display = 'none';
     await loadScores(name);
-    closeBtn.onclick = ()=>{
-      view.style.display='none';
-      grid.style.display='flex';
-      iframe.src='';
-    };
+    closeBtn.onclick = closeGame;
     iframe.focus();
+  }
+
+  function closeGame(){
+    view.style.display='none';
+    grid.style.display='flex';
+    iframe.src='';
+    if(resumeMusic && window.audioWidget){
+      window.audioWidget.play();
+      resumeMusic = false;
+    }
   }
 
   async function loadScores(game){

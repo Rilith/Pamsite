@@ -86,6 +86,10 @@ function closeModal() {
   }
 
   async function showPage(id, push = true) {
+    if (window.closeGameView) {
+      window.closeGameView();
+      window.closeGameView = null;
+    }
     /* ------------------------------------------------------------------ */
     /* 0. Pick the config entry (or fall back to “error404-page”)          */
     /* ------------------------------------------------------------------ */
@@ -255,6 +259,7 @@ function closeModal() {
 // ──── Audio player avanzato ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const widget = SC.Widget(document.getElementById('sc-player'));
+  window.audioWidget = widget; // expose for other modules
   const nowPlayingEl = document.getElementById('now-playing');
   const volSlider = document.getElementById('vol');
   const playerBox = document.getElementById('audio-player');
