@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>DOOM</title>
+    <style>
+      body { background:black; color:#0f0; text-align:center; margin:0; }
+      .dosbox-container { width: 960px; height: 720px; margin:auto; }
+      .dosbox-container > .dosbox-overlay { background:url(https://js-dos.com/cdn/DOOM.png); }
+    </style>
+  </head>
+  <body>
+    <h1>Doom JS Demo</h1>
+    <div id="dosbox"></div>
+    <br/>
+    <button id="fs-btn">Make fullscreen</button>
+
+    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
+    <script>
+      var dosbox = new Dosbox({
+        id: "dosbox",
+        onload: function (db) {
+          db.run("https://js-dos.com/cdn/upload/DOOM-%40evilution.zip", "./doom");
+        }
+      });
+      document.getElementById('fs-btn').onclick = function () {
+        dosbox.requestFullScreen();
+      };
+    </script>
+  </body>
+</html>
