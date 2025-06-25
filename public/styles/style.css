@@ -63,6 +63,16 @@ iframe {
     height: auto;
 }
 
+/* Game iframe should maintain a 4:3 aspect ratio and center on the page */
+#game-frame {
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 4 / 3;
+    display: block;
+    margin: 0 auto;
+    border: 0;
+}
+
 /*=============================================
 =                TYPOGRAPHY                   =
 =============================================*/
@@ -517,6 +527,47 @@ h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
 .download-item:hover {
     transform: scale(1.05);
     box-shadow: 0 0 10px var(--cyan);
+}
+
+.game-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--download-grid-gap-default);
+    justify-content: center;
+}
+
+.game-item {
+    width: 150px;
+    background: var(--dark-blue);
+    border: 2px solid var(--pink);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.game-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px var(--cyan);
+}
+
+.game-thumb {
+    width: 100%;
+    height: 90px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 6px;
+}
+
+.game-thumb img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    pointer-events: none;
 }
 
 .download-thumb {
