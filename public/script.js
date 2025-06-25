@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'about-page':     { file: '/pages/about-page.html',    path: '/about' },
     'anime-page':     { file: '/pages/anime-page.html',    path: '/anime' },
     'videogame-page': { file: '/pages/videogame-page.html',path: '/videogame' },
+    'games-page':    { file: '/pages/games-page.html',   path: '/arcade' },
     'guestbook-page': { file: '/pages/guestbook.html',      path: '/guestbook' },
     'download-page':  { file: '/pages/download-page.html',  path: '/download' },
     'setup-page':     { file: '/pages/setup-page.html',     path: '/setup' },
@@ -139,6 +140,9 @@ function closeModal() {
           break;
         case 'register-page':
           initRegister?.();
+          break;
+        case 'games-page':
+          initGames?.();
           break;
         case 'profile-page':
           initProfile?.();
