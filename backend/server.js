@@ -536,6 +536,21 @@ app.post('/api/users/:username/blogposts', (req, res) => {
   }
 });
 
+=======
+app.get('/api/posts/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = readPosts();
+    const post = data.posts.find(p => p.id === id);
+    if (!post) return res.status(404).json({ error: 'Post non trovato' });
+    post.views = (post.views || 0) + 1;
+    writePosts(data);
+    res.json(post);
+  } catch (err) {
+    console.error('Errore lettura post:', err);
+    res.status(500).json({ error: 'Errore lettura post' });
+  }
+
 
 app.get('/api/posts/popular', (req, res) => {
   try {
@@ -592,6 +607,7 @@ app.get('/api/posts/:id', (req, res) => {
     res.status(500).json({ error: 'Errore lettura post' });
   }
 });
+
 
 app.get('/api/users/search', (req, res) => {
   try {
