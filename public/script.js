@@ -41,6 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => t.remove(), 2500);
   };
 
+  // basic helpers shared across modules
+  window.sanitize = function(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
+  window.parseFormatting = function(str){
+    return str
+      .replace(/\[b\](.*?)\[\/b\]/gis,'<strong>$1<\/strong>')
+      .replace(/\[i\](.*?)\[\/i\]/gis,'<em>$1<\/em>')
+      .replace(/\[quote\](.*?)\[\/quote\]/gis,'<blockquote>$1<\/blockquote>');
+  };
+
   function openModal(imgSrc, title) {
     modalImg.src = imgSrc;
     modalImg.alt = title;
