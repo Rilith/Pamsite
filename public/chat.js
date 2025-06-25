@@ -33,7 +33,8 @@ function initChat(){
     messagesEl.innerHTML = list.map(m => {
       const msg = renderMessage(m.message);
       const time = `${m.date} ${m.time}`;
-      return `<div class="chat-message"><span class="time">${sanitize(time)}</span> <span class="name">${sanitize(m.username)}</span>: <span class="msg">${msg}</span></div>`;
+      const color = sanitize(m.color || '#00ffff');
+      return `<div class="chat-message"><span class="time">${sanitize(time)}</span> <span class="name" style="color:${color}">${sanitize(m.username)}</span>: <span class="msg">${msg}</span></div>`;
     }).join('');
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
