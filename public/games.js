@@ -7,6 +7,7 @@ function initGames(){
   const closeBtn = document.getElementById('close-game');
 
   let resumeMusic = false;
+  let currentGame = null;
 
   window.closeGameView = closeGame;
   
@@ -34,6 +35,8 @@ function initGames(){
     iframe.src = `/games/${name}/index.html`;
     view.style.display = 'block';
     grid.style.display = 'none';
+    currentGame = name;
+    window.refreshScores = () => loadScores(currentGame);
     await loadScores(name);
     closeBtn.onclick = closeGame;
     iframe.focus();
@@ -43,6 +46,8 @@ function initGames(){
     view.style.display='none';
     grid.style.display='flex';
     iframe.src='';
+    currentGame = null;
+    delete window.refreshScores;
     if(resumeMusic && window.audioWidget){
       window.audioWidget.play();
       resumeMusic = false;
