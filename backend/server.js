@@ -30,6 +30,8 @@ const GUESTBOOK_FILE = path.join(DATA_DIR, 'guestbook.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const CHAT_FILE = path.join(DATA_DIR, 'chat.json');
+const GAME_SCORES_FILE = path.join(DATA_DIR, 'game_scores.json');
+const GAMES_DIR = path.join(__dirname, 'public', 'games');
 
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
 // Assicuriamoci che la directory data esista
@@ -101,6 +103,14 @@ if (!fs.existsSync(CHAT_FILE)) {
   fs.writeFileSync(CHAT_FILE, JSON.stringify(initialChat, null, 2));
 }
 
+// Inizializza game scores
+if (!fs.existsSync(GAME_SCORES_FILE)) {
+  fs.writeFileSync(GAME_SCORES_FILE, JSON.stringify({ scores: {} }, null, 2));
+}
+if (!fs.existsSync(GAMES_DIR)) {
+  fs.mkdirSync(GAMES_DIR, { recursive: true });
+}
+
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -129,6 +139,14 @@ function readChat() {
 
 function writeChat(data) {
   fs.writeFileSync(CHAT_FILE, JSON.stringify(data, null, 2));
+}
+
+function readScores() {
+  return JSON.parse(fs.readFileSync(GAME_SCORES_FILE, 'utf8'));
+}
+
+function writeScores(data) {
+  fs.writeFileSync(GAME_SCORES_FILE, JSON.stringify(data, null, 2));
 }
 
 function hashPass(pass) {
@@ -536,11 +554,63 @@ app.get('/api/downloads/:cat', (req, res) => {
   }
 });
 
+// ─── ROUTES: GAMES ─────────────────────────────────────────────────────────
+app.get('/api/games', (req, res) => {
+  fs.readdir(GAMES_DIR, { withFileTypes: true }, (err, items) => {
+    if (err) return res.status(500).json({ error: 'Errore lettura giochi' });
+    const list = items.filter(d => d.isDirectory()).map(d => {
+      const thumbPath = path.join(GAMES_DIR, d.name, 'thumb.png');
+      const thumb = fs.existsSync(thumbPath)
+        ? `/games/${d.name}/thumb.png`
+        : '/images/avatars/05MISAT.JPG';
+      return { name: d.name, thumb };
+    });
+    res.json(list);
+  });
+});
+
+const gameUpload = multer({ dest: path.join(__dirname, 'tmp') });
+app.post('/api/games/upload', gameUpload.single('game'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'File mancante' });
+  const AdmZip = require('adm-zip');
+  const name = path.parse(req.file.originalname).name.replace(/\s+/g, '_');
+  const dest = path.join(GAMES_DIR, name);
+  try {
+    const zip = new AdmZip(req.file.path);
+    zip.extractAllTo(dest, true);
+    fs.unlinkSync(req.file.path);
+    res.json({ success: true, name });
+  } catch (e) {
+    console.error('Upload game', e);
+    res.status(500).json({ error: 'Errore caricamento gioco' });
+  }
+});
+
+app.get('/api/games/:game/scores', (req, res) => {
+  const data = readScores();
+  res.json(data.scores[req.params.game] || []);
+});
+
+app.post('/api/games/:game/scores', (req, res) => {
+  const { username, score } = req.body;
+  if (!username || typeof score !== 'number')
+    return res.status(400).json({ error: 'Dati mancanti' });
+  const users = readUsers();
+  const user = users.users.find(u => u.username === username);
+  if (!user) return res.status(401).json({ error: 'Utente non valido' });
+  const data = readScores();
+  if (!data.scores[req.params.game]) data.scores[req.params.game] = [];
+  data.scores[req.params.game].push({ username, score });
+  writeScores(data);
+  res.json({ success: true });
+});
+
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images/avatars', express.static(path.join(__dirname, 'images', 'avatars')));
 app.use('/images/emotes', express.static(path.join(__dirname, 'images', 'emotes')));
 app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+app.use('/games', express.static(path.join(__dirname, 'public', 'games')));
 app.use(
   '/pages',
   express.static(path.join(__dirname, 'public', 'pages'))
