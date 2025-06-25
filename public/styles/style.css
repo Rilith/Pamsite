@@ -63,6 +63,16 @@ iframe {
     height: auto;
 }
 
+/* Game iframe should maintain a 4:3 aspect ratio and center on the page */
+#game-frame {
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 4 / 3;
+    display: block;
+    margin: 0 auto;
+    border: 0;
+}
+
 /*=============================================
 =                TYPOGRAPHY                   =
 =============================================*/
