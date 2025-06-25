@@ -86,6 +86,8 @@
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:user, score})
+    }).then(()=>{
+      if(parent.refreshScores) parent.refreshScores();
     }).catch(()=>{});
   }
 
