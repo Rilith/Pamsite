@@ -31,6 +31,7 @@ const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const CHAT_FILE = path.join(DATA_DIR, 'chat.json');
 const GAME_SCORES_FILE = path.join(DATA_DIR, 'game_scores.json');
+const BLOGPOSTS_FILE = path.join(DATA_DIR, 'posts.json');
 const GAMES_DIR = path.join(__dirname, 'public', 'games');
 
 // ─── INIT DATA ────────────────────────────────────────────────────────────────
@@ -107,6 +108,9 @@ if (!fs.existsSync(CHAT_FILE)) {
 if (!fs.existsSync(GAME_SCORES_FILE)) {
   fs.writeFileSync(GAME_SCORES_FILE, JSON.stringify({ scores: {} }, null, 2));
 }
+if (!fs.existsSync(BLOGPOSTS_FILE)) {
+  fs.writeFileSync(BLOGPOSTS_FILE, JSON.stringify({ posts: [] }, null, 2));
+}
 if (!fs.existsSync(GAMES_DIR)) {
   fs.mkdirSync(GAMES_DIR, { recursive: true });
 }
@@ -134,7 +138,13 @@ function writeUsers(data) {
 }
 
 function readChat() {
-  return JSON.parse(fs.readFileSync(CHAT_FILE, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(CHAT_FILE, 'utf8'));
+  } catch {
+    const init = { messages: [] };
+    fs.writeFileSync(CHAT_FILE, JSON.stringify(init, null, 2));
+    return init;
+  }
 }
 
 function writeChat(data) {
@@ -147,6 +157,14 @@ function readScores() {
 
 function writeScores(data) {
   fs.writeFileSync(GAME_SCORES_FILE, JSON.stringify(data, null, 2));
+}
+
+function readPosts() {
+  return JSON.parse(fs.readFileSync(BLOGPOSTS_FILE, 'utf8'));
+}
+
+function writePosts(data) {
+  fs.writeFileSync(BLOGPOSTS_FILE, JSON.stringify(data, null, 2));
 }
 
 function hashPass(pass) {
@@ -220,6 +238,21 @@ function saveChatMessage({ username, message }) {
   chat.messages.push(msg);
   writeChat(chat);
   return msg;
+}
+
+function saveBlogPost({ username, title, content }) {
+  const data = readPosts();
+  const users = readUsers();
+  const user = users.users.find(u => u.username === username) || {};
+  const newId = data.posts.length ? Math.max(...data.posts.map(p => p.id)) + 1 : 1;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
+  const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const post = { id: newId, username, blogName: user.blogName || '', title, content, date, time, views: 0 };
+  data.posts.unshift(post);
+  writePosts(data);
+  return post;
 }
 
 // ─── ROUTES: GUESTBOOK ───────────────────────────────────────────────────────
@@ -376,7 +409,7 @@ app.post('/api/register', (req, res) => {
     if (users.users.find(u => u.username === username)) {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
-    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG' });
+    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG', color: '#00ffff', bio: '', blogName: '' });
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -414,7 +447,10 @@ app.get('/api/users/:username', (req, res) => {
     res.json({
       username: user.username,
       avatar: user.avatar || '05MISAT.JPG',
-      guestbookEntries: gbCount
+      guestbookEntries: gbCount,
+      color: user.color || '#00ffff',
+      bio: user.bio || '',
+      blogName: user.blogName || ''
     });
   } catch (err) {
     console.error('Errore profilo:', err);
@@ -467,6 +503,123 @@ app.delete('/api/users/:username', (req, res) => {
   } catch (err) {
     console.error('Errore eliminazione account:', err);
     res.status(500).json({ error: 'Errore eliminazione account' });
+  }
+});
+
+// ─── BLOG ROUTES ─────────────────────────────────────────────
+app.get('/api/users/:username/blogposts', (req, res) => {
+  try {
+    const { username } = req.params;
+    const data = readPosts();
+    const posts = data.posts.filter(p => p.username === username)
+      .sort((a,b) => new Date(b.date.split('/').reverse().join('-')+'T'+b.time) - new Date(a.date.split('/').reverse().join('-')+'T'+a.time));
+    res.json(posts);
+  } catch (err) {
+    console.error('Errore caricamento blog:', err);
+    res.status(500).json({ error: 'Errore caricamento blog' });
+  }
+});
+
+app.post('/api/users/:username/blogposts', (req, res) => {
+  try {
+    const { username } = req.params;
+    const { title, content } = req.body;
+    if (!title || !content) return res.status(400).json({ error: 'Dati mancanti' });
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    const post = saveBlogPost({ username, title, content });
+    res.status(201).json(post);
+  } catch (err) {
+    console.error('Errore creazione post:', err);
+    res.status(500).json({ error: 'Errore creazione post' });
+  }
+});
+
+
+app.get('/api/posts/popular', (req, res) => {
+  try {
+    const posts = readPosts().posts
+      .slice()
+      .sort((a,b) => (b.views||0) - (a.views||0));
+    res.json(posts);
+  } catch (err) {
+    console.error('Errore posts popolari:', err);
+    res.status(500).json({ error: 'Errore posts popolari' });
+  }
+});
+
+app.get('/api/posts/chronological', (req, res) => {
+  try {
+    const posts = readPosts().posts
+      .slice()
+      .sort((a,b) => new Date(b.date.split('/').reverse().join('-')+'T'+b.time) - new Date(a.date.split('/').reverse().join('-')+'T'+a.time));
+    res.json(posts);
+  } catch (err) {
+    console.error('Errore posts cronologici:', err);
+    res.status(500).json({ error: 'Errore posts' });
+  }
+});
+
+app.get('/api/posts/search', (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ error: 'Parametro di ricerca mancante' });
+    const posts = readPosts().posts.filter(p =>
+      p.title.toLowerCase().includes(query.toLowerCase()) ||
+      p.content.toLowerCase().includes(query.toLowerCase()) ||
+      (p.blogName && p.blogName.toLowerCase().includes(query.toLowerCase()))
+    );
+    res.json(posts);
+  } catch (err) {
+    console.error('Errore ricerca posts:', err);
+    res.status(500).json({ error: 'Errore ricerca posts' });
+  }
+});
+
+// Retrieve single post by id
+app.get('/api/posts/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = readPosts();
+    const post = data.posts.find(p => p.id === id);
+    if (!post) return res.status(404).json({ error: 'Post non trovato' });
+    post.views = (post.views || 0) + 1;
+    writePosts(data);
+    res.json(post);
+  } catch (err) {
+    console.error('Errore lettura post:', err);
+    res.status(500).json({ error: 'Errore lettura post' });
+  }
+});
+
+app.get('/api/users/search', (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ error: 'Parametro di ricerca mancante' });
+    const users = readUsers().users.filter(u => u.username.toLowerCase().includes(query.toLowerCase()));
+    res.json(users.map(u => ({ username: u.username })));
+  } catch (err) {
+    console.error('Errore ricerca utenti:', err);
+    res.status(500).json({ error: 'Errore ricerca utenti' });
+  }
+});
+
+app.put('/api/users/:username/profile', (req, res) => {
+  try {
+    const { username } = req.params;
+    const { bio, color, blogName } = req.body;
+    const users = readUsers();
+    const user = users.users.find(u => u.username === username);
+    if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+    if (bio !== undefined) user.bio = bio;
+    if (color !== undefined) user.color = color;
+    if (blogName !== undefined) user.blogName = blogName;
+    writeUsers(users);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Errore aggiornamento profilo:', err);
+    res.status(500).json({ error: 'Errore aggiornamento profilo' });
   }
 });
 

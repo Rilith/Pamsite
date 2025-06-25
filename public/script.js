@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'login-page':     { file: '/pages/login-page.html',     path: '/login' },
     'register-page':  { file: '/pages/register-page.html',  path: '/register' },
     'profile-page':   { file: '/pages/profile-page.html',   path: '/profile' },
+    'blog-page':      { file: '/pages/blog-page.html',      path: '/blog' },
     'error404-page':  { file: '/error404.html',            path: '/404' }
   };
 
@@ -38,6 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     toastRoot.appendChild(t);
     setTimeout(() => t.remove(), 2500);
+  };
+
+  // basic helpers shared across modules
+  window.sanitize = function(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
+  window.parseFormatting = function(str){
+    return str
+      .replace(/\[b\](.*?)\[\/b\]/gis,'<strong>$1<\/strong>')
+      .replace(/\[i\](.*?)\[\/i\]/gis,'<em>$1<\/em>')
+      .replace(/\[quote\](.*?)\[\/quote\]/gis,'<blockquote>$1<\/blockquote>');
   };
 
   function openModal(imgSrc, title) {
@@ -150,6 +165,9 @@ function closeModal() {
           break;
         case 'profile-page':
           initProfile?.();
+          break;
+        case 'blog-page':
+          initBlog?.();
           break;
         // add more page hooks here if needed
       }
