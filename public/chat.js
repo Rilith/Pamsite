@@ -12,7 +12,9 @@ function initChat(){
   let emoteCategories = {};
 
   buildToolbar();
-  loadEmotes().then(loadMessages);
+  loadEmotes().catch(err=>{
+    console.error('emotes',err);
+  }).finally(loadMessages);
   mountForm();
 
   async function loadMessages(){
@@ -21,7 +23,10 @@ function initChat(){
       if(!res.ok) throw new Error();
       const data = await res.json();
       renderMessages(data);
-    }catch(err){ console.error('chat load', err); }
+    }catch(err){
+      console.error('chat load', err);
+      messagesEl.innerHTML='<p class="chat-error">Impossibile caricare la chat.</p>';
+    }
   }
 
   function renderMessages(list){
