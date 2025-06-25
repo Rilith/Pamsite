@@ -172,6 +172,7 @@ function getRandomColor(){
   return COLORS[Math.floor(Math.random()*COLORS.length)];
 }
 
+
 function hashPass(pass) {
   return crypto.createHash('sha256').update(pass).digest('hex');
 }
@@ -430,6 +431,7 @@ app.post('/api/register', (req, res) => {
       bio: '',
       blogName: ''
     });
+
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -600,6 +602,7 @@ app.get('/api/posts/search', (req, res) => {
 // Retrieve single post by id
 // numeric id so it doesn't clash with /popular etc
 app.get('/api/posts/:id(\d+)', (req, res) => {
+
   try {
     const id = parseInt(req.params.id);
     const data = readPosts();
