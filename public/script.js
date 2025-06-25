@@ -61,6 +61,24 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gis,'<span style="color:$1">$2<\/span>');
   };
 
+  window.wrapSelection = function(textarea,before,after){
+    const s=textarea.selectionStart;
+    const e=textarea.selectionEnd;
+    const v=textarea.value;
+    textarea.value=v.slice(0,s)+before+v.slice(s,e)+after+v.slice(e);
+    textarea.focus();
+    textarea.selectionStart=s+before.length;
+    textarea.selectionEnd=e+before.length;
+  };
+
+  window.insertAtCursor = function(textarea,text){
+    const s=textarea.selectionStart;
+    const e=textarea.selectionEnd;
+    textarea.value=textarea.value.slice(0,s)+text+textarea.value.slice(e);
+    textarea.focus();
+    textarea.selectionStart=textarea.selectionEnd=s+text.length;
+  };
+
   function openModal(imgSrc, title) {
     modalImg.src = imgSrc;
     modalImg.alt = title;

@@ -240,8 +240,7 @@ function saveChatMessage({ username, message, color }) {
   return msg;
 }
 
-
-function saveBlogPost({ username, title, content, image }) {
+function saveBlogPost({ username, title, content, images = [] }) {
   const data = readPosts();
   const users = readUsers();
   const user = users.users.find(u => u.username === username) || {};
@@ -256,7 +255,7 @@ function saveBlogPost({ username, title, content, image }) {
     blogName: user.blogName || '',
     title,
     content,
-    image: image || '',
+    images: Array.isArray(images) ? images.filter(Boolean) : [],
     date,
     time,
     views: 0
@@ -542,12 +541,12 @@ app.get('/api/users/:username/blogposts', (req, res) => {
 app.post('/api/users/:username/blogposts', (req, res) => {
   try {
     const { username } = req.params;
-    const { title, content, image } = req.body;
+    const { title, content, images } = req.body;
     if (!title || !content) return res.status(400).json({ error: 'Dati mancanti' });
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(404).json({ error: 'Utente non trovato' });
-    const post = saveBlogPost({ username, title, content, image });
+    const post = saveBlogPost({ username, title, content, images });
     res.status(201).json(post);
   } catch (err) {
     console.error('Errore creazione post:', err);
@@ -597,8 +596,8 @@ app.get('/api/posts/search', (req, res) => {
 });
 
 // Retrieve single post by id
-// numeric id so it doesn't clash with /popular etc
-app.get('/api/posts/:id(\d+)', (req, res) => {
+// keep path distinct from /popular or /chronological
+app.get('/api/posts/id/:id', (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const data = readPosts();
