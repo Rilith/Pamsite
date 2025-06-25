@@ -16,15 +16,16 @@
     <br/>
     <button id="fs-btn">Make fullscreen</button>
 
-    <script src="https://js-dos.com/6.22/current/js-dos.js"></script>
+    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
     <script>
-      const db = Dos(document.getElementById("dosbox"), {
-        wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.js"
+      var dosbox = new Dosbox({
+        id: "dosbox",
+        onload: function (db) {
+          db.run("https://js-dos.com/cdn/upload/DOOM-%40evilution.zip", "./doom");
+        }
       });
-      db.run("https://js-dos.com/cdn/upload/DOOM-@evilution.zip");
-      document.getElementById('fs-btn').onclick = function(){
-        const canvas = document.querySelector('#dosbox canvas');
-        if(canvas.requestFullscreen) canvas.requestFullscreen();
+      document.getElementById('fs-btn').onclick = function () {
+        dosbox.requestFullScreen();
       };
     </script>
   </body>
