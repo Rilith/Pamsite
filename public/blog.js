@@ -7,17 +7,23 @@ function initBlog(){
   const searchInput=document.getElementById('blog-search-input');
 
   async function load(url){
-    const res=await fetch(url);
-    const list=await res.json();
-    postsBox.innerHTML='';
-    list.forEach(p=>{
-      const div=document.createElement('div');
-      div.className='blog-post';
-      div.innerHTML=`<h3>${sanitize(p.title)}</h3>
-        <div class="blog-meta">${p.username} - ${p.date} ${p.time} - 👁️${p.views||0}</div>
-        <div class="blog-content">${parseFormatting(sanitize(p.content))}</div>`;
-      postsBox.appendChild(div);
-    });
+    try{
+      const res=await fetch(url);
+      if(!res.ok) throw new Error('bad response');
+      const list=await res.json();
+      postsBox.innerHTML='';
+      list.forEach(p=>{
+        const div=document.createElement('div');
+        div.className='blog-post';
+        const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
+        div.innerHTML=`<h3>${sanitize(p.title)}</h3>
+          <div class="blog-meta">${p.username} - ${p.date} ${p.time} - 👁️${p.views||0}</div>
+          <div class="blog-content">${body}</div>`;
+        postsBox.appendChild(div);
+      });
+    }catch(err){
+      console.error('blog load',err);
+    }
   }
 
   popularBtn?.addEventListener('click',()=>load('/api/posts/popular'));

@@ -136,7 +136,8 @@ function initProfile(){
     posts.forEach(p=>{
       const d=document.createElement('div');
       d.className='blog-post';
-      d.innerHTML=`<h4>${sanitize(p.title)}</h4><div class="blog-meta">${p.date} ${p.time}</div><div class="blog-content">${parseFormatting(sanitize(p.content))}</div>`;
+      const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
+      d.innerHTML=`<h4>${sanitize(p.title)}</h4><div class="blog-meta">${p.date} ${p.time}</div><div class="blog-content">${body}</div>`;
       box.appendChild(d);
     });
   }
