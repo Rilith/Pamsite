@@ -6,7 +6,7 @@
     <title>DOOM</title>
     <style>
       body { background:black; color:#0f0; text-align:center; margin:0; }
-      .dosbox-container { width: 640px; height: 480px; margin:auto; }
+      .dosbox-container { width: 800px; height: 600px; margin:auto; }
       .dosbox-container > .dosbox-overlay { background:url(https://js-dos.com/cdn/DOOM.png); }
     </style>
   </head>
@@ -16,15 +16,16 @@
     <br/>
     <button id="fs-btn">Make fullscreen</button>
 
-    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
+    <script src="https://js-dos.com/6.22/current/js-dos.js"></script>
     <script>
-      var dosbox = new Dosbox({
-        id: "dosbox",
-        onload: function(db){
-          db.run("https://js-dos.com/cdn/upload/DOOM-@evilution.zip", "./doom");
-        }
+      const db = Dos(document.getElementById("dosbox"), {
+        wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.js"
       });
-      document.getElementById('fs-btn').onclick = function(){ dosbox.requestFullScreen(); };
+      db.run("https://js-dos.com/cdn/upload/DOOM-@evilution.zip");
+      document.getElementById('fs-btn').onclick = function(){
+        const canvas = document.querySelector('#dosbox canvas');
+        if(canvas.requestFullscreen) canvas.requestFullscreen();
+      };
     </script>
   </body>
 </html>

@@ -1,22 +1,12 @@
 <section id="games-page" class="page">
   <h2 style="color:#00ffff;text-align:center;">Pamsite Arcade</h2>
-  <div id="game-upload" style="text-align:center;margin-bottom:10px;">
-    <form id="game-upload-form" enctype="multipart/form-data">
-      <input type="file" name="gamefile" accept=".zip">
-      <button type="submit">Upload Game</button>
-    </form>
-  </div>
   <div id="game-grid" class="game-grid"></div>
   <div id="game-view" style="display:none;margin-top:10px;">
     <h3 id="game-title" style="color:#00ffff;text-align:center;"></h3>
-    <iframe id="game-frame" src="" width="640" height="480" style="width:100%;border:0;"></iframe>
+    <iframe id="game-frame" src="" width="800" height="600" allowfullscreen style="width:100%;border:0;"></iframe>
     <div id="score-section" style="text-align:center;margin-top:10px;">
       <h4 style="color:#ffff00;">High Scores</h4>
       <ul id="score-list" style="list-style:none;padding:0;"></ul>
-      <form id="score-form">
-        <input type="number" name="score" placeholder="Score" required>
-        <button type="submit">Invia</button>
-      </form>
       <button id="close-game" type="button">Chiudi</button>
     </div>
   </div>

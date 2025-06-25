@@ -563,35 +563,31 @@ app.get('/api/games', (req, res) => {
       const thumb = fs.existsSync(thumbPath)
         ? `/games/${d.name}/thumb.png`
         : '/images/avatars/05MISAT.JPG';
-      return { name: d.name, thumb };
+      const metaPath = path.join(GAMES_DIR, d.name, 'metadata.json');
+      let meta = {};
+      if (fs.existsSync(metaPath)) {
+        try { meta = JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch {}
+      }
+      return { name: d.name, thumb, scores: meta.scores !== false };
     });
     res.json(list);
   });
 });
 
-const gameUpload = multer({ dest: path.join(__dirname, 'tmp') });
-app.post('/api/games/upload', gameUpload.single('game'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'File mancante' });
-  const AdmZip = require('adm-zip');
-  const name = path.parse(req.file.originalname).name.replace(/\s+/g, '_');
-  const dest = path.join(GAMES_DIR, name);
-  try {
-    const zip = new AdmZip(req.file.path);
-    zip.extractAllTo(dest, true);
-    fs.unlinkSync(req.file.path);
-    res.json({ success: true, name });
-  } catch (e) {
-    console.error('Upload game', e);
-    res.status(500).json({ error: 'Errore caricamento gioco' });
-  }
-});
-
 app.get('/api/games/:game/scores', (req, res) => {
+  const metaPath = path.join(GAMES_DIR, req.params.game, 'metadata.json');
+  if (fs.existsSync(metaPath)) {
+    try { const meta = JSON.parse(fs.readFileSync(metaPath,'utf8')); if(meta.scores===false) return res.json([]); } catch {}
+  }
   const data = readScores();
   res.json(data.scores[req.params.game] || []);
 });
 
 app.post('/api/games/:game/scores', (req, res) => {
+  const metaPath = path.join(GAMES_DIR, req.params.game, 'metadata.json');
+  if (fs.existsSync(metaPath)) {
+    try { const meta = JSON.parse(fs.readFileSync(metaPath,'utf8')); if(meta.scores===false) return res.status(400).json({ error:'Punteggi non abilitati' }); } catch {}
+  }
   const { username, score } = req.body;
   if (!username || typeof score !== 'number')
     return res.status(400).json({ error: 'Dati mancanti' });
