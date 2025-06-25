@@ -167,6 +167,12 @@ function writePosts(data) {
   fs.writeFileSync(BLOGPOSTS_FILE, JSON.stringify(data, null, 2));
 }
 
+const COLORS = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
+function getRandomColor(){
+  return COLORS[Math.floor(Math.random()*COLORS.length)];
+}
+
+
 function hashPass(pass) {
   return crypto.createHash('sha256').update(pass).digest('hex');
 }
@@ -222,7 +228,7 @@ function updateReaction(entryId, emoji, increment = true) {
   return reactions.reactions[entryId];
 }
 
-function saveChatMessage({ username, message }) {
+function saveChatMessage({ username, message, color }) {
   const chat = readChat();
   const newId = chat.messages.length
     ? Math.max(...chat.messages.map(m => m.id)) + 1
@@ -234,7 +240,7 @@ function saveChatMessage({ username, message }) {
   const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${year}`;
   const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-  const msg = { id: newId, username, message, date, time };
+  const msg = { id: newId, username, message, date, time, color };
   chat.messages.push(msg);
   writeChat(chat);
   return msg;
@@ -371,7 +377,15 @@ app.get('/api/guestbook/search', (req, res) => {
 app.get('/api/chat', (req, res) => {
   try {
     const chat = readChat();
-    res.json(chat.messages.slice(-50));
+    const users = readUsers();
+    const msgs = chat.messages.slice(-50).map(m => {
+      if (!m.color) {
+        const u = users.users.find(u => u.username === m.username);
+        return { ...m, color: u ? u.color || '#00ffff' : '#00ffff' };
+      }
+      return m;
+    });
+    res.json(msgs);
   } catch (err) {
     console.error('Errore caricamento chat:', err);
     res.status(500).json({ error: 'Errore nel caricamento della chat' });
@@ -390,7 +404,7 @@ app.post('/api/chat', (req, res) => {
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(401).json({ error: 'Utente non valido' });
-    const msg = saveChatMessage({ username, message });
+    const msg = saveChatMessage({ username, message, color: user.color || '#00ffff' });
     res.status(201).json(msg);
   } catch (err) {
     console.error('Errore invio chat:', err);
@@ -409,7 +423,15 @@ app.post('/api/register', (req, res) => {
     if (users.users.find(u => u.username === username)) {
       return res.status(409).json({ error: 'Utente già esistente' });
     }
-    users.users.push({ username, password: hashPass(password), avatar: '05MISAT.JPG', color: '#00ffff', bio: '', blogName: '' });
+    users.users.push({
+      username,
+      password: hashPass(password),
+      avatar: '05MISAT.JPG',
+      color: getRandomColor(),
+      bio: '',
+      blogName: ''
+    });
+
     writeUsers(users);
     res.json({ success: true });
   } catch (err) {
@@ -536,21 +558,6 @@ app.post('/api/users/:username/blogposts', (req, res) => {
   }
 });
 
-=======
-app.get('/api/posts/:id', (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const data = readPosts();
-    const post = data.posts.find(p => p.id === id);
-    if (!post) return res.status(404).json({ error: 'Post non trovato' });
-    post.views = (post.views || 0) + 1;
-    writePosts(data);
-    res.json(post);
-  } catch (err) {
-    console.error('Errore lettura post:', err);
-    res.status(500).json({ error: 'Errore lettura post' });
-  }
-
 
 app.get('/api/posts/popular', (req, res) => {
   try {
@@ -593,7 +600,9 @@ app.get('/api/posts/search', (req, res) => {
 });
 
 // Retrieve single post by id
-app.get('/api/posts/:id', (req, res) => {
+// numeric id so it doesn't clash with /popular etc
+app.get('/api/posts/:id(\d+)', (req, res) => {
+
   try {
     const id = parseInt(req.params.id);
     const data = readPosts();
@@ -607,7 +616,6 @@ app.get('/api/posts/:id', (req, res) => {
     res.status(500).json({ error: 'Errore lettura post' });
   }
 });
-
 
 app.get('/api/users/search', (req, res) => {
   try {
