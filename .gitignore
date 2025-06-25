@@ -1,6 +1,7 @@
 backend/data/users.json
 backend/data/chat.json
 backend/data/reactions.json
+backend/data/game_scores.json
 
 # dependencies
 node_modules/
