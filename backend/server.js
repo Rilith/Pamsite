@@ -240,7 +240,11 @@ function saveChatMessage({ username, message, color }) {
   return msg;
 }
 
-function saveBlogPost({ username, title, content, images = [] }) {
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function saveBlogPost({ username, title, content, thumb = '' }) {
   const data = readPosts();
   const users = readUsers();
   const user = users.users.find(u => u.username === username) || {};
@@ -249,13 +253,20 @@ function saveBlogPost({ username, title, content, images = [] }) {
   const pad = n => String(n).padStart(2, '0');
   const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
   const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const blogSlug = slugify(user.blogName || username);
+  let slug = slugify(title);
+  if (data.posts.some(p => (p.blogSlug||slugify(p.blogName||p.username))===blogSlug && p.slug===slug)) {
+    slug += '-' + newId;
+  }
   const post = {
     id: newId,
     username,
     blogName: user.blogName || '',
+    blogSlug,
+    slug,
     title,
     content,
-    images: Array.isArray(images) ? images.filter(Boolean) : [],
+    thumb,
     date,
     time,
     views: 0
@@ -541,12 +552,12 @@ app.get('/api/users/:username/blogposts', (req, res) => {
 app.post('/api/users/:username/blogposts', (req, res) => {
   try {
     const { username } = req.params;
-    const { title, content, images } = req.body;
+    const { title, content, thumb } = req.body;
     if (!title || !content) return res.status(400).json({ error: 'Dati mancanti' });
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(404).json({ error: 'Utente non trovato' });
-    const post = saveBlogPost({ username, title, content, images });
+    const post = saveBlogPost({ username, title, content, thumb });
     res.status(201).json(post);
   } catch (err) {
     console.error('Errore creazione post:', err);
@@ -592,6 +603,21 @@ app.get('/api/posts/search', (req, res) => {
   } catch (err) {
     console.error('Errore ricerca posts:', err);
     res.status(500).json({ error: 'Errore ricerca posts' });
+  }
+});
+
+app.get('/api/posts/:blog/:slug', (req, res) => {
+  try {
+    const { blog, slug } = req.params;
+    const data = readPosts();
+    const post = data.posts.find(p => (p.blogSlug||slugify(p.blogName||p.username)) === blog && p.slug === slug);
+    if (!post) return res.status(404).json({ error: 'Post non trovato' });
+    post.views = (post.views || 0) + 1;
+    writePosts(data);
+    res.json(post);
+  } catch (err) {
+    console.error('Errore lettura post:', err);
+    res.status(500).json({ error: 'Errore lettura post' });
   }
 });
 

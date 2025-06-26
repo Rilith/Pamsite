@@ -51,14 +51,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.parseFormatting = function(str){
     return str
-      .replace(/\[b\](.*?)\[\/b\]/gis,'<strong>$1<\/strong>')
-      .replace(/\[i\](.*?)\[\/i\]/gis,'<em>$1<\/em>')
-      .replace(/\[quote\](.*?)\[\/quote\]/gis,'<blockquote>$1<\/blockquote>')
-      .replace(/\[url=(https?:\/\/[^\]]+)\](.*?)\[\/url\]/gis,'<a href="$1" target="_blank">$2<\/a>')
-      .replace(/\[img\](https?:\/\/[^\]]+)\[\/img\]/gis,'<img src="$1" class="blog-inline-img">')
-      .replace(/\[code\]([\s\S]*?)\[\/code\]/gis,'<pre><code>$1<\/code><\/pre>')
-      .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/gis,'<span style="font-size:$1px">$2<\/span>')
-      .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gis,'<span style="color:$1">$2<\/span>');
+      .replace(/\[b\]([\s\S]*?)\[\/b\]/gi,'<strong>$1<\/strong>')
+      .replace(/\[i\]([\s\S]*?)\[\/i\]/gi,'<em>$1<\/em>')
+      .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi,'<blockquote>$1<\/blockquote>')
+      .replace(/\[url=(.*?)\]([\s\S]*?)\[\/url\]/gi,'<a href="$1" target="_blank">$2<\/a>')
+      .replace(/\[url\]([\s\S]*?)\[\/url\]/gi,'<a href="$1" target="_blank">$1<\/a>')
+      .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,'<img src="$1" class="blog-inline-img">')
+      .replace(/\[code\]([\s\S]*?)\[\/code\]/gi,'<pre><code>$1<\/code><\/pre>')
+      .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/gi,'<span style="font-size:$1px">$2<\/span>')
+      .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gi,'<span style="color:$1">$2<\/span>')
+      .replace(/\[left\]([\s\S]*?)\[\/left\]/gi,'<div style="text-align:left">$1<\/div>')
+      .replace(/\[center\]([\s\S]*?)\[\/center\]/gi,'<div style="text-align:center">$1<\/div>')
+      .replace(/\[right\]([\s\S]*?)\[\/right\]/gi,'<div style="text-align:right">$1<\/div>')
+      .replace(/\[justify\]([\s\S]*?)\[\/justify\]/gi,'<div style="text-align:justify">$1<\/div>')
+      .replace(/\[p\]([\s\S]*?)\[\/p\]/gi,'<p>$1<\/p>')
+      .replace(/\[ul\]([\s\S]*?)\[\/ul\]/gi,'<ul>$1<\/ul>')
+      .replace(/\[ol\]([\s\S]*?)\[\/ol\]/gi,'<ol>$1<\/ol>')
+      .replace(/\[li\]([\s\S]*?)\[\/li\]/gi,'<li>$1<\/li>')
+      .replace(/\[cite\]([\s\S]*?)\[\/cite\]/gi,'<cite>$1<\/cite>');
+  };
+
+  window.slugify = function(str){
+    return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   };
 
   window.wrapSelection = function(textarea,before,after){
@@ -93,8 +107,8 @@ function closeModal() {
     modalTitle.textContent = '';
 }
 
-  window.openPost = function(id){
-    showPage('post-page', true, `/post/${id}`, { id });
+  window.openPost = function(path){
+    showPage('post-page', true, `/${path}`, { path });
   };
 
   const getRandomColor = () => {
@@ -225,9 +239,12 @@ function closeModal() {
   let start = Object.entries(pageConfig)
     .find(([,cfg]) => cfg.path === location.pathname)?.[0];
   const startState = {};
-  if (!start && location.pathname.startsWith('/post/')) {
+  if (!start && location.pathname.split('/').length >= 3) {
     start = 'post-page';
-    startState.id = location.pathname.split('/').pop();
+    startState.path = location.pathname.slice(1);
+  } else if (!start && location.pathname.startsWith('/post/')) {
+    start = 'post-page';
+    startState.path = location.pathname.split('/').pop();
   }
   if (!start) start = 'error404-page';
   showPage(start, false, location.pathname + location.search, startState);
