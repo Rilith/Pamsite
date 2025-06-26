@@ -12,6 +12,8 @@
 
     <script src="/script.js"    defer></script>
     <script src="/guestbook.js" defer></script>
+    <script src="/blog.js"      defer></script>
+    <script src="/post.js"      defer></script>
     <script src="/chat.js" defer></script>
     <script src="/games.js" defer></script>
     <script src="/auth.js" defer></script>
@@ -35,7 +37,10 @@
         <header id="header">
             <h1>~*~ Pamsite! ~*~</h1>
             <div class="blink" style="color: #00ff00; margin-top: 10px;">Benvenuti nel mio mondo!</div>
-            <div class="auth-links" id="auth-container"></div>
+            <div class="auth-links" id="auth-container">
+              <a href="/login" data-page-target="login-page">Login</a>
+              <a href="/register" data-page-target="register-page">Registrati</a>
+            </div>
         </header>
 
         <nav class="navbar">
@@ -45,6 +50,7 @@
           <a href="/videogame"    data-page-target="videogame-page">Videogiochi</a>
           <a href="/arcade"      data-page-target="games-page">Arcade</a>
           <a href="/guestbook"    data-page-target="guestbook-page">Guestbook</a>
+          <a href="/blog"        data-page-target="blog-page">MiniBlog</a>
           <a href="/download"     data-page-target="download-page">Download</a>
           <a href="/setup"        data-page-target="setup-page">Setup</a>
         </nav>
