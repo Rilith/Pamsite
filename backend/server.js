@@ -222,7 +222,7 @@ function updateReaction(entryId, emoji, increment = true) {
   return reactions.reactions[entryId];
 }
 
-function saveChatMessage({ username, message }) {
+function saveChatMessage({ username, message, color }) {
   const chat = readChat();
   const newId = chat.messages.length
     ? Math.max(...chat.messages.map(m => m.id)) + 1
@@ -234,7 +234,7 @@ function saveChatMessage({ username, message }) {
   const date = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${year}`;
   const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-  const msg = { id: newId, username, message, date, time };
+  const msg = { id: newId, username, message, date, time, color };
   chat.messages.push(msg);
   writeChat(chat);
   return msg;
@@ -392,7 +392,15 @@ app.get('/api/guestbook/search', (req, res) => {
 app.get('/api/chat', (req, res) => {
   try {
     const chat = readChat();
-    res.json(chat.messages.slice(-50));
+    const users = readUsers();
+    const msgs = chat.messages.slice(-50).map(m => {
+      if (!m.color) {
+        const u = users.users.find(u => u.username === m.username);
+        return { ...m, color: u ? u.color || '#00ffff' : '#00ffff' };
+      }
+      return m;
+    });
+    res.json(msgs);
   } catch (err) {
     console.error('Errore caricamento chat:', err);
     res.status(500).json({ error: 'Errore nel caricamento della chat' });
@@ -411,7 +419,7 @@ app.post('/api/chat', (req, res) => {
     const users = readUsers();
     const user = users.users.find(u => u.username === username);
     if (!user) return res.status(401).json({ error: 'Utente non valido' });
-    const msg = saveChatMessage({ username, message });
+    const msg = saveChatMessage({ username, message, color: user.color || '#00ffff' });
     res.status(201).json(msg);
   } catch (err) {
     console.error('Errore invio chat:', err);
