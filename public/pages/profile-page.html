@@ -4,6 +4,7 @@
     <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar">
     <div class="profile-details">
       <h3 id="profile-username"></h3>
+      <p id="profile-bio"></p>
       <p>Messaggi nel guestbook: <span id="profile-count"></span></p>
       <button id="edit-profile-btn">Modifica Profilo</button>
     </div>
@@ -20,6 +21,24 @@
       <input type="password" name="password" placeholder="Nuova password" required>
       <button type="submit">Aggiorna Password</button>
     </form>
+    <form id="info-form" class="guestbook-form">
+      <input type="text" name="bio" placeholder="Bio">
+      <input type="color" name="color" value="#00ffff">
+      <input type="text" name="blogName" placeholder="Nome Blog">
+      <button type="submit">Aggiorna Info</button>
+    </form>
     <button id="delete-account-btn" class="danger-btn">Elimina Account</button>
+  </div>
+
+  <div class="profile-blog">
+    <h3>Scrivi un post</h3>
+    <form id="post-form" class="guestbook-form">
+      <input type="text" name="title" placeholder="Titolo" required>
+      <input type="text" name="thumb" placeholder="Thumbnail URL">
+      <div id="post-picker-wrapper"></div>
+      <textarea name="content" rows="4" required></textarea>
+      <button type="submit">Pubblica</button>
+    </form>
+    <div id="user-posts"></div>
   </div>
 </section>

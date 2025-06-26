@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'login-page':     { file: '/pages/login-page.html',     path: '/login' },
     'register-page':  { file: '/pages/register-page.html',  path: '/register' },
     'profile-page':   { file: '/pages/profile-page.html',   path: '/profile' },
+    'blog-page':      { file: '/pages/blog-page.html',      path: '/blog' },
+    'post-page':      { file: '/pages/post-page.html',      path: '/post' },
     'error404-page':  { file: '/error404.html',            path: '/404' }
   };
 
@@ -40,6 +42,57 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => t.remove(), 2500);
   };
 
+  // basic helpers shared across modules
+  window.sanitize = function(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
+  window.parseFormatting = function(str){
+    return str
+      .replace(/\[b\]([\s\S]*?)\[\/b\]/gi,'<strong>$1<\/strong>')
+      .replace(/\[i\]([\s\S]*?)\[\/i\]/gi,'<em>$1<\/em>')
+      .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi,'<blockquote>$1<\/blockquote>')
+      .replace(/\[url=(.*?)\]([\s\S]*?)\[\/url\]/gi,'<a href="$1" target="_blank">$2<\/a>')
+      .replace(/\[url\]([\s\S]*?)\[\/url\]/gi,'<a href="$1" target="_blank">$1<\/a>')
+      .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,'<img src="$1" class="blog-inline-img">')
+      .replace(/\[code\]([\s\S]*?)\[\/code\]/gi,'<pre><code>$1<\/code><\/pre>')
+      .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/gi,'<span style="font-size:$1px">$2<\/span>')
+      .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gi,'<span style="color:$1">$2<\/span>')
+      .replace(/\[left\]([\s\S]*?)\[\/left\]/gi,'<div style="text-align:left">$1<\/div>')
+      .replace(/\[center\]([\s\S]*?)\[\/center\]/gi,'<div style="text-align:center">$1<\/div>')
+      .replace(/\[right\]([\s\S]*?)\[\/right\]/gi,'<div style="text-align:right">$1<\/div>')
+      .replace(/\[justify\]([\s\S]*?)\[\/justify\]/gi,'<div style="text-align:justify">$1<\/div>')
+      .replace(/\[p\]([\s\S]*?)\[\/p\]/gi,'<p>$1<\/p>')
+      .replace(/\[ul\]([\s\S]*?)\[\/ul\]/gi,'<ul>$1<\/ul>')
+      .replace(/\[ol\]([\s\S]*?)\[\/ol\]/gi,'<ol>$1<\/ol>')
+      .replace(/\[li\]([\s\S]*?)\[\/li\]/gi,'<li>$1<\/li>')
+      .replace(/\[cite\]([\s\S]*?)\[\/cite\]/gi,'<cite>$1<\/cite>');
+  };
+
+  window.slugify = function(str){
+    return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  };
+
+  window.wrapSelection = function(textarea,before,after){
+    const s=textarea.selectionStart;
+    const e=textarea.selectionEnd;
+    const v=textarea.value;
+    textarea.value=v.slice(0,s)+before+v.slice(s,e)+after+v.slice(e);
+    textarea.focus();
+    textarea.selectionStart=s+before.length;
+    textarea.selectionEnd=e+before.length;
+  };
+
+  window.insertAtCursor = function(textarea,text){
+    const s=textarea.selectionStart;
+    const e=textarea.selectionEnd;
+    textarea.value=textarea.value.slice(0,s)+text+textarea.value.slice(e);
+    textarea.focus();
+    textarea.selectionStart=textarea.selectionEnd=s+text.length;
+  };
+
   function openModal(imgSrc, title) {
     modalImg.src = imgSrc;
     modalImg.alt = title;
@@ -53,6 +106,10 @@ function closeModal() {
     modalImg.alt = '';
     modalTitle.textContent = '';
 }
+
+  window.openPost = function(path){
+    showPage('post-page', true, `/${path}`, { path });
+  };
 
   const getRandomColor = () => {
     const cols = ['#ff00ff','#00ffff','#ffff00','#00ff00','#ff0000','#0000ff'];
@@ -85,7 +142,7 @@ function closeModal() {
     section.appendChild(grid);
   }
 
-  async function showPage(id, push = true) {
+  async function showPage(id, push = true, customPath = null, state = {}) {
     if (window.closeGameView) {
       window.closeGameView();
       window.closeGameView = null;
@@ -118,7 +175,7 @@ function closeModal() {
     /* 2. Update the address bar (skip if we’re showing the 404 fragment)  */
     /* ------------------------------------------------------------------ */
     if (push && key !== 'error404-page') {
-      history.pushState({ page: key }, '', path);
+      history.pushState({ page: key, ...state }, '', customPath || path);
     }
   
     /* ------------------------------------------------------------------ */
@@ -151,6 +208,12 @@ function closeModal() {
         case 'profile-page':
           initProfile?.();
           break;
+        case 'blog-page':
+          initBlog?.();
+          break;
+        case 'post-page':
+          initPostPage?.();
+          break;
         // add more page hooks here if needed
       }
     } catch (hookErr) {
@@ -169,14 +232,22 @@ function closeModal() {
 
   // handle back/fwd
   window.addEventListener('popstate', e => {
-    showPage(e.state?.page || 'home-page', false);
+    showPage(e.state?.page || 'home-page', false, location.pathname + location.search, e.state || {});
   });
 
   // ─── INITIAL ROUTE ────────────────────────────────────────
-  const start = Object.entries(pageConfig)
-    .find(([,cfg]) => cfg.path === location.pathname)?.[0]
-    || 'error404-page';
-  showPage(start, false);
+  let start = Object.entries(pageConfig)
+    .find(([,cfg]) => cfg.path === location.pathname)?.[0];
+  const startState = {};
+  if (!start && location.pathname.split('/').length >= 3) {
+    start = 'post-page';
+    startState.path = location.pathname.slice(1);
+  } else if (!start && location.pathname.startsWith('/post/')) {
+    start = 'post-page';
+    startState.path = location.pathname.split('/').pop();
+  }
+  if (!start) start = 'error404-page';
+  showPage(start, false, location.pathname + location.search, startState);
 
   // ─── GLOBAL EVENT DELEGATION ──────────────────────────────
   document.body.addEventListener('click', e => {
@@ -185,6 +256,13 @@ function closeModal() {
     if (nav) {
       e.preventDefault();
       showPage(nav.dataset.pageTarget, true);
+      return;
+    }
+
+    const postLink = e.target.closest('[data-open-post]');
+    if(postLink){
+      e.preventDefault();
+      openPost(postLink.dataset.openPost);
       return;
     }
 
