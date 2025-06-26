@@ -170,8 +170,23 @@ function initProfile(){
     box.innerHTML=`<button type="button" class="toolbar-btn" data-tag="b">B</button>
                    <button type="button" class="toolbar-btn" data-tag="i">I</button>
                    <button type="button" class="toolbar-btn" data-tag="quote">"</button>
+<<<<<<< zedr2a-codex/implement-miniblog-feature
+                   <button type="button" class="toolbar-btn" data-action="link">🔗</button>
+                   <button type="button" class="toolbar-btn" data-action="img">🖼️</button>
+                   <button type="button" class="toolbar-btn" data-tag="code">{}</button>
+                   <button type="button" class="toolbar-btn" data-tag="p">¶</button>
+                   <button type="button" class="toolbar-btn" data-tag="ul">•</button>
+                   <button type="button" class="toolbar-btn" data-tag="ol">1.</button>
+                   <button type="button" class="toolbar-btn" data-tag="li">li</button>
+                   <button type="button" class="toolbar-btn" data-tag="left">↶</button>
+                   <button type="button" class="toolbar-btn" data-tag="center">↔</button>
+                   <button type="button" class="toolbar-btn" data-tag="right">↷</button>
+                   <button type="button" class="toolbar-btn" data-tag="justify">☰</button>
+                   <button type="button" class="toolbar-btn" data-tag="cite">❝</button>
+=======
                    <button type="button" class="toolbar-btn" data-tag="url">🔗</button>
                    <button type="button" class="toolbar-btn" data-tag="img">🖼️</button>
+>>>>>>> main
                    <button type="button" class="toolbar-btn" id="post-emoji-btn">😊</button>`;
     group.appendChild(box);
     pickerWrap.appendChild(group);
@@ -184,12 +199,30 @@ function initProfile(){
 
     box.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn=>{
       const tag=btn.dataset.tag;
+<<<<<<< zedr2a-codex/implement-miniblog-feature
+      btn.addEventListener('click',()=>wrapSelection(postArea, `[${tag}]`, `[/${tag}]`));
+    });
+    box.querySelectorAll('.toolbar-btn[data-action]').forEach(btn=>{
+      const action=btn.dataset.action;
+      if(action==='link'){
+        btn.addEventListener('click',()=>{
+          const sel=postArea.value.slice(postArea.selectionStart,postArea.selectionEnd);
+          const url=prompt('URL?', sel.startsWith('http') ? sel : 'http://');
+          if(!url) return;
+          const text=sel||url;
+          wrapSelection(postArea, `[url=${url}]`, '[/url]');
+          if(!sel) insertAtCursor(postArea,text);
+        });
+      }else if(action==='img'){
+        btn.addEventListener('click',()=>{ const u=prompt('Image URL?'); if(u) insertAtCursor(postArea, `[img]${u}[/img]`); });
+=======
       if(tag==='url'){
         btn.addEventListener('click',()=>{ const u=prompt('URL?'); if(u) wrapSelection(postArea, `[url=${u}]`, '[/url]'); });
       }else if(tag==='img'){
         btn.addEventListener('click',()=>{ const u=prompt('Image URL?'); if(u) insertAtCursor(postArea, `[img]${u}[/img]`); });
       }else{
         btn.addEventListener('click',()=>wrapSelection(postArea, `[${tag}]`, `[/${tag}]`));
+>>>>>>> main
       }
     });
     const emojiBtn=document.getElementById('post-emoji-btn');
