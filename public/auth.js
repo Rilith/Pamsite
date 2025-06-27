@@ -138,17 +138,14 @@ function initProfile(){
     const box=document.getElementById('user-posts');
     box.innerHTML='';
     posts.forEach(p=>{
-      const d=document.createElement('div');
-      d.className='blog-post';
-      const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
-      const img=p.thumb?`<div class="blog-image"><img src="${sanitize(p.thumb)}" alt="thumb"></div>`:'';
+      const card=document.createElement('div');
+      card.className='blog-card';
       const path=`${sanitize(p.blogSlug||slugify(p.blogName||p.username))}/${sanitize(p.slug)}`;
-      d.innerHTML=`<h4>${sanitize(p.title)}</h4>
-        <div class="blog-meta">${p.date} ${p.time}</div>
-        ${img}
-        <div class="blog-content">${body}</div>
-        <a href="/${path}" data-open-post="${path}">Apri</a>`;
-      box.appendChild(d);
+      const img=p.thumb?`<img src="${sanitize(p.thumb)}" alt="thumb" class="blog-card-thumb">`:'';
+      card.innerHTML=`${img}<div class="blog-card-title">${sanitize(p.title)}</div>
+        <div class="blog-card-meta">${sanitize(p.blogName||p.username)} - ${p.date} ${p.time} - 👁️${p.views||0}</div>`;
+      card.dataset.openPost=path;
+      box.appendChild(card);
     });
   }
 

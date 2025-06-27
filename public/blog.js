@@ -13,17 +13,14 @@ function initBlog(){
       const list=await res.json();
       postsBox.innerHTML='';
       list.forEach(p=>{
-        const div=document.createElement('div');
-        div.className='blog-post';
-        const body=parseFormatting(sanitize(p.content)).replace(/\n/g,'<br>');
-        const img=p.thumb?`<div class="blog-image"><img src="${sanitize(p.thumb)}" alt="thumb"></div>`:'';
+        const card=document.createElement('div');
+        card.className='blog-card';
         const path=`${sanitize(p.blogSlug||slugify(p.blogName||p.username))}/${sanitize(p.slug)}`;
-        div.innerHTML=`<h3>${sanitize(p.title)}</h3>
-          <div class="blog-meta">${p.username} - ${p.date} ${p.time} - 👁️${p.views||0}</div>
-          ${img}
-          <div class="blog-content">${body}</div>
-          <a href="/${path}" data-open-post="${path}">Leggi tutto…</a>`;
-        postsBox.appendChild(div);
+        const img=p.thumb?`<img src="${sanitize(p.thumb)}" alt="thumb" class="blog-card-thumb">`:'';
+        card.innerHTML=`${img}<div class="blog-card-title">${sanitize(p.title)}</div>
+          <div class="blog-card-meta">${sanitize(p.blogName||p.username)} - ${p.date} ${p.time} - 👁️${p.views||0}</div>`;
+        card.dataset.openPost=path;
+        postsBox.appendChild(card);
       });
     }catch(err){
       console.error('blog load',err);
